@@ -63,12 +63,7 @@ Item {
 
         Button {
             text: "Back to Login"
-            onClicked: {
-                message = ""
-                username = ""
-                password = ""
-                confirmPassword = ""
-            }
+            onClicked: close()
         }
     }
 }

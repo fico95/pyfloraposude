@@ -13,6 +13,7 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
+        sourceComponent: welcomeComponent
     }
 
     Component {
@@ -21,18 +22,33 @@ Window {
             onRegistrationSuccessful: {
                 loader.sourceComponent = loginComponent
             }
+            onClose: {
+                loader.sourceComponent = welcomeComponent
+            }
+        }
+    }
+
+    Component {
+        id: welcomeComponent
+        Welcome {
+            onLoginClicked: {
+                loader.sourceComponent = loginComponent
+            }
+            onRegisterClicked: {
+                loader.sourceComponent = registrationComponent
+            }
         }
     }
 
     Component {
         id: loginComponent
-        Login {}
-    }
-
-    Component.onCompleted: {
-        if (userHandler.user_exists())
-            loader.sourceComponent = loginComponent
-        else
-            loader.sourceComponent = registrationComponent
+        Login {
+            onLoginSuccessful: {
+                loader.sourceComponent = null
+            }
+            onClose: {
+                loader.sourceComponent = welcomeComponent
+            }
+        }
     }
 }

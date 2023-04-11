@@ -3,11 +3,12 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 Item {
-    signal loginSuccessful()
-
     property string username: ""
     property string password: ""
     property string message: ""
+
+    signal loginSuccessful()
+    signal close()
 
     ColumnLayout {
         anchors.centerIn: parent
@@ -45,6 +46,11 @@ Item {
                     }
                 }
             }
+        }
+
+        Button {
+            text: "Back to Login"
+            onClicked: close()
         }
     }
 }
