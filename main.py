@@ -7,12 +7,12 @@ from users.userdatabase import UserDatabase
 from users.user import User
 
 if __name__ == "__main__":
-    latitude = 45.8102
-    longitude = 15.9411
+    # latitude = 45.8102
+    # longitude = 15.9411
 
-    userDb = UserDatabase('test.db')
-    userDb.add_user(User('test2', 'test'))
-    sys.exit()
+    # userDb = UserDatabase('test.db')
+    # userDb.add_user(User('test2', 'test'))
+    # sys.exit()
 
 #    print (sensors.generate_random_data(latitude, longitude, 2))
     # latitude = 45.8102

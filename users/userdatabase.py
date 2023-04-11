@@ -1,5 +1,5 @@
 import sqlite3
-import users.user as User
+from users.user import User
 
 class UserDatabase:
     def __init__(self, db_path):
@@ -22,6 +22,7 @@ class UserDatabase:
 
     def get_user(self, username):
         cur = self.conn.cursor()
+
         cur.execute("SELECT * FROM users WHERE username=?", (username,))
         row = cur.fetchone()
         cur.close()
@@ -33,3 +34,14 @@ class UserDatabase:
     def delete_user(self, username):
         self.conn.execute("DELETE FROM users WHERE username=?", (username,))
         self.conn.commit()
+
+    def delete_all_users(self):
+        self.conn.execute("DELETE FROM users")
+        self.conn.commit()
+
+    def get_num_users(self):
+        cur = self.conn.cursor()
+        cur.execute("SELECT COUNT(*) FROM users")
+        num_users = cur.fetchone()[0]
+        cur.close()
+        return num_users

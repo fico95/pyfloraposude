@@ -3,6 +3,7 @@ import secrets
 
 class User:
     def __init__(self, username, password, salt = None):
+        print("WTF")
         self.username = username
         if salt:
             self.salt = salt
@@ -12,5 +13,5 @@ class User:
             self.password_hash = hashlib.sha256(password.encode('utf-8') + str(self.salt).encode('utf-8')).hexdigest()
 
     def check_password(self, password):
-        password_hash = hashlib.sha256(password.encode('utf-8') + self.salt).hexdigest()
+        password_hash = hashlib.sha256(password.encode('utf-8') + str(self.salt).encode('utf-8')).hexdigest()
         return password_hash == self.password_hash
