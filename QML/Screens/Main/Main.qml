@@ -1,28 +1,25 @@
 import QtQuick 2.14
-import QtQuick.Window 2.14
 import QtQuick.Controls 2.15
 
-Window {
-    width: 1280
-    height: 960
-    visible: true
+import "../Users"
+import "../Welcome"
 
-    minimumWidth: 640
-    minimumHeight: 480
+Item {
+    anchors.fill: parent
 
     Loader {
         id: loader
         anchors.fill: parent
         sourceComponent: {
-            switch (stackController.current_screen) {
+            switch (stackController.currentScreen) {
                 case 0:
-                    return welcomeComponent
+                   return welcomeComponent
                 case 1:
                     return registrationComponent
                 case 2:
-                    return loginComponent
+                   return loginComponent
                 case 3:
-                    return forgottenPasswordComponent
+                   return forgottenPasswordComponent
             }
         }
     }
@@ -31,10 +28,10 @@ Window {
         id: registrationComponent
         Registration {
             onRegistrationSuccessful: {
-                stackController.open_login_screen()
+                stackController.openLoginScreen()
             }
             onClose: {
-                stackController.open_welcome_screen()
+                stackController.openWelcomeScreen()
             }
         }
     }
@@ -43,13 +40,16 @@ Window {
         id: welcomeComponent
         Welcome {
             onLoginClicked: {
-                stackController.open_login_screen()
+                stackController.openLoginScreen()
             }
             onRegisterClicked: {
-                stackController.open_registration_screen()
+                stackController.openRegistrationScreen()
             }
             onForgottenPasswordClicked: {
-                stackController.open_forgotten_password_screen()
+                stackController.openForgottenPasswordScreen()
+            }
+            onQuitClicked: {
+                Qt.quit()
             }
         }
     }
@@ -61,7 +61,7 @@ Window {
                 loader.sourceComponent = null
             }
             onClose: {
-                stackController.open_welcome_screen()
+                stackController.openWelcomeScreen()
             }
         }
     }
@@ -70,12 +70,12 @@ Window {
         id: forgottenPasswordComponent
         ForgottenPassword {
             onAcceptClicked: {
-                if (userHandler.delete_all_users()) {
-                    stackController.open_welcome_screen()
+                if (userHandler.deleteAllUsers()) {
+                    stackController.openWelcomeScreen()
                 }
             }
             onCancelClicked: {
-                stackController.open_welcome_screen()
+                stackController.openWelcomeScreen()
             }
         }
     }

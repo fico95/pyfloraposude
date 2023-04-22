@@ -52,7 +52,7 @@ Item {
             onClicked: {
                 if (password !== confirmPassword) {
                     message = "Passwords do not match."
-                } else if (userHandler.add_user(username, password)) {
+                } else if (userHandler.addUser(username, '123')) {
                     message = "Registration successful."
                     registrationSuccessful()
                 } else {

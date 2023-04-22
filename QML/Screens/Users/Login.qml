@@ -16,14 +16,14 @@ Item {
         TextField {
             placeholderText: "Username"
             text: username
-            onTextChanged: username = text.trim()
+            onTextChanged: username = text
         }
 
         TextField {
             placeholderText: "Password"
             text: password
             echoMode: TextInput.Password
-            onTextChanged: password = text.trim()
+            onTextChanged: password = text
         }
 
         Text {
@@ -38,7 +38,7 @@ Item {
                 if (username === "" || password === "") {
                     message = "Username and password are required."
                 } else {
-                    if (userHandler.authenticate_user(username, password)) {
+                    if (userHandler.authenticateUser(username, password)) {
                         loginSuccessful()
                     }
                     else {

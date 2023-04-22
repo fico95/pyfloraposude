@@ -1,6 +1,6 @@
 import requests
 
-def get_temperature(latitude, longitude):
+def getTemperature(latitude, longitude):
     url = f"https://api.open-meteo.com/v1/forecast?latitude={str(latitude)}&longitude={str(longitude)}&current_weather=true"
     response = requests.get(url)
 

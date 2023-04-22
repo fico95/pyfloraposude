@@ -1,40 +1,40 @@
 from enum import IntEnum
 
-from PySide2.QtCore import QEnum, QObject, Property, Signal, Slot
+from PySide2.QtCore import QObject, Property, Signal, Slot
 
 class StackController(QObject):
     @Signal
-    def screen_changed(self):
+    def screenChanged(self):
          pass
 
-    @QEnum
     class Screen(IntEnum):
         Welcome, Registration, Login, ForgottenPassword = range(4)
 
-    @Property(int, notify=screen_changed)
-    def current_screen(self):
+    @Property(int, notify=screenChanged)
+    def currentScreen(self):
         return self._current_screen
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.open_welcome_screen()
+        self.openWelcomeScreen()
 
     @Slot()
-    def open_welcome_screen(self):
+    def openWelcomeScreen(self):
         self._current_screen = StackController.Screen.Welcome
-        self.screen_changed.emit()
+        self.screenChanged.emit()
 
     @Slot()
-    def open_registration_screen(self):
+    def openRegistrationScreen(self):
         self._current_screen = StackController.Screen.Registration
-        self.screen_changed.emit()
+        self.screenChanged.emit()
 
     @Slot()
-    def open_login_screen(self):
+    def openLoginScreen(self):
         self._current_screen = StackController.Screen.Login
-        self.screen_changed.emit()
+        self.screenChanged.emit()
 
     @Slot()
-    def open_forgotten_password_screen(self):
+    def openForgottenPasswordScreen(self):
         self._current_screen = StackController.Screen.ForgottenPassword
-        self.screen_changed.emit()
+        self.screenChanged.emit()
+

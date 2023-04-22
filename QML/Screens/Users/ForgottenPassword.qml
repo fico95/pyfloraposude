@@ -2,10 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 
 Item {
-    id: forgottenPasswordScreen
-
-    width: parent.width
-    height: parent.height
+    anchors.fill: parent
 
     signal acceptClicked
     signal cancelClicked
@@ -27,7 +24,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
 
             Button {
-                id: acceptButton
                 text: "Accept"
                 width: 100
                 onClicked: {
@@ -36,7 +32,6 @@ Item {
             }
 
             Button {
-                id: cancelButton
                 text: "Cancel"
                 width: 100
                 onClicked: {
