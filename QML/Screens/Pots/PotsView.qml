@@ -71,7 +71,7 @@ Item {
             id: mainGrid
             width: parent.width
             height: contentHeight
-            model: 12
+            model: plantsHandler
             interactive: false
             cellHeight: cellWidth / 2
             cellWidth: flickable.width / 3
@@ -81,6 +81,8 @@ Item {
                 PotButton {
                     anchors.fill: parent
                     anchors.margins: 10
+                    potName: name
+                    plantIconSource: "file://" + imagePath
                 }    
             }
         }

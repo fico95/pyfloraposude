@@ -24,6 +24,7 @@ class Application(QGuiApplication):
             print("Invalid root path provided.")
             return
 
+        imagesPath = "images"
         qmlMainPath = "QML/main.qml"
         dbPath = "database.db"
         if (not os.path.isfile(rootPath + "/" + qmlMainPath)):
@@ -35,7 +36,7 @@ class Application(QGuiApplication):
 
         self.stackController = StackController()
         self.userHandler = UserHandler(rootPath + "/" + dbPath)
-        self.plantsHandler = PlantsHandler(rootPath + "/" + dbPath)
+        self.plantsHandler = PlantsHandler(rootPath + "/" + dbPath, rootPath + "/" + imagesPath)
         
         self.engine.rootContext().setContextProperty("stackController", self.stackController)
         self.engine.rootContext().setContextProperty("userHandler", self.userHandler)

@@ -17,7 +17,7 @@ class PlantDb:
             CREATE TABLE IF NOT EXISTS plants (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
-                picture BLOB NULL,
+                imagePath TEXT NULL,
                 desiredMoisture REAL,
                 desiredPh REAL,
                 desiredSalinity REAL,
@@ -27,38 +27,38 @@ class PlantDb:
         """)
         self.conn.commit()
     
-    def fillTable(self):
-        plantNames = ["Monstera Deliciosa", 
-                      "Fiddle Leaf Fig", 
-                      "Snake Plant", 
-                      "Peace Lily", 
-                      "ZZ Plant", 
-                      "Pothos", 
-                      "Rubber Plant", 
-                      "Bird of Paradise", 
-                      "Chinese Money Plant", 
-                      "Calathea"]
+    def fillTable(self, imagesPath):
+        plantNames = [("Monstera Deliciosa", imagesPath + "/monstera_deliciosa.png"),
+                      ("Fiddle Leaf Fig", imagesPath + "/fiddle_leaf_fig.png"),
+                      ("Snake Plant", imagesPath + "/snake_plant.png"),
+                      ("Peace Lily", imagesPath + "/peace_lily.png"),
+                      ("ZZ Plant", imagesPath + "/zz_plant.png"),
+                      ("Pothos", imagesPath + "/pothos.png"),
+                      ("Rubber Plant", imagesPath + "/rubber_plant.png"),
+                      ("Bird of Paradise", imagesPath + "/bird_of_paradise.png"),
+                      ("Chinese Money Plant", imagesPath + "/chinese_money_plant.png"),
+                      ("Calathea", imagesPath + "/calathea.png")]
         plantData = getRandomPlantData(len(plantNames))
 
         for name, data in zip(plantNames, plantData):
-            plant = Plant(name, "", data)
+            plant = Plant(name[0], name[1], data)
             self.addPlant(plant)
 
     def addPlant(self, plant: Plant):
         cursor = self.conn.cursor()
         cursor.execute("""
-            INSERT INTO plants (name, picture, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
+            INSERT INTO plants (name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
             VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (plant.name, plant.convertImageToBytes(), plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature))
+        """, (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature))
         self.conn.commit()
 
     def updatePlant(self, plant: Plant):
         cursor = self.conn.cursor()
         cursor.execute("""
             UPDATE plants
-            SET name=?, picture=?, desiredMoisture=?, desiredPh=?, desiredSalinity=?, desiredLight=?, desiredTemperature=?
+            SET name=?, imagePath=?, desiredMoisture=?, desiredPh=?, desiredSalinity=?, desiredLight=?, desiredTemperature=?
             WHERE id=?
-        """, (plant.name, plant.convertImageToBytes(), plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature, plant.id))
+        """, (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature, plant.id))
         self.conn.commit()
 
     def removePlant(self, plantId):
@@ -77,12 +77,10 @@ class PlantDb:
         data = cursor.fetchone()
         if data is None:
             return None
-        name, imageBlob, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
-        image = Plant.constructImageFromBytes(imageBlob) 
+        name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
         plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
-        plant = Plant(name, "", plantCare)
+        plant = Plant(name, imagePath, plantCare)
         plant.setId(plantId)
-        plant.setImage(image)
         return plant
 
     def getAllPlants(self) -> List[Plant]:
@@ -92,12 +90,10 @@ class PlantDb:
         """)
         plants = []
         for data in cursor.fetchall():
-            plantId, name, imageBlob, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
-            image = Plant.constructImageFromBytes(imageBlob) 
+            plantId, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
             plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
-            plant = Plant(name, "", plantCare)
+            plant = Plant(name, imagePath, plantCare)
             plant.setId(plantId)
-            plant.setImage(image)
             plants.append(plant)
         return plants
     
