@@ -52,5 +52,15 @@ class UserHandler(QObject):
             return False
         
     @Slot(result=bool)
+    def delete_all_users(self):
+        try:
+            self.user_db.delete_all_users()
+            self.num_users_changed.emit()
+            return True
+        except Exception as e:
+            print(f"Error deleting all users: {e}")
+            return False
+        
+    @Slot(result=bool)
     def user_exists(self):
         return self.num_user > 0

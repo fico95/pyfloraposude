@@ -13,17 +13,28 @@ Window {
     Loader {
         id: loader
         anchors.fill: parent
-        sourceComponent: welcomeComponent
+        sourceComponent: {
+            switch (stackController.current_screen) {
+                case 0:
+                    return welcomeComponent
+                case 1:
+                    return registrationComponent
+                case 2:
+                    return loginComponent
+                case 3:
+                    return forgottenPasswordComponent
+            }
+        }
     }
 
     Component {
         id: registrationComponent
         Registration {
             onRegistrationSuccessful: {
-                loader.sourceComponent = loginComponent
+                stackController.open_login_screen()
             }
             onClose: {
-                loader.sourceComponent = welcomeComponent
+                stackController.open_welcome_screen()
             }
         }
     }
@@ -32,10 +43,13 @@ Window {
         id: welcomeComponent
         Welcome {
             onLoginClicked: {
-                loader.sourceComponent = loginComponent
+                stackController.open_login_screen()
             }
             onRegisterClicked: {
-                loader.sourceComponent = registrationComponent
+                stackController.open_registration_screen()
+            }
+            onForgottenPasswordClicked: {
+                stackController.open_forgotten_password_screen()
             }
         }
     }
@@ -47,7 +61,21 @@ Window {
                 loader.sourceComponent = null
             }
             onClose: {
-                loader.sourceComponent = welcomeComponent
+                stackController.open_welcome_screen()
+            }
+        }
+    }
+
+    Component {
+        id: forgottenPasswordComponent
+        ForgottenPassword {
+            onAcceptClicked: {
+                if (userHandler.delete_all_users()) {
+                    stackController.open_welcome_screen()
+                }
+            }
+            onCancelClicked: {
+                stackController.open_welcome_screen()
             }
         }
     }

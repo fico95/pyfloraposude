@@ -3,7 +3,6 @@ import secrets
 
 class User:
     def __init__(self, username, password, salt = None):
-        print("WTF")
         self.username = username
         if salt:
             self.salt = salt
