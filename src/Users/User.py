@@ -8,8 +8,13 @@ class User:
             self.salt = salt
             self.passwordHash = password
         else:
+            self.salt = None
+            self.setPassword(password)
+
+    def setPassword(self, password):
+        if (not self.salt):
             self.salt = secrets.token_hex(16)
-            self.passwordHash = hashlib.sha256(password.encode('utf-8') + str(self.salt).encode('utf-8')).hexdigest()
+        self.passwordHash = hashlib.sha256(password.encode('utf-8') + str(self.salt).encode('utf-8')).hexdigest()
 
     def checkPassword(self, password):
         passwordHash = hashlib.sha256(password.encode('utf-8') + str(self.salt).encode('utf-8')).hexdigest()

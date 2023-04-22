@@ -31,6 +31,15 @@ class UserDb:
             user = User(row[1], row[3], row[2])
             return user
         return None
+    
+    def updateUserPassword(self, username, newPassword):
+        user = self.getUser(username)
+        if user:
+            user.setPassword(newPassword)
+            self.conn.execute("UPDATE users SET salt=?, passwordHash=? WHERE username=?", (user.salt, user.passwordHash, user.username))
+            self.conn.commit()
+            return True
+        return False
 
     def deleteUser(self, username):
         self.conn.execute("DELETE FROM users WHERE username=?", (username,))

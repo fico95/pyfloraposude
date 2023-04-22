@@ -25,26 +25,11 @@ Item {
             horizontalAlignment: Text.AlignHCenter
         }
 
-        Row {
-            id: buttonRow
-            spacing: 10
+        Button {
             anchors.horizontalCenter: parent.horizontalCenter
-
-            Button {
-                width: mainColumn.width / 2 - buttonRow.spacing / 2
-                text: "Accept"
-                onClicked: {
-                    acceptClicked()
-                }
-            }
-
-            Button {
-                width: mainColumn.width / 2 - buttonRow.spacing / 2
-                text: "Cancel"
-                onClicked: {
-                    cancelClicked()
-                }
-            }
+            width: mainColumn.width / 2
+            text: "Accept"
+            onClicked: acceptClicked()
         }
     }
 }

@@ -10,8 +10,8 @@ Rectangle {
 
     Button {
         anchors {
-            right: parent.right
-            rightMargin: width
+            left: parent.left
+            leftMargin: width
             verticalCenter: parent.verticalCenter
         }
         height: parent.height * 0.5
@@ -21,13 +21,30 @@ Rectangle {
         onClicked: stackController.goBack()
     }
 
-    Text {
+    Button {
         anchors {
-            left: parent.left
-            leftMargin: parent.width / 5
+            right: parent.right
+            rightMargin: width
             verticalCenter: parent.verticalCenter
         }
-        text: "PyFloraPosude"
-        font.pixelSize: 20
+        height: parent.height * 0.5
+        width: parent.width * 0.1
+        text: "Edit user"
+        visible: stackController.userEditable
+        onClicked: stackController.openUserEditorScreen()
+    }
+
+    Rectangle {
+        anchors.centerIn: parent
+        width: title.width * 1.5
+        height: title.height * 1.5
+        radius: 10
+        color: "grey"
+        Text {
+            id: title
+            anchors.centerIn: parent
+            text: "PyFloraPosude"
+            font.pixelSize: 20
+        }
     }
 }

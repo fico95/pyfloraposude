@@ -10,8 +10,8 @@ Rectangle {
 
     Button {
         anchors {
-            right: parent.right
-            rightMargin: width
+            left: parent.left
+            leftMargin: width
             verticalCenter: parent.verticalCenter
         }
         height: parent.height * 0.5

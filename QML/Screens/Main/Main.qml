@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 
 import "../Users"
 import "../Welcome"
+import "../Pots"
 
 Item {
     Loader {
@@ -18,6 +19,16 @@ Item {
                    return loginComponent
                 case 3:
                    return forgottenPasswordComponent
+                case 4:
+                    return potsViewComponent
+                case 8:
+                    return editComponent
+                case 5:
+                case 6:
+                case 7:
+
+                default:
+                    return null
             }
         }
     }
@@ -50,7 +61,7 @@ Item {
         id: loginComponent
         Login {
             onLoginSuccessful: {
-                loader.sourceComponent = null
+                stackController.openPlantsScreen()
             }
         }
     }
@@ -66,6 +77,18 @@ Item {
             onCancelClicked: {
                 stackController.goBack()
             }
+        }
+    }
+
+    Component {
+        id: editComponent
+        Edit {  
+        }
+    }
+
+    Component {
+        id: potsViewComponent
+        PotsView {
         }
     }
 }

@@ -29,6 +29,18 @@ class UserHandler(QObject):
         except Exception as e:
             print(f"Error adding user: {e}")
             return False
+        
+    @Slot(str, str, str, result=bool)
+    def updateUserPassword(self, username, oldPassword, newPassword):
+        if (not self.authenticateUser(username, oldPassword)):
+            print("Error updating user password: Incorrect password or username.")
+            return False
+        try:
+            self.userDb.updateUserPassword(username, newPassword)
+            return True
+        except Exception as e:
+            print(f"Error updating user password: {e}")
+            return False
 
     @Slot(str, str, result=bool)
     def authenticateUser(self, username, password):
@@ -41,8 +53,12 @@ class UserHandler(QObject):
             print(f"Error authenticating user: {e}")
             return False
 
-    @Slot(str, result=bool)
-    def deleteUser(self, username):
+    @Slot(str, str, result=bool)
+    def deleteUser(self, username, password):
+        print("WTF")
+        if (not self.authenticateUser(username, password)):
+            print("Error deleting user: Incorrect password or username.")
+            return False
         try:
             self.userDb.deleteUser(username)
             self.numUsersChanged.emit()
