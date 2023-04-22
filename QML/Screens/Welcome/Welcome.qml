@@ -2,18 +2,21 @@ import QtQuick 2.14
 import QtQuick.Controls 2.12
 
 Item {
-    anchors.fill: parent
-
     readonly property bool registeredUsers: userHandler.numUsers > 0
 
     signal registerClicked
     signal loginClicked
     signal forgottenPasswordClicked
-    signal quitClicked
+    
+    anchors.fill: parent
 
     Column {
-        id: welcomeLayout
-        anchors.centerIn: parent
+        id: mainColumn
+
+        width: parent.width / 2
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
         spacing: 10
 
         Label {
@@ -28,18 +31,23 @@ Item {
             text: registeredUsers ? "Registered user found." : "No registered user found."
         }
 
-        Row {
+        Button {
+            visible: !registeredUsers
             anchors.horizontalCenter: parent.horizontalCenter
+            width: mainColumn.width / 2
+            text: "Register"
+            onClicked: registerClicked()
+        }
+
+        Row {
+            id: buttonRow
+
+            visible: registeredUsers
             spacing: 10
+            anchors.horizontalCenter: parent.horizontalCenter
 
             Button {
-                visible: !registeredUsers
-                text: "Register"
-                onClicked: registerClicked()
-            }
-
-            Button {
-                visible: registeredUsers
+                width: mainColumn.width / 2 - buttonRow.spacing / 2
                 text: registeredUsers ? "Login" : "Register"
                 onClicked: {
                     if (registeredUsers) {
@@ -52,16 +60,10 @@ Item {
             }
 
             Button {
-                visible: registeredUsers
+                width: mainColumn.width / 2 - buttonRow.spacing / 2
                 text: "Forgotten Password"
                 onClicked: forgottenPasswordClicked()
             }
-        }
-
-        Button {
-            anchors.horizontalCenter: parent.horizontalCenter
-            text: "Quit"
-            onClicked: quitClicked()
         }
     }
 }

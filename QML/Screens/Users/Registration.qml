@@ -1,69 +1,71 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
 
 Item {
-    id: root
-    width: 400
-    height: 300
-
     signal registrationSuccessful
-    signal close
 
-    property string username: ""
-    property string password: ""
-    property string confirmPassword: ""
-    property string message: ""
+    anchors.fill: parent   
 
-    ColumnLayout {
-        anchors.centerIn: parent
+    Column {
+        width: parent.width / 2
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
         spacing: 10
 
         Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            horizontalAlignment: Text.AlignHCenter
             text: "Registration"
             font.pixelSize: 20
         }
 
         TextField {
+            id: textFieldUsername
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             placeholderText: "Username"
-            onTextChanged: username = text
         }
 
         TextField {
+            id: textFieldPassword
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             placeholderText: "Password"
             echoMode: TextInput.Password
-            onTextChanged: password = text
         }
 
         TextField {
+            id: textFieldConfirmPassword
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             placeholderText: "Confirm Password"
             echoMode: TextInput.Password
-            onTextChanged: confirmPassword = text
         }
 
         Label {
-            visible: message !== ""
+            id: warningText
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             color: "red"
-            text: message
+            visible: text !== ""
         }
 
         Button {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             text: "Register"
             onClicked: {
-                if (password !== confirmPassword) {
-                    message = "Passwords do not match."
-                } else if (userHandler.addUser(username, '123')) {
-                    message = "Registration successful."
+                if (textFieldPassword.text !== textFieldConfirmPassword.text) {
+                    warningText.text = "Passwords do not match."
+                } else if (userHandler.addUser(textFieldUsername.text, textFieldPassword.text)) {
+                    warningText.text = "Registration successful."
                     registrationSuccessful()
                 } else {
-                    message = "Registration failed."
+                    warningText.text = "Registration failed."
                 }
             }
-        }
-
-        Button {
-            text: "Back to Login"
-            onClicked: close()
         }
     }
 }

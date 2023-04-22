@@ -21,7 +21,6 @@ class UserHandler(QObject):
 
     @Slot(str, str, result=bool)
     def addUser(self, username, password):
-        print (len(username), len(password))
         try:
             user = User(username, password)
             self.userDb.addUser(user)

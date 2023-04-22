@@ -5,8 +5,6 @@ import "../Users"
 import "../Welcome"
 
 Item {
-    anchors.fill: parent
-
     Loader {
         id: loader
         anchors.fill: parent
@@ -28,10 +26,7 @@ Item {
         id: registrationComponent
         Registration {
             onRegistrationSuccessful: {
-                stackController.openLoginScreen()
-            }
-            onClose: {
-                stackController.openWelcomeScreen()
+                stackController.goBack()
             }
         }
     }
@@ -48,9 +43,6 @@ Item {
             onForgottenPasswordClicked: {
                 stackController.openForgottenPasswordScreen()
             }
-            onQuitClicked: {
-                Qt.quit()
-            }
         }
     }
 
@@ -60,9 +52,6 @@ Item {
             onLoginSuccessful: {
                 loader.sourceComponent = null
             }
-            onClose: {
-                stackController.openWelcomeScreen()
-            }
         }
     }
 
@@ -71,11 +60,11 @@ Item {
         ForgottenPassword {
             onAcceptClicked: {
                 if (userHandler.deleteAllUsers()) {
-                    stackController.openWelcomeScreen()
+                    stackController.goBack()
                 }
             }
             onCancelClicked: {
-                stackController.openWelcomeScreen()
+                stackController.goBack()
             }
         }
     }

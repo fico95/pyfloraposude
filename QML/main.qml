@@ -12,5 +12,30 @@ Window {
     minimumWidth: 640
     minimumHeight: 480
 
-    Main {}
+    Header {
+        id: header
+        anchors {
+            top: parent.top
+            left: parent.left
+            right: parent.right
+        }
+    }    
+
+    Main {
+        anchors {
+            top: header.bottom
+            bottom: footer.top
+            left: parent.left
+            right: parent.right
+        }
+    }
+
+    Footer {
+        id: footer
+        anchors {
+            bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+        }
+    }
 }

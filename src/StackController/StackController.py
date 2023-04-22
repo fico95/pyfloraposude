@@ -2,6 +2,36 @@ from enum import IntEnum
 
 from PySide2.QtCore import QObject, Property, Signal, Slot
 
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.size() == 0
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        if self.isEmpty():
+            print('Stack is empty')
+            return
+        return self.items.pop()
+
+    def clear(self):
+        self.items = []
+
+    def peek(self):
+        if self.isEmpty():
+            print('Stack is empty')
+            return None
+        return self.items[-1]
+
+    def size(self):
+        return len(self.items)
+    
+
+
 class StackController(QObject):
     @Signal
     def screenChanged(self):
@@ -12,29 +42,32 @@ class StackController(QObject):
 
     @Property(int, notify=screenChanged)
     def currentScreen(self):
-        return self._current_screen
+        if (self.stack.peek()):
+            return self.stack.peek().value
+        return 0
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.openWelcomeScreen()
 
-    @Slot()
-    def openWelcomeScreen(self):
-        self._current_screen = StackController.Screen.Welcome
-        self.screenChanged.emit()
+        self.stack = Stack()
+        self.stack.push(StackController.Screen.Welcome)
 
     @Slot()
     def openRegistrationScreen(self):
-        self._current_screen = StackController.Screen.Registration
+        self.stack.push(StackController.Screen.Registration)
         self.screenChanged.emit()
 
     @Slot()
     def openLoginScreen(self):
-        self._current_screen = StackController.Screen.Login
+        self.stack.push(StackController.Screen.Login)
         self.screenChanged.emit()
 
     @Slot()
     def openForgottenPasswordScreen(self):
-        self._current_screen = StackController.Screen.ForgottenPassword
+        self.stack.push(StackController.Screen.ForgottenPassword)
         self.screenChanged.emit()
 
+    @Slot()
+    def goBack(self):
+        self.stack.pop()
+        self.screenChanged.emit()

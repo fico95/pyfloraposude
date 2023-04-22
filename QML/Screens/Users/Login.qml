@@ -1,56 +1,57 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
 
 Item {
-    property string username: ""
-    property string password: ""
-    property string message: ""
+    signal loginSuccessful
 
-    signal loginSuccessful()
-    signal close()
+    anchors.fill: parent
 
-    ColumnLayout {
-        anchors.centerIn: parent
+    Column {
+        width: parent.width / 2
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        spacing: 10
 
         TextField {
+            id: textFieldUsername
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             placeholderText: "Username"
-            text: username
-            onTextChanged: username = text
         }
 
         TextField {
+            id: textFieldPassword
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             placeholderText: "Password"
-            text: password
             echoMode: TextInput.Password
-            onTextChanged: password = text
         }
 
         Text {
-            text: message
+            id: warningText
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             color: "red"
-            visible: message !== ""
+            visible: text !== ""
         }
 
         Button {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
             text: "Login"
             onClicked: {
-                if (username === "" || password === "") {
-                    message = "Username and password are required."
+                if (textFieldUsername.text === "" || textFieldPassword.text === "") {
+                    warningText.text = "Username and password are required."
                 } else {
-                    if (userHandler.authenticateUser(username, password)) {
+                    if (userHandler.authenticateUser(textFieldUsername.text, textFieldPassword.text)) {
                         loginSuccessful()
                     }
                     else {
-                        message = "Incorrect username or password."
+                        warningText.text = "Incorrect username or password."
                     }
                 }
             }
-        }
-
-        Button {
-            text: "Back to Login"
-            onClicked: close()
         }
     }
 }

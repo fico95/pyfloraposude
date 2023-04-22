@@ -1,21 +1,43 @@
-from Plants.PlantData import PlantData
+from Flora.Plants.PlantData import PlantData
 
 from PIL import Image
 
 class Plant:
-    def __init__(self, id: int, name: str, imagePath: str, plantCare: PlantData):
-        self.id = id
+    def __init__(self, name: str, imagePath: str, plantCare: PlantData):
+        self.id = None
         self.name = name
+        self.image = None
         self.plantCare = plantCare
-        self.updateImageByPath(imagePath)
 
-    def updateImageByPath(self, path: str):
+        image = Plant.constructImageFromPath(imagePath)
+        if (image is not None):
+            self.setImage(image)
+
+    @staticmethod
+    def constructImageFromPath(path: str):
         try:
-            self.updateImage(Image.open(path))
-        except IOError:
+            return Image.open(path)
+        except Exception:
             print(f"Failed to load image from {path}")
+            return None
 
-    def updateImage(self, image: Image):
+    @staticmethod
+    def constructImageFromBytes(bytes):
+        try:
+            return Image.frombytes('RGB', (300, 300), bytes)
+        except Exception:
+            print(f"Failed to load image from bytes")
+            return None
+
+    def convertImageToBytes(self):
+        if (self.image is None):
+            return None
+        return self.image.tobytes('raw', 'RGB')
+
+    def setId(self, id: int):
+        self.id = id
+
+    def setImage(self, image: Image):
         self.image = image
 
     def toDict(self):

@@ -5,8 +5,9 @@ from PySide2.QtGui import QGuiApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtQuickControls2 import QQuickStyle
 
-from Users.UserHandler import UserHandler
 from StackController.StackController import StackController
+from Users.UserHandler import UserHandler
+from Flora.Plants.PlantsHandler import PlantsHandler
 
 class Application(QGuiApplication):
     def __init__(self, *args, **kwargs):
@@ -32,11 +33,13 @@ class Application(QGuiApplication):
         self.engine = QQmlApplicationEngine()
         QQuickStyle.setStyle("Imagine")
 
-        self.userHandler = UserHandler(rootPath + "/" + dbPath)
         self.stackController = StackController()
-
-        self.engine.rootContext().setContextProperty("userHandler", self.userHandler)
+        self.userHandler = UserHandler(rootPath + "/" + dbPath)
+        self.plantsHandler = PlantsHandler(rootPath + "/" + dbPath)
+        
         self.engine.rootContext().setContextProperty("stackController", self.stackController)
+        self.engine.rootContext().setContextProperty("userHandler", self.userHandler)
+        self.engine.rootContext().setContextProperty("plantsHandler", self.plantsHandler)
 
         self.engine.load(rootPath + "/" + qmlMainPath)
 
