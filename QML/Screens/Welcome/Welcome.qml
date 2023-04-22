@@ -6,7 +6,6 @@ Item {
 
     signal registerClicked
     signal loginClicked
-    signal forgottenPasswordClicked
     
     anchors.fill: parent
 
@@ -26,43 +25,21 @@ Item {
         }
 
         Label {
-            visible: !registeredUsers
             anchors.horizontalCenter: parent.horizontalCenter
             text: registeredUsers ? "Registered user found." : "No registered user found."
         }
 
         Button {
-            visible: !registeredUsers
             anchors.horizontalCenter: parent.horizontalCenter
             width: mainColumn.width / 2
-            text: "Register"
-            onClicked: registerClicked()
-        }
-
-        Row {
-            id: buttonRow
-
-            visible: registeredUsers
-            spacing: 10
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            Button {
-                width: mainColumn.width / 2 - buttonRow.spacing / 2
-                text: registeredUsers ? "Login" : "Register"
-                onClicked: {
-                    if (registeredUsers) {
-                        loginClicked()
-                    }
-                    else {
-                        registerClicked()
-                    }
+            text: registeredUsers ? "Login" : "Register"
+            onClicked: {
+                if (registeredUsers) {
+                    loginClicked()
                 }
-            }
-
-            Button {
-                width: mainColumn.width / 2 - buttonRow.spacing / 2
-                text: "Forgotten Password"
-                onClicked: forgottenPasswordClicked()
+                else {
+                    registerClicked()
+                }
             }
         }
     }

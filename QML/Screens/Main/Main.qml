@@ -10,6 +10,7 @@ Item {
         id: loader
         anchors.fill: parent
         sourceComponent: {
+            console.log(stackController.currentScreen)
             switch (stackController.currentScreen) {
                 case 0:
                    return welcomeComponent
@@ -51,9 +52,6 @@ Item {
             onRegisterClicked: {
                 stackController.openRegistrationScreen()
             }
-            onForgottenPasswordClicked: {
-                stackController.openForgottenPasswordScreen()
-            }
         }
     }
 
@@ -61,7 +59,10 @@ Item {
         id: loginComponent
         Login {
             onLoginSuccessful: {
-                stackController.openPlantsScreen()
+                stackController.openPotsScreen()
+            }
+            onForgottenPasswordClicked: {
+                stackController.openForgottenPasswordScreen()
             }
         }
     }
@@ -71,7 +72,7 @@ Item {
         ForgottenPassword {
             onAcceptClicked: {
                 if (userHandler.deleteAllUsers()) {
-                    stackController.goBack()
+                    stackController.handleUserChange()
                 }
             }
             onCancelClicked: {

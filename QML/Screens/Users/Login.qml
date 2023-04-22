@@ -3,6 +3,7 @@ import QtQuick.Controls 2.15
 
 Item {
     signal loginSuccessful
+    signal forgottenPasswordClicked
 
     anchors.fill: parent
 
@@ -52,6 +53,13 @@ Item {
                     }
                 }
             }
+        }
+
+        Button {
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width
+            text: "Forgotten Password"
+            onClicked: forgottenPasswordClicked()
         }
     }
 }
