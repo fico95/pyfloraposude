@@ -97,7 +97,8 @@ Drawer {
             text: "Add plant"
             font.pixelSize: height * 0.75
             onClicked: {
-                Qt.quit()
+                stackController.openPlantLoaderScreen()
+                drawer.close()
             }
         }
         Button {

@@ -4,47 +4,11 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 Item {
-    property string initialPlantName: plantsHandler.getCurrentPlantName()
-    property string initialPlantImagePath: "file://" + plantsHandler.getCurrentPlantImagePath()
-    property real initialDesiredSoilMoisture: plantsHandler.getCurrentPlantDesiredSoilMoisture()
-    property real initialDesiredPh: plantsHandler.getCurrentPlantDesiredPh()
-    property real initialDesiredSalinity: plantsHandler.getCurrentPlantDesiredSalinity()
-    property real initialDesiredLightLevel: plantsHandler.getCurrentPlantDesiredLightLevel()
-    property real initialDesiredTemperature: plantsHandler.getCurrentPlantDesiredTemperature()
-
-    readonly property bool plantDataModified: initialPlantName !== name.text || 
-                                             initialDesiredSoilMoisture !== spinBoxSoilMoisture.value ||
-                                             initialDesiredPh !== spinBoxPh.value ||
-                                             initialDesiredSalinity !== spinBoxSalinity.value ||
-                                             initialDesiredLightLevel !== spinBoxLightLevel.value ||
-                                             initialDesiredTemperature !== spinBoxTemperature.value
-                                             
-    signal imageChangeTriggered
-
-    function updateInitialDesiredPlantData() {
-        initialPlantName = plantsHandler.getCurrentPlantName()
-        initialPlantImagePath = "file://" + plantsHandler.getCurrentPlantImagePath()
-        initialDesiredSoilMoisture = plantsHandler.getCurrentPlantDesiredSoilMoisture()
-        initialDesiredPh = plantsHandler.getCurrentPlantDesiredPh()
-        initialDesiredSalinity = plantsHandler.getCurrentPlantDesiredSalinity()
-        initialDesiredLightLevel = plantsHandler.getCurrentPlantDesiredLightLevel()
-        initialDesiredTemperature = plantsHandler.getCurrentPlantDesiredTemperature()
-
-        name.text = initialPlantName
-        plantIcon.source = initialPlantImagePath
-        spinBoxSoilMoisture.value = initialDesiredSoilMoisture
-        spinBoxPh.value = initialDesiredPh
-        spinBoxSalinity.value = initialDesiredSalinity
-        spinBoxLightLevel.value = initialDesiredLightLevel
-        spinBoxTemperature.value = initialDesiredTemperature
-    }
+    signal imageLoadTriggered
+    signal plantAdded
 
     function handleFileDialogClose(filePath) {
-        filePath = filePath.replace("file://", "")
-        let destinationPath = imageManager.copyImage(filePath)
-        if (destinationPath !== "") {
-            plantsHandler.updateCurrentPlantImage(destinationPath)
-        }
+        plantIcon.source = filePath
     }
 
     Image {
@@ -59,7 +23,28 @@ Item {
         }
         width: parent.width * 0.4
         height: parent.height * 0.8
-        source: initialPlantImagePath
+        source: ""
+
+        Rectangle {
+            visible: plantIcon.source == ""
+            anchors.fill: parent
+            color: "lightgray"
+        }
+
+        Text {
+            visible: plantIcon.source == ""
+            anchors.centerIn: parent
+            text: "No image"
+            height: parent.height * 0.1
+            width: parent.width * 0.4
+            font {
+                pixelSize: height
+                bold: true
+            }
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            color: "black"
+        }
 
         Button {
             text: "..."
@@ -71,7 +56,7 @@ Item {
             width: parent.width * 0.1
             height: width
             onClicked: {
-                imageChangeTriggered()
+                imageLoadTriggered()
             }
         }
     }
@@ -93,7 +78,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignTop
         color: "black"
-        text: initialPlantName
+        text: "Plant name"
     }
 
     Column {
@@ -126,7 +111,7 @@ Item {
                 decimals: 1
                 wrap: false
                 suffix: " %"
-                value: initialDesiredSoilMoisture
+                value: (to - from) / 2
             }
         }
 
@@ -146,7 +131,7 @@ Item {
                 to: 14
                 decimals: 1
                 wrap: false
-                value: initialDesiredPh
+                value: (to - from) / 2
             }
         }
 
@@ -167,7 +152,7 @@ Item {
                 decimals: 1
                 wrap: false
                 suffix: " %"
-                value: initialDesiredSalinity
+                value: (to - from) / 2
             }
         }
 
@@ -188,7 +173,7 @@ Item {
                 decimals: 1
                 wrap: false
                 suffix: " %"
-                value: initialDesiredLightLevel
+                value: (to - from) / 2
             }
         }
 
@@ -210,7 +195,7 @@ Item {
                 decimals: 1
                 wrap: false
                 suffix: " °C"
-                value: initialDesiredTemperature
+                value: (to - from) / 2
             }
         }
     }
@@ -226,21 +211,18 @@ Item {
         width: parent.width * 0.4
         height: parent.height * 0.05
         text: "Save"
-        enabled: plantDataModified
         onClicked: {
-            plantsHandler.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
-            //updateInitialDesiredPlantData()
+            let filePath = plantIcon.source.toString()
+            filePath = filePath.replace("file://", "")
+            if (filePath !== "") {
+                filePath = imageManager.copyImage(filePath)
+                if (filePath === "") {
+                    return
+                }
+            }
+            if (plantsHandler.addPlant(name.text, filePath, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)) {
+                plantAdded()
+            }
         }
-    }
-
-    Connections {
-        target: plantsHandler
-        function onCurrentPlantChanged() {
-            updateInitialDesiredPlantData()
-        }
-    }
-
-    Component.onDestruction: {
-        plantsHandler.resetCurrentPlant()
     }
 }

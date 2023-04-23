@@ -25,12 +25,14 @@ Item {
                     return potsViewComponent
                 case 5:
                     return plantsViewComponent
-                case 8:
-                    return editComponent
-                case 5:
-                case 6:
                 case 7:
                     return plantEditorComponent
+                case 8:
+                    return editComponent
+                case 9:
+                    return plantLoaderComponent
+                case 5:
+                case 6:
                 default:
                     return null
             }
@@ -116,13 +118,25 @@ Item {
         }
     }
 
+    Component {
+        id: plantLoaderComponent
+        PlantLoader {
+            onImageLoadTriggered: {
+                plantImageLoadDialog.open()
+            }
+            onPlantAdded: {
+                stackController.goBack()
+            }
+        }
+    }
+
     CustomFileDialog {
         id: plantImageLoadDialog
         onAccepted: {
-            let filePath = plantImageLoadDialog.fileUrl.toString().replace("file://", "")
-            let destinationPath = imageManager.copyImage(filePath)
-            if (destinationPath !== "") {
-                plantsHandler.updateCurrentPlantImage(destinationPath)
+            console.log("RRR")
+            if (loader.item.handleFileDialogClose !== undefined) {
+                console.log("HUHU")
+                loader.item.handleFileDialogClose(plantImageLoadDialog.fileUrl.toString())
             }
         }
     }

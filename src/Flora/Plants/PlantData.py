@@ -10,22 +10,3 @@ class PlantData:
         self.salinity = salinity
         self.lightLevel = lightLevel
         self.temperature = temperature
-
-    def toDict(self):
-        return {
-            "soilMoisture": self.soilMoisture,
-            "ph": self.ph,
-            "salinity": self.salinity,
-            "lightLevel": self.lightLevel,
-            "temperature": self.temperature
-        }
-
-    @classmethod
-    def fromDict(cls, data: dict):
-        return cls(
-            data["soilMoisture"],
-            data["ph"],
-            data["salinity"],
-            data["lightLevel"],
-            data["temperature"]
-        )

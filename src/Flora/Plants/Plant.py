@@ -7,7 +7,7 @@ class Plant:
         self.id = None
         self.name = name
         self.plantCare = plantCare
-        if (len(imagePath) == 0) or (not os.path.isfile(imagePath)):
+        if (len(imagePath) > 0) and (not os.path.isfile(imagePath)):
             print("Invalid image path provided.")
             return
         self.imagePath = imagePath

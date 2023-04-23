@@ -1,6 +1,7 @@
 from PySide2.QtCore import QAbstractListModel, Qt, QModelIndex, Slot, Signal, Property
 
 from Flora.Plants.Plant import Plant
+from Flora.Plants.PlantData import PlantData
 from Flora.Plants.PlantDb import PlantDb
 
 class PlantsHandler(QAbstractListModel):
@@ -121,6 +122,16 @@ class PlantsHandler(QAbstractListModel):
                 print(f"Error removing plant: {e}")
                 return False
         return False
+    
+    @Slot(str, str, float, float, float, float, float, result = bool)
+    def addPlant(self, name, imagePath, soilMoisture, ph, salinity, lightLevel, temperature):
+        try:
+            self.plantDb.addPlant(Plant(name, imagePath, PlantData(soilMoisture, ph, salinity, lightLevel, temperature)))
+            self.updateModel(True)
+            return True
+        except Exception as e:
+            print(f"Error adding plant: {e}")
+            return False
     
     def rowCount(self, parent=QModelIndex()):
         return len(self.plants)

@@ -38,7 +38,7 @@ class StackController(QObject):
          pass
 
     class Screen(IntEnum):
-        Welcome, Registration, Login, ForgottenPassword, Pots, Plants, PotEditor, PlantEditor, UserEditor = range(9)
+        Welcome, Registration, Login, ForgottenPassword, Pots, Plants, PotEditor, PlantEditor, UserEditor, PlantLoader, PotLoader = range(11)
 
     @Property(int, notify=screenChanged)
     def currentScreen(self):
@@ -52,13 +52,15 @@ class StackController(QObject):
         return screen == StackController.Screen.Pots \
                or screen == StackController.Screen.Plants \
                or screen == StackController.Screen.PotEditor \
-               or screen == StackController.Screen.PlantEditor
+               or screen == StackController.Screen.PlantEditor \
+               or screen == StackController.Screen.PlantLoader \
+               or screen == StackController.Screen.PotLoader
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.stack = Stack()
-        self.stack.push(StackController.Screen.Welcome)
+        self.stack.push(StackController.Screen.PlantLoader)
 
     @Slot()
     def openRegistrationScreen(self):
@@ -98,6 +100,16 @@ class StackController(QObject):
     @Slot()
     def openUserEditorScreen(self):
         self.stack.push(StackController.Screen.UserEditor)
+        self.screenChanged.emit()
+
+    @Slot()
+    def openPlantLoaderScreen(self):
+        self.stack.push(StackController.Screen.PlantLoader)
+        self.screenChanged.emit()
+
+    @Slot()
+    def openPotLoaderScreen(self):
+        self.stack.push(StackController.Screen.PotLoader)
         self.screenChanged.emit()
 
     @Slot()
