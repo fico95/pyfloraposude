@@ -6,8 +6,6 @@ Rectangle {
 
     property alias mouseArea: mouseArea
 
-    signal clicked
-
     width: parent.width
     height: parent.height
 
@@ -35,8 +33,5 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-        onClicked: {
-            root.clicked()
-        }
     }
 }

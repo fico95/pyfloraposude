@@ -77,10 +77,10 @@ class PlantDb:
         data = cursor.fetchone()
         if data is None:
             return None
-        name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
+        id, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
         plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
         plant = Plant(name, imagePath, plantCare)
-        plant.setId(plantId)
+        plant.setId(id)
         return plant
 
     def getAllPlants(self) -> List[Plant]:

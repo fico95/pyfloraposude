@@ -8,6 +8,8 @@ Item {
     id: root
     anchors.fill: parent
 
+    signal openPlantsView
+
     Row {
         id: buttons
 
@@ -41,20 +43,21 @@ Item {
             width: parent.width / 8
             height: parent.height * 0.4
             text.text: "Plants"
+            mouseArea.onClicked: openPlantsView()
         }
     }
 
     Rectangle {
         width: parent.width
         anchors {
-            top: flickable.top
-            bottom: flickable.bottom
+            top: gridView.top
+            bottom: gridView.bottom
         }
         color: "darkgray"
     }
 
-    Flickable {
-        id: flickable
+    FloraGridView {
+        id: gridView
         anchors {
             top: buttons.bottom
             left: parent.left
@@ -62,37 +65,19 @@ Item {
             topMargin: parent.height * 0.01
             bottom: parent.bottom
         }
-        clip: true
-        flickableDirection: Flickable.VerticalFlick
-        contentWidth: parent.width
-        contentHeight: mainGrid.contentHeight
 
-        GridView {
-            id: mainGrid
-            width: parent.width
-            height: contentHeight
-            model: plantsHandler
-            interactive: false
-            cellHeight: cellWidth / 2
-            cellWidth: flickable.width / 3
-            delegate: Item {
-                width: mainGrid.cellWidth 
-                height: mainGrid.cellHeight
-                PotButton {
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    potName: name
-                    plantIconSource: "file://" + imagePath
-                }    
-            }
-        }
-
-        ScrollBar.vertical: ScrollBar {
-            anchors.right: parent.right
-            orientation: Qt.Vertical
-            policy: ScrollBar.AlwaysOn
-        }
+        // mainGrid {
+        //     model: plantsHandler
+        //     delegate: Item {
+        //         width: gridView.mainGrid.cellWidth 
+        //         height: gridView.mainGrid.cellHeight
+        //         PotButton {
+        //             anchors.fill: parent
+        //             anchors.margins: 10
+        //             potName: name
+        //             plantIconSource: "file://" + imagePath
+        //         }    
+        //     }
+        // }
     }
-
-
 }
