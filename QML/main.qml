@@ -12,30 +12,30 @@ Window {
     minimumWidth: 640
     minimumHeight: 480
 
-    Header {
+    CustomHeader {
         id: header
         anchors {
             top: parent.top
             left: parent.left
             right: parent.right
         }
+        onDrawerButtonClicked: drawer.toggle()
     }    
 
     Main {
         anchors {
             top: header.bottom
-            bottom: footer.top
+            bottom: parent.bottom
             left: parent.left
             right: parent.right
         }
     }
 
-    Footer {
-        id: footer
-        anchors {
-            bottom: parent.bottom
-            left: parent.left
-            right: parent.right
-        }
+    CustomDrawer {
+        id: drawer
+        edge: Qt.RightEdge
+        y: header.height
+        width: parent.width / 2
+        height: parent.height - header.height
     }
 }

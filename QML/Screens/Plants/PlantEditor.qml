@@ -5,6 +5,7 @@ import "../../Controls"
 
 Item {
     property string initialPlantName: plantsHandler.getCurrentPlantName()
+    property string initialPlantImagePath: "file://" + plantsHandler.getCurrentPlantImagePath()
     property real initialDesiredSoilMoisture: plantsHandler.getCurrentPlantDesiredSoilMoisture()
     property real initialDesiredPh: plantsHandler.getCurrentPlantDesiredPh()
     property real initialDesiredSalinity: plantsHandler.getCurrentPlantDesiredSalinity()
@@ -17,11 +18,12 @@ Item {
                                              initialDesiredSalinity !== spinBoxSalinity.value ||
                                              initialDesiredLightLevel !== spinBoxLightLevel.value ||
                                              initialDesiredTemperature !== spinBoxTemperature.value
-
-    signal currentPlantRemoved
+                                             
+    signal imageChangeTriggered
 
     function updateInitialDesiredPlantData() {
         initialPlantName = plantsHandler.getCurrentPlantName()
+        initialPlantImagePath = "file://" + plantsHandler.getCurrentPlantImagePath()
         initialDesiredSoilMoisture = plantsHandler.getCurrentPlantDesiredSoilMoisture()
         initialDesiredPh = plantsHandler.getCurrentPlantDesiredPh()
         initialDesiredSalinity = plantsHandler.getCurrentPlantDesiredSalinity()
@@ -29,6 +31,7 @@ Item {
         initialDesiredTemperature = plantsHandler.getCurrentPlantDesiredTemperature()
 
         name.text = initialPlantName
+        plantIcon.source = initialPlantImagePath
         spinBoxSoilMoisture.value = initialDesiredSoilMoisture
         spinBoxPh.value = initialDesiredPh
         spinBoxSalinity.value = initialDesiredSalinity
@@ -48,7 +51,21 @@ Item {
         }
         width: parent.width * 0.4
         height: parent.height * 0.8
-        source: "file://" + plantsHandler.getCurrentPlantImagePath()
+        source: initialPlantImagePath
+
+        Button {
+            text: "..."
+            anchors {
+                top: parent.top
+                right: parent.right
+                margins: 10
+            }
+            width: parent.width * 0.1
+            height: width
+            onClicked: {
+                imageChangeTriggered()
+            }
+        }
     }
 
     TextEdit {
@@ -67,7 +84,7 @@ Item {
         }
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignTop
-        color: "#333333"
+        color: "black"
         text: initialPlantName
     }
 
@@ -193,25 +210,6 @@ Item {
     Button {
         id: saveButton
         anchors {
-            bottom: deleteButton.top
-            bottomMargin: parent.height * 0.01
-            right: parent.right
-            rightMargin: parent.width * 0.05
-        }
-        width: parent.width * 0.4
-        height: parent.height * 0.05
-        text.text: "Save"
-        enabled: plantDataModified
-        opacity: enabled ? 1 : 0.4
-        mouseArea.onClicked: {
-            plantsHandler.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
-            updateInitialDesiredPlantData()
-        }
-    }
-
-    Button {
-        id: deleteButton
-        anchors {
             bottom: parent.bottom
             bottomMargin: parent.height * 0.1
             right: parent.right
@@ -219,11 +217,18 @@ Item {
         }
         width: parent.width * 0.4
         height: parent.height * 0.05
-        text.text: "Delete"
-        mouseArea.onClicked: {
-            if (plantsHandler.removeCurrentPlant()) {
-                currentPlantRemoved()
-            }
+        text: "Save"
+        enabled: plantDataModified
+        onClicked: {
+            plantsHandler.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
+            //updateInitialDesiredPlantData()
+        }
+    }
+
+    Connections {
+        target: plantsHandler
+        function onCurrentPlantChanged() {
+            updateInitialDesiredPlantData()
         }
     }
 

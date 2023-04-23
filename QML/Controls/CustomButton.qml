@@ -1,6 +1,6 @@
 import QtQuick 2.15
 
-ButtonBackground {
+CustomButtonBackground {
     property alias text: text
 
     Text {

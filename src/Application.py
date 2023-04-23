@@ -8,10 +8,14 @@ from PySide2.QtQuickControls2 import QQuickStyle
 from StackController.StackController import StackController
 from Users.UserHandler import UserHandler
 from Flora.Plants.PlantsHandler import PlantsHandler
+from Helpers.ImageManager import ImageManager
 
 class Application(QGuiApplication):
     def __init__(self, *args, **kwargs):
         QGuiApplication.__init__(self, *args, **kwargs)
+
+        self.setOrganizationName("None")
+        self.setOrganizationDomain("None")
 
         self.initialized = False
 
@@ -37,10 +41,12 @@ class Application(QGuiApplication):
         self.stackController = StackController()
         self.userHandler = UserHandler(rootPath + "/" + dbPath)
         self.plantsHandler = PlantsHandler(rootPath + "/" + dbPath, rootPath + "/" + imagesPath)
+        self.imageManager = ImageManager(rootPath + "/" + imagesPath)
         
         self.engine.rootContext().setContextProperty("stackController", self.stackController)
         self.engine.rootContext().setContextProperty("userHandler", self.userHandler)
         self.engine.rootContext().setContextProperty("plantsHandler", self.plantsHandler)
+        self.engine.rootContext().setContextProperty("imageManager", self.imageManager)
 
         self.engine.load(rootPath + "/" + qmlMainPath)
 

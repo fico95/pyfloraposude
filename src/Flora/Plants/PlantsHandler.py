@@ -86,9 +86,26 @@ class PlantsHandler(QAbstractListModel):
             self._currentPlant.plantCare.temperature = temperature
             try:
                 self.plantDb.updatePlant(self._currentPlant)
+                self.updateModel(False)
+                self.setCurrentPlant(self._currentPlant.id)
                 return False
             except Exception as e:
                 print(f"Error updating plant: {e}")
+                self.setCurrentPlant(self._currentPlant.id)
+                return False
+        return False
+    
+    @Slot(str, result = bool)
+    def updateCurrentPlantImage(self, imagePath):
+        if (self._currentPlant):
+            self._currentPlant.imagePath = imagePath
+            try:
+                self.plantDb.updatePlant(self._currentPlant)
+                self.updateModel(False)
+                self.setCurrentPlant(self._currentPlant.id)
+                return True
+            except Exception as e:
+                print(f"Error updating plant image: {e}")
                 self.setCurrentPlant(self._currentPlant.id)
                 return False
         return False
@@ -98,7 +115,7 @@ class PlantsHandler(QAbstractListModel):
         if (self._currentPlant):
             try:
                 self.plantDb.removePlant(self._currentPlant.id)
-                self.updateModel()
+                self.updateModel(True)
                 return True
             except Exception as e:
                 print(f"Error removing plant: {e}")
@@ -130,8 +147,9 @@ class PlantsHandler(QAbstractListModel):
             PlantsHandler.ImagePath: b'imagePath'
         }
     
-    def updateModel(self):
+    def updateModel(self, resetCurrentPlant):
         self.beginResetModel()
         self.plants = self.plantDb.getAllPlants()
         self.endResetModel()
-        self.resetCurrentPlant()
+        if (resetCurrentPlant):
+            self.resetCurrentPlant()

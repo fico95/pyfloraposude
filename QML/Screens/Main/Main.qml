@@ -1,5 +1,6 @@
 import QtQuick 2.14
-import QtQuick.Controls 2.15
+
+import "../../Controls"
 
 import "../Users"
 import "../Welcome"
@@ -92,9 +93,6 @@ Item {
     Component {
         id: potsViewComponent
         PotsView {
-            onOpenPlantsView: {
-                stackController.openPlantsScreen()
-            }
         }
     }
 
@@ -112,8 +110,19 @@ Item {
     Component {
         id: plantEditorComponent
         PlantEditor {
-            onCurrentPlantRemoved: {
-                stackController.goBack()
+            onImageChangeTriggered: {
+                plantImageLoadDialog.open()
+            }
+        }
+    }
+
+    CustomFileDialog {
+        id: plantImageLoadDialog
+        onAccepted: {
+            let filePath = plantImageLoadDialog.fileUrl.toString().replace("file://", "")
+            let destinationPath = imageManager.copyImage(filePath)
+            if (destinationPath !== "") {
+                plantsHandler.updateCurrentPlantImage(destinationPath)
             }
         }
     }

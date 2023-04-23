@@ -102,6 +102,15 @@ class StackController(QObject):
 
     @Slot()
     def handleUserChange(self):
+        self.goToWelcomeScreen
+
+    @Slot()
+    def handlePlantRemove(self):
+        if (self.stack.peek() == StackController.Screen.PlantEditor):
+            self.goBack()
+
+    @Slot()
+    def goToWelcomeScreen(self):
         self.stack.clear()
         self.stack.push(StackController.Screen.Welcome)
         self.screenChanged.emit()

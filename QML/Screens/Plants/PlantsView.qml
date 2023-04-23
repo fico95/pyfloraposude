@@ -10,15 +10,6 @@ Item {
 
     signal openPlantEditor(int plantId)
 
-    Rectangle {
-        width: parent.width
-        anchors {
-            top: gridView.top
-            bottom: gridView.bottom
-        }
-        color: "darkgray"
-    }
-
     FloraGridView {
         id: gridView
         anchors {
