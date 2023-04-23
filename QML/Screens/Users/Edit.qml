@@ -114,7 +114,6 @@ Item {
                 if (!validateUserDelete()) {
                     return
                 }
-                console.log("Deleting account", textFieldUsername.text, textFieldOldPassword.text)
                 if (!userHandler.deleteUser(textFieldUsername.text, textFieldOldPassword.text)) {
                     warningText.text = "Failed to delete account."
                     return

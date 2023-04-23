@@ -55,7 +55,6 @@ class UserHandler(QObject):
 
     @Slot(str, str, result=bool)
     def deleteUser(self, username, password):
-        print("WTF")
         if (not self.authenticateUser(username, password)):
             print("Error deleting user: Incorrect password or username.")
             return False

@@ -102,7 +102,7 @@ class StackController(QObject):
 
     @Slot()
     def handleUserChange(self):
-        self.goToWelcomeScreen
+        self.goToWelcomeScreen()
 
     @Slot()
     def handlePlantRemove(self):
