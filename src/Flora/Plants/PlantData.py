@@ -9,20 +9,19 @@ class PlantData:
         self.lightLevel = lightLevel
         self.temperature = temperature
 
-@staticmethod
-def plantDataToJson(plantData: PlantData):
-    return json.dumps(plantData.__dict__)
-    
-@staticmethod
-def plantDataFromJson(jsonData: str):
-    plantData = PlantData(0.0, 0.0, 0.0, 0.0, 0.0)
-    plantData.__dict__ = json.loads(jsonData)
-    return plantData
+    @classmethod
+    def fromJson(cls, jsonData: str):
+        plantData = cls(0.0, 0.0, 0.0, 0.0, 0.0)
+        plantData.__dict__ = json.loads(jsonData)
+        return plantData
 
-@staticmethod
-def plantDataListToJson(plantDataList: list):
-    return json.dumps([plantDataToJson(plantData) for plantData in plantDataList])
+    def toJson(self):
+        return json.dumps(self.__dict__)
 
-@staticmethod
-def plantDataListFromJson(jsonData: str):
-    return [plantDataFromJson(plantDataJson) for plantDataJson in json.loads(jsonData)]
+    @classmethod
+    def listFromJson(cls, jsonData: str):
+        return [cls.fromJson(plantDataJson) for plantDataJson in json.loads(jsonData)]
+
+    @classmethod
+    def listToJson(cls, plantDataList: list):
+        return json.dumps([plantData.toJson() for plantData in plantDataList])

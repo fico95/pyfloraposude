@@ -6,10 +6,11 @@ class Pot:
         self.potName = potName
         self.plantId = plantId
         self.plant = None
-        self.sensorData = sensorData
+        self.sensorData = sensorData if sensorData else []
         self.isBroken = isBroken
 
     def setPlant(self, plant: Plant):
         self.plant = plant
 
-        
+    def addSensorData(self, sensorData):
+        self.sensorData.append(sensorData)

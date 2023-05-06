@@ -1,6 +1,5 @@
 from PySide2.QtCore import QObject, Slot, Signal, Property
 
-
 from Flora.Pots.Pot import Pot
 
 class PotsHandler(QObject):

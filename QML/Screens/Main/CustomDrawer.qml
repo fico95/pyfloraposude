@@ -45,7 +45,7 @@ Drawer {
             text: "Sync"
             font.pixelSize: height * 0.75
             onClicked: {
-                Qt.quit()
+                floraManager.updatePotsSensorData()
             }
         }
         Button {

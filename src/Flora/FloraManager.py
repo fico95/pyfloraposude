@@ -11,6 +11,8 @@ from Flora.Pots.PotDb import PotDb
 from Flora.Pots.PotsHandler import PotsHandler
 from Flora.Pots.PotModel import PotModel
 
+from Flora.Pots.PotsDataSampler import PotsDataSampler
+
 class FloraManager(QObject):
 
     def __init__(self, dbPath, imagesPath, parent=None):
@@ -133,6 +135,11 @@ class FloraManager(QObject):
     @Slot()
     def resetCurrentPot(self):
         self.potsHandler.resetCurrentPot()
+
+    @Slot()
+    def updatePotsSensorData(self):
+        if (PotsDataSampler.updateSensorData(self.potDb)):
+            self.updatePots()
 
     def updatePots(self):
         pots = self.potDb.getAllPots()    
