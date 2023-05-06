@@ -1,7 +1,6 @@
 from PySide2.QtCore import QObject, Slot, Signal, Property
 
 from Flora.Plants.Plant import Plant
-from Flora.Plants.PlantData import PlantData
 
 class PlantsHandler(QObject):
 

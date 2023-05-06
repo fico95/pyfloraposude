@@ -1,13 +1,13 @@
-import sqlite3
 from Flora.Plants.Plant import Plant
-from Flora.Plants.PlantDb import PlantDb
-from Flora.Plants.PlantData import PlantData
 from Flora.Pots.Pot import Pot
 
+import sqlite3
+from typing import List
+
 class PotDb:
-    def __init__(self, dbPath):
+    def __init__(self, dbPath: str):
         self.conn = sqlite3.connect(dbPath)
-        self.create_table()
+        self.createTable()
 
     def createTable(self):
         cursor = self.conn.cursor()
@@ -19,16 +19,24 @@ class PotDb:
                             isBroken INTEGER DEFAULT 0)''')
         self.conn.commit()
 
+    def fillTable(self, plant: Plant):
+        if (plant is None):
+            return
+        
+        pot = Pot(None, "Kitchen", plant.id, None, False)
+        self.addPot(pot)
+
     def addPot(self, pot: Pot):
         cursor = self.conn.cursor()
+        print(pot.potName)
         cursor.execute('INSERT INTO pots (potName, plantId, sensorData, isBroken) VALUES (?, ?, ?, ?)',
                         (pot.potName, 
-                         pot.plant.id if pot.plant is not None else None, 
-                         sqlite3.Binary(pot.sensorData),
+                         pot.plantId, 
+                         None,
                          pot.isBroken))
         self.conn.commit()
 
-    def updatePot(self, pot):
+    def updatePot(self, pot: Pot):
         cursor = self.conn.cursor()
         cursor.execute('UPDATE pots SET potName=?, plantId=?, sensorData=?, isBroken=? WHERE id=?',
                     (pot.potName, 
@@ -38,7 +46,37 @@ class PotDb:
                      pot.id))
         self.conn.commit()
 
-    def removePot(self, pot):
+    def removePot(self, pot: Pot):
         cursor = self.conn.cursor()
         cursor.execute('DELETE FROM pots WHERE id=?', (pot.id,))
         self.conn.commit()
+
+    def removePotById(self, potId: int):
+        cursor = self.conn.cursor()
+        cursor.execute('DELETE FROM pots WHERE id=?', (potId,))
+        self.conn.commit()
+
+    def getPotById(self, potId: int) -> Pot:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM pots WHERE id=?', (potId,))
+        row = cursor.fetchone()
+        if row is None:
+            return None
+        potId, potName, plantId, sensorData, isBroken = row
+        pot = Pot(potId, potName, plantId, sensorData, isBroken)
+        return pot
+
+    def getAllPots(self) -> List[Pot]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM pots')
+        pots = []
+        for row in cursor.fetchall():
+            potId, potName, plantId, sensorData, isBroken = row
+            pot = Pot(potId, potName, plantId, sensorData, isBroken)
+            pots.append(pot)
+        return pots
+
+    def getNumPots(self):
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT COUNT(*) FROM pots')
+        return cursor.fetchone()[0]

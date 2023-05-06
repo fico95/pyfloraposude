@@ -9,6 +9,8 @@ Item {
 
     anchors.fill: parent
 
+    signal openPotEditor(int potId)
+
     FloraGridView {
         id: gridView
         anchors {
@@ -19,18 +21,21 @@ Item {
             bottom: parent.bottom
         }
 
-        // mainGrid {
-        //     model: plantsHandler
-        //     delegate: Item {
-        //         width: gridView.mainGrid.cellWidth 
-        //         height: gridView.mainGrid.cellHeight
-        //         PotButton {
-        //             anchors.fill: parent
-        //             anchors.margins: 10
-        //             potName: name
-        //             plantIconSource: "file://" + imagePath
-        //         }    
-        //     }
-        // }
+        mainGrid {
+            model: potModel
+            delegate: Item {
+                width: gridView.mainGrid.cellWidth 
+                height: gridView.mainGrid.cellHeight
+                PotButton {
+                    anchors.fill: parent
+                    anchors.margins: 10
+                    potName: name
+                    plantIconSource: plantImagePath !== "" ? "file://" + plantImagePath : ""
+                    mouseArea.onClicked: {
+                        root.openPotEditor(potId)
+                    }
+                }    
+            }
+        }
     }
 }

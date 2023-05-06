@@ -49,6 +49,8 @@ class Application(QGuiApplication):
         self.engine.rootContext().setContextProperty("floraManager", self.floraManager)
         self.engine.rootContext().setContextProperty("plantModel", self.floraManager.plantModel)
         self.engine.rootContext().setContextProperty("plantsHandler", self.floraManager.plantsHandler)
+        self.engine.rootContext().setContextProperty("potModel", self.floraManager.potModel)
+        self.engine.rootContext().setContextProperty("potsHandler", self.floraManager.potsHandler)
 
         self.engine.load(rootPath + "/" + qmlMainPath)
 

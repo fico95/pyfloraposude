@@ -1,6 +1,7 @@
 from PySide2.QtCore import QAbstractListModel, Qt, QModelIndex
 from Flora.Plants.Plant import Plant
-from Flora.Plants.PlantDb import PlantDb
+
+from typing import List
 
 class PlantModel(QAbstractListModel):
 
@@ -8,11 +9,10 @@ class PlantModel(QAbstractListModel):
     Id = Qt.UserRole + 2
     ImagePath = Qt.UserRole + 3
 
-    def __init__(self, plantDb : PlantDb, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.plantDb = plantDb
-        self.plants = self.plantDb.getAllPlants()
+        self.plants = []
     
     def rowCount(self, parent=QModelIndex()):
         return len(self.plants)
@@ -39,7 +39,7 @@ class PlantModel(QAbstractListModel):
             PlantModel.ImagePath: b'imagePath'
         }
     
-    def updateModel(self):
+    def updateModel(self, plants: List[Plant]):
         self.beginResetModel()
-        self.plants = self.plantDb.getAllPlants()
+        self.plants = plants
         self.endResetModel()

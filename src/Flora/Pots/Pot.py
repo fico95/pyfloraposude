@@ -1,13 +1,13 @@
 from Flora.Plants.Plant import Plant
-from Flora.Plants.PlantData import PlantData
 
 class Pot:
-    def __init__(self, potName : str, plant : Plant=None):
-        self.id = None
-        self.potName = potName
-        self.plant = plant
-        self.sensorData = []
-        self.isBroken = False
-
-    def setId(self, id: int):
+    def __init__(self, id : int, potName : str, plantId : int, sensorData : list, isBroken : bool):
         self.id = id
+        self.potName = potName
+        self.plantId = plantId
+        self.Plant = None
+        self.sensorData = sensorData
+        self.isBroken = isBroken
+
+    def setPlant(self, plant: Plant):
+        self.plant = plant

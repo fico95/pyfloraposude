@@ -91,6 +91,19 @@ class PlantDb:
         plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
         plant = Plant(id, name, imagePath, plantCare)
         return plant
+    
+    def getRandomPlant(self) -> Plant:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM plants ORDER BY RANDOM() LIMIT 1
+        """)
+        data = cursor.fetchone()
+        if data is None:
+            return None
+        id, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
+        plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
+        plant = Plant(id, name, imagePath, plantCare)
+        return plant
 
     def getAllPlants(self) -> List[Plant]:
         cursor = self.conn.cursor()
@@ -105,8 +118,20 @@ class PlantDb:
             plants.append(plant)
         return plants
     
+    def getAllPlantsDict(self) -> dict:
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT * FROM plants
+        """)
+        plants = {}
+        for data in cursor.fetchall():
+            plantId, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
+            plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
+            plant = Plant(plantId, name, imagePath, plantCare)
+            plants[plantId] = plant
+        return plants
+    
     def getNumPlants(self):
         cursor = self.conn.cursor()
         cursor.execute("SELECT COUNT(*) FROM plants")
-        numUsers = cursor.fetchone()[0]
-        return numUsers
+        return cursor.fetchone()[0]
