@@ -1,3 +1,5 @@
+from Flora.Plants.PlantData import plantDataListFromJson, plantDataListToJson
+
 from Flora.Plants.Plant import Plant
 from Flora.Pots.Pot import Pot
 
@@ -24,7 +26,7 @@ class PotDb:
                             (id INTEGER PRIMARY KEY,
                             potName TEXT,
                             plantId INTEGER REFERENCES plants(id) ON DELETE CASCADE,
-                            sensorData BLOB,
+                            sensorData TEXT NULL,
                             isBroken INTEGER DEFAULT 0)''')
         self.conn.commit()
 
@@ -40,7 +42,7 @@ class PotDb:
         cursor.execute('INSERT INTO pots (potName, plantId, sensorData, isBroken) VALUES (?, ?, ?, ?)',
                         (pot.potName, 
                          pot.plantId, 
-                         None,
+                         plantDataListToJson(pot.sensorData) if pot.sensorData else None,
                          pot.isBroken))
         self.conn.commit()
 
@@ -49,7 +51,7 @@ class PotDb:
         cursor.execute('UPDATE pots SET potName=?, plantId=?, sensorData=?, isBroken=? WHERE id=?',
                     (pot.potName, 
                      pot.plant.id if pot.plant else None, 
-                     None, 
+                     plantDataListToJson(pot.sensorData) if pot.sensorData else None,
                      pot.isBroken, 
                      pot.id))
         self.conn.commit()
@@ -70,7 +72,8 @@ class PotDb:
         row = cursor.fetchone()
         if row is None:
             return None
-        potId, potName, plantId, sensorData, isBroken = row
+        potId, potName, plantId, sensorDataJson, isBroken = row
+        sensorData = plantDataListFromJson(sensorDataJson) if sensorDataJson else None
         pot = Pot(potId, potName, plantId, sensorData, isBroken)
         return pot
 
@@ -79,7 +82,8 @@ class PotDb:
         cursor.execute('SELECT * FROM pots')
         pots = []
         for row in cursor.fetchall():
-            potId, potName, plantId, sensorData, isBroken = row
+            potId, potName, plantId, sensorDataJson, isBroken = row
+            sensorData = plantDataListFromJson(sensorDataJson) if sensorDataJson else None
             pot = Pot(potId, potName, plantId, sensorData, isBroken)
             pots.append(pot)
         return pots
