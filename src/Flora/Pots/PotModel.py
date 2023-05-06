@@ -10,6 +10,7 @@ class PotModel(QAbstractListModel):
     PlantName = Qt.UserRole + 3
     PlantImagePath = Qt.UserRole + 4
     PlantId = Qt.UserRole + 5
+    Broken = Qt.UserRole + 6
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -35,6 +36,8 @@ class PotModel(QAbstractListModel):
             return None if pot.plant is None else pot.plant.imagePath
         elif role == PotModel.PlantId:
             return None if pot.plant is None else pot.plant.id
+        elif role == PotModel.Broken:
+            return pot.isBroken
 
         return None
     
@@ -44,7 +47,8 @@ class PotModel(QAbstractListModel):
             PotModel.PotId: b'potId',
             PotModel.PlantName: b'plantName',
             PotModel.PlantImagePath: b'plantImagePath',
-            PotModel.PlantId: b'plantId'
+            PotModel.PlantId: b'plantId',
+            PotModel.Broken: b'broken'
         }
 
     def updateModel(self, pots: List[Pot]):

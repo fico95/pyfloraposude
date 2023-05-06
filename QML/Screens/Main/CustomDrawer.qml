@@ -71,13 +71,27 @@ Drawer {
             }
         }
         Button {
-            visible: stackController.currentScreen === 6
+            visible: stackController.currentScreen === 12
             width: parent.width
             height: parent.height / 10
             text: "Remove pot"
             font.pixelSize: height * 0.75
             onClicked: {
-                Qt.quit()
+                if (floraManager.removeCurrentPot()) {
+                    stackController.handlePotRemove()
+                    drawer.close()
+                }
+            }
+        }
+        Button {
+            visible: stackController.currentScreen === 12
+            width: parent.width
+            height: parent.height / 10
+            text: "Edit pot"
+            font.pixelSize: height * 0.75
+            onClicked: {
+                stackController.openPotEditorScreen()
+                drawer.close()
             }
         }
         Button {

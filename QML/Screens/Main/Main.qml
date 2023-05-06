@@ -25,18 +25,20 @@ Item {
                     return potsViewComponent
                 case 5:
                     return plantsViewComponent
+                case 6:
+                    return potEditorComponent
                 case 7:
                     return plantEditorComponent
                 case 8:
                     return editComponent
                 case 9:
                     return plantLoaderComponent
-                case 5:
-                case 6:
                 case 10:
                     return potLoaderComponent
                 case 11:
                     return plantSelectComponent
+                case 12:
+                    return potViewerComponent
                 default:
                     return null
             }
@@ -99,6 +101,11 @@ Item {
     Component {
         id: potsViewComponent
         PotsView {
+            onOpenPotView: function(potId) {
+                if (floraManager.setCurrentPot(potId)) {
+                    stackController.openPotViewerScreen()
+                }
+            }
         }
     }
 
@@ -157,6 +164,18 @@ Item {
                     stackController.goBack()
                 }
             }
+        }
+    }
+
+    Component {
+        id: potViewerComponent
+        PotViewer {
+        }
+    }
+
+    Component {
+        id: potEditorComponent
+        PotEditor {
         }
     }
 

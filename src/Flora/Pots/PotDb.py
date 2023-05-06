@@ -56,10 +56,11 @@ class PotDb:
                      pot.id))
         self.conn.commit()
 
-    def updatePotSensorData(self, pot: Pot):
+    def updatePotSensorDataAndBroken(self, pot: Pot):
         cursor = self.conn.cursor()
-        cursor.execute('UPDATE pots SET sensorData=? WHERE id=?',
+        cursor.execute('UPDATE pots SET sensorData=?, isBroken=? WHERE id=?',
                     (PlantData.listToJson(pot.sensorData) if pot.sensorData else None,
+                     pot.isBroken, 
                      pot.id))
         self.conn.commit()
 

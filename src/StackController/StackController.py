@@ -49,7 +49,8 @@ class StackController(QObject):
         UserEditor, \
         PlantLoader, \
         PotLoader, \
-        PlantSelect = range(12)
+        PlantSelect, \
+        PotViewer = range(13)
 
     @Property(int, notify=screenChanged)
     def currentScreen(self):
@@ -129,12 +130,22 @@ class StackController(QObject):
         self.screenChanged.emit()
 
     @Slot()
+    def openPotViewerScreen(self):
+        self.stack.push(StackController.Screen.PotViewer)
+        self.screenChanged.emit()
+
+    @Slot()
     def handleUserChange(self):
         self.goToWelcomeScreen()
 
     @Slot()
     def handlePlantRemove(self):
         if (self.stack.peek() == StackController.Screen.PlantEditor):
+            self.goBack()
+
+    @Slot()
+    def handlePotRemove(self):
+        if (self.stack.peek() == StackController.Screen.PotViewer):
             self.goBack()
 
     @Slot()

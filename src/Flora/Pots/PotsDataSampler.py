@@ -2,6 +2,8 @@ from DataGenerator.PlantDataGenerator import getPlantDataCampus
 
 from Flora.Pots.PotDb import PotDb
 
+import random
+
 class PotsDataSampler:
     def __init__(self):
         pass
@@ -24,10 +26,15 @@ class PotsDataSampler:
         for pot, potSensorData in zip(pots, potsSensorData):
             try:
                 pot.addSensorData(potSensorData)
-                potDb.updatePotSensorData(pot)
+                pot.setBroken(PotsDataSampler.getPotBroken())
+                potDb.updatePotSensorDataAndBroken(pot)
             except Exception as e:
                 print(f"Error updating pot sensor data: {e}")
                 success = False
                 continue
         
         return success
+    
+    @staticmethod
+    def getPotBroken() -> bool:
+        return random.random() > 0.95

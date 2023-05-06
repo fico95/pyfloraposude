@@ -9,7 +9,7 @@ Item {
 
     anchors.fill: parent
 
-    signal openPotEditor(int potId)
+    signal openPotView(int potId)
 
     FloraGridView {
         id: gridView
@@ -32,9 +32,18 @@ Item {
                     potName: name
                     plantIconSource: plantImagePath !== undefined ? "file://" + plantImagePath : ""
                     mouseArea.onClicked: {
-                        root.openPotEditor(potId)
+                        root.openPotView(potId)
+                    }
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: 5
+                        color: "red"
+                        opacity: 0.25
+                        radius: height * 0.1
+                        visible: broken
                     }
                 }    
+
             }
         }
     }
