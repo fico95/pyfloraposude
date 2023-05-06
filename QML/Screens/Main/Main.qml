@@ -102,7 +102,7 @@ Item {
         id: plantsViewComponent
         PlantsView {
             onOpenPlantEditor: function(plantId) {
-                if (plantsHandler.setCurrentPlant(plantId)) {
+                if (floraManager.setCurrentPlant(plantId)) {
                     stackController.openPlantEditorScreen()
                 }
             }

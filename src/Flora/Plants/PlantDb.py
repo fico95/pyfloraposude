@@ -3,13 +3,15 @@ from Flora.Plants.PlantData import PlantData
 from DataGenerator.PlantDataGenerator import getRandomPlantData
 
 import sqlite3
-from typing import List, Optional
+from typing import List
 
 class PlantDb:
     def __init__(self, dbPath):
-        self.dbPath = dbPath
         self.conn = sqlite3.connect(dbPath)
         self.createTable()
+
+    def __del__(self):
+        self.conn.close()
 
     def createTable(self):
         cursor = self.conn.cursor()
@@ -41,7 +43,7 @@ class PlantDb:
         plantData = getRandomPlantData(len(plantNames))
 
         for name, data in zip(plantNames, plantData):
-            plant = Plant(name[0], name[1], data)
+            plant = Plant(None, name[0], name[1], data)
             self.addPlant(plant)
 
     def addPlant(self, plant: Plant):
@@ -61,7 +63,15 @@ class PlantDb:
         """, (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature, plant.id))
         self.conn.commit()
 
-    def removePlant(self, plantId):
+    def removePlant(self, plant: Plant):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            DELETE FROM plants
+            WHERE id=?
+        """, (plant.id,))
+        self.conn.commit()
+
+    def removePlantById(self, plantId: int):
         cursor = self.conn.cursor()
         cursor.execute("""
             DELETE FROM plants
@@ -69,7 +79,7 @@ class PlantDb:
         """, (plantId,))
         self.conn.commit()
 
-    def getPlantById(self, plantId) -> Optional[Plant]:
+    def getPlantById(self, plantId: int) -> Plant:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT * FROM plants WHERE id=?
@@ -79,8 +89,7 @@ class PlantDb:
             return None
         id, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
         plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
-        plant = Plant(name, imagePath, plantCare)
-        plant.setId(id)
+        plant = Plant(id, name, imagePath, plantCare)
         return plant
 
     def getAllPlants(self) -> List[Plant]:
@@ -92,8 +101,7 @@ class PlantDb:
         for data in cursor.fetchall():
             plantId, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
             plantCare = PlantData(desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
-            plant = Plant(name, imagePath, plantCare)
-            plant.setId(plantId)
+            plant = Plant(plantId, name, imagePath, plantCare)
             plants.append(plant)
         return plants
     
@@ -102,6 +110,3 @@ class PlantDb:
         cursor.execute("SELECT COUNT(*) FROM plants")
         numUsers = cursor.fetchone()[0]
         return numUsers
-    
-    def close(self):
-        self.conn.close()

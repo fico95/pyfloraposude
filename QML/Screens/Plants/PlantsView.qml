@@ -21,7 +21,7 @@ Item {
         }
 
         mainGrid {
-            model: plantsHandler
+            model: plantModel
             delegate: Item {
                 width: gridView.mainGrid.cellWidth 
                 height: gridView.mainGrid.cellHeight

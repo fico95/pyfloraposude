@@ -43,7 +43,7 @@ Item {
         filePath = filePath.replace("file://", "")
         let destinationPath = imageManager.copyImage(filePath)
         if (destinationPath !== "") {
-            plantsHandler.updateCurrentPlantImage(destinationPath)
+            floraManager.updateCurrentPlantImage(destinationPath)
         }
     }
 
@@ -228,8 +228,7 @@ Item {
         text: "Save"
         enabled: plantDataModified
         onClicked: {
-            plantsHandler.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
-            //updateInitialDesiredPlantData()
+            floraManager.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
         }
     }
 
@@ -241,6 +240,6 @@ Item {
     }
 
     Component.onDestruction: {
-        plantsHandler.resetCurrentPlant()
+        floraManager.resetCurrentPlant()
     }
 }

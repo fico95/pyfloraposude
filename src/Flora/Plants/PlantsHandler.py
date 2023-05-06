@@ -1,166 +1,67 @@
-from PySide2.QtCore import QAbstractListModel, Qt, QModelIndex, Slot, Signal, Property
+from PySide2.QtCore import QObject, Slot, Signal, Property
 
 from Flora.Plants.Plant import Plant
 from Flora.Plants.PlantData import PlantData
-from Flora.Plants.PlantDb import PlantDb
 
-class PlantsHandler(QAbstractListModel):
-    Name = Qt.UserRole + 1
-    Id = Qt.UserRole + 2
-    ImagePath = Qt.UserRole + 3
+class PlantsHandler(QObject):
 
     currentPlantChanged = Signal()
 
     @Property(Plant, notify=currentPlantChanged)
     def currentPlant(self):
-        return self._currentPlant
+        return self.selectedPlant
 
-    def __init__(self, dbPath, imagesPath, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-        self.plantDb = PlantDb(dbPath)
-        if (self.plantDb.getNumPlants() == 0):
-            self.plantDb.fillTable(imagesPath)
-        self.plants = self.plantDb.getAllPlants()
-        self._currentPlant=None
 
-    @Slot(int, result=bool)
-    def setCurrentPlant(self, id):
-        self._currentPlant = self.plantDb.getPlantById(id)
+        self.selectedPlant = None
+
+    def setCurrentPlant(self, plant: Plant):
+        self.selectedPlant = plant
         self.currentPlantChanged.emit()
-        return self._currentPlant != None
     
-    @Slot()
     def resetCurrentPlant(self):
-        self._currentPlant = None
+        self.selectedPlant = None
         self.currentPlantChanged.emit()
 
     @Slot(result=str)
     def getCurrentPlantName(self):
-        if (self._currentPlant):
-            return self._currentPlant.name
+        if (self.selectedPlant):
+            return self.selectedPlant.name
         return ""
     
     @Slot(result=str)
     def getCurrentPlantImagePath(self):
-        if (self._currentPlant):
-            return self._currentPlant.imagePath
+        if (self.selectedPlant):
+            return self.selectedPlant.imagePath
         return ""
     
     @Slot(result=float)
     def getCurrentPlantDesiredSoilMoisture(self):
-        if (self._currentPlant):
-            return self._currentPlant.plantCare.soilMoisture
+        if (self.selectedPlant):
+            return self.selectedPlant.plantCare.soilMoisture
         return 0.0
     
     @Slot(result=float)
     def getCurrentPlantDesiredPh(self):
-        if (self._currentPlant):
-            return self._currentPlant.plantCare.ph
+        if (self.selectedPlant):
+            return self.selectedPlant.plantCare.ph
         return 0.0
     
     @Slot(result=float)
     def getCurrentPlantDesiredSalinity(self):
-        if (self._currentPlant):
-            return self._currentPlant.plantCare.salinity
+        if (self.selectedPlant):
+            return self.selectedPlant.plantCare.salinity
         return 0.0
     
     @Slot(result=float)
     def getCurrentPlantDesiredLightLevel(self):
-        if (self._currentPlant):
-            return self._currentPlant.plantCare.lightLevel
+        if (self.selectedPlant):
+            return self.selectedPlant.plantCare.lightLevel
         return 0.0
     
     @Slot(result=float)
     def getCurrentPlantDesiredTemperature(self):
-        if (self._currentPlant):
-            return self._currentPlant.plantCare.temperature
+        if (self.selectedPlant):
+            return self.selectedPlant.plantCare.temperature
         return 0.0
-    
-    @Slot(str, float, float, float, float, float, result = bool)
-    def updateCurrentPlant(self, name, soilMoisture, ph, salinity, lightLevel, temperature):
-        if (self._currentPlant):
-            self._currentPlant.name = name
-            self._currentPlant.plantCare.soilMoisture = soilMoisture
-            self._currentPlant.plantCare.ph = ph
-            self._currentPlant.plantCare.salinity = salinity
-            self._currentPlant.plantCare.lightLevel = lightLevel
-            self._currentPlant.plantCare.temperature = temperature
-            try:
-                self.plantDb.updatePlant(self._currentPlant)
-                self.updateModel(False)
-                self.setCurrentPlant(self._currentPlant.id)
-                return False
-            except Exception as e:
-                print(f"Error updating plant: {e}")
-                self.setCurrentPlant(self._currentPlant.id)
-                return False
-        return False
-    
-    @Slot(str, result = bool)
-    def updateCurrentPlantImage(self, imagePath):
-        if (self._currentPlant):
-            self._currentPlant.imagePath = imagePath
-            try:
-                self.plantDb.updatePlant(self._currentPlant)
-                self.updateModel(False)
-                self.setCurrentPlant(self._currentPlant.id)
-                return True
-            except Exception as e:
-                print(f"Error updating plant image: {e}")
-                self.setCurrentPlant(self._currentPlant.id)
-                return False
-        return False
-    
-    @Slot(result = bool)
-    def removeCurrentPlant(self):
-        if (self._currentPlant):
-            try:
-                self.plantDb.removePlant(self._currentPlant.id)
-                self.updateModel(True)
-                return True
-            except Exception as e:
-                print(f"Error removing plant: {e}")
-                return False
-        return False
-    
-    @Slot(str, str, float, float, float, float, float, result = bool)
-    def addPlant(self, name, imagePath, soilMoisture, ph, salinity, lightLevel, temperature):
-        try:
-            self.plantDb.addPlant(Plant(name, imagePath, PlantData(soilMoisture, ph, salinity, lightLevel, temperature)))
-            self.updateModel(True)
-            return True
-        except Exception as e:
-            print(f"Error adding plant: {e}")
-            return False
-    
-    def rowCount(self, parent=QModelIndex()):
-        return len(self.plants)
-
-    def data(self, index, role=Qt.DisplayRole):
-        if not index.isValid() or not 0 <= index.row() < len(self.plants):
-            return None
-
-        plant = self.plants[index.row()]
-
-        if role == PlantsHandler.Name:
-            return plant.name
-        elif role == PlantsHandler.Id:
-            return plant.id
-        elif role == PlantsHandler.ImagePath:
-            return plant.imagePath
-        
-        return None
-
-    def roleNames(self):
-        return {
-            PlantsHandler.Name: b'name',
-            PlantsHandler.Id: b'id',
-            PlantsHandler.ImagePath: b'imagePath'
-        }
-    
-    def updateModel(self, resetCurrentPlant):
-        self.beginResetModel()
-        self.plants = self.plantDb.getAllPlants()
-        self.endResetModel()
-        if (resetCurrentPlant):
-            self.resetCurrentPlant()

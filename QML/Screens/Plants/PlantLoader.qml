@@ -220,7 +220,7 @@ Item {
                     return
                 }
             }
-            if (plantsHandler.addPlant(name.text, filePath, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)) {
+            if (floraManager.addPlant(name.text, filePath, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)) {
                 plantAdded()
             }
         }

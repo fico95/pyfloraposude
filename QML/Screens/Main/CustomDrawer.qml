@@ -108,7 +108,7 @@ Drawer {
             text: "Remove plant"
             font.pixelSize: height * 0.75
             onClicked: {
-                if (plantsHandler.removeCurrentPlant()) {
+                if (floraManager.removeCurrentPlant()) {
                     stackController.handlePlantRemove()
                     drawer.close()
                 }
