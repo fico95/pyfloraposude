@@ -30,11 +30,11 @@ class PotModel(QAbstractListModel):
         elif role == PotModel.PotId:
             return pot.id
         elif role == PotModel.PlantName:
-            return pot.plant.name
+            return None if pot.plant is None else pot.plant.name
         elif role == PotModel.PlantImagePath:
-            return pot.plant.imagePath
+            return None if pot.plant is None else pot.plant.imagePath
         elif role == PotModel.PlantId:
-            return pot.plant.id
+            return None if pot.plant is None else pot.plant.id
 
         return None
     

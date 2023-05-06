@@ -15,6 +15,10 @@ class PlantsHandler(QObject):
 
         self.selectedPlant = None
 
+    @Slot(result=QObject)
+    def getCurrentPlant(self):
+        return self.selectedPlant
+
     def setCurrentPlant(self, plant: Plant):
         self.selectedPlant = plant
         self.currentPlantChanged.emit()
@@ -22,6 +26,12 @@ class PlantsHandler(QObject):
     def resetCurrentPlant(self):
         self.selectedPlant = None
         self.currentPlantChanged.emit()
+
+    @Slot(result=int)
+    def getCurrentPlantId(self):
+        if (self.selectedPlant):
+            return self.selectedPlant.id
+        return -1
 
     @Slot(result=str)
     def getCurrentPlantName(self):

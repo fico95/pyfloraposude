@@ -53,6 +53,7 @@ class FloraManager(QObject):
                 self.plantDb.removePlantById(self.plantsHandler.selectedPlant.id)
 
                 self.updatePlants()
+                self.updatePots()
                 
                 return True
             except Exception as e:
@@ -83,7 +84,7 @@ class FloraManager(QObject):
             try:
                 self.plantDb.updatePlant(self.plantsHandler.selectedPlant)
 
-                self.updatePlants()
+                self.setCurrentPlant(self.plantsHandler.selectedPlant.id)
 
                 return False
             except Exception as e:
@@ -116,6 +117,19 @@ class FloraManager(QObject):
         self.plantModel.updateModel(self.plantDb.getAllPlants())
         self.resetCurrentPlant()
 
+    @Slot(str, int, result = bool)
+    def addPot(self, potName: str, plantId: int):
+        try: 
+            pot = Pot(None, potName, None if plantId < 0 else plantId, None, False)
+            self.potDb.addPot(pot)
+
+            self.updatePots()
+
+            return True
+        except Exception as e:
+            print(f"Error adding pot: {e}")
+            return False
+
     @Slot()
     def resetCurrentPot(self):
         self.potsHandler.resetCurrentPot()
@@ -126,11 +140,12 @@ class FloraManager(QObject):
         self.plantDb.getAllPlantsDict()
         for pot in pots:
             plant = self.plantDb.getPlantById(pot.plantId)
-            if (plant):
+            if (pot.plantId is not None and plant is None):
+                Exception(f"Pot {pot.id} has invalid plant id {pot.plantId}, cascade delete not working")
+                exit(1)
+            if plant:
                 pot.setPlant(plant)
-                potsMerged.append(pot)
-            else:
-                self.potDb.removePotById(pot.id)
+            potsMerged.append(pot)
 
         self.potModel.updateModel(potsMerged)
         self.resetCurrentPot()

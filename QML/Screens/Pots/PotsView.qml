@@ -30,7 +30,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 10
                     potName: name
-                    plantIconSource: plantImagePath !== "" ? "file://" + plantImagePath : ""
+                    plantIconSource: plantImagePath !== undefined ? "file://" + plantImagePath : ""
                     mouseArea.onClicked: {
                         root.openPotEditor(potId)
                     }

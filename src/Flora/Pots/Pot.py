@@ -5,7 +5,7 @@ class Pot:
         self.id = id
         self.potName = potName
         self.plantId = plantId
-        self.Plant = None
+        self.plant = None
         self.sensorData = sensorData
         self.isBroken = isBroken
 

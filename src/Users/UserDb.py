@@ -6,7 +6,17 @@ class UserDb:
     def __init__(self, dbPath):
         self.dbPath = dbPath
         self.conn = sqlite3.connect(self.dbPath)
+        self.enableForeignKeys()
         self.createTable()
+
+    def __del__(self):
+        self.conn.close()
+
+    def enableForeignKeys(self):
+        cursor = self.conn.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON")
+        self.conn.commit()
+
 
     def createTable(self):
         self.conn.execute('''CREATE TABLE IF NOT EXISTS users
@@ -26,7 +36,6 @@ class UserDb:
 
         cur.execute("SELECT * FROM users WHERE username=?", (username,))
         row = cur.fetchone()
-        cur.close()
         if row:
             user = User(row[1], row[3], row[2])
             return user
@@ -53,6 +62,5 @@ class UserDb:
         cur = self.conn.cursor()
         cur.execute("SELECT COUNT(*) FROM users")
         numUsers = cur.fetchone()[0]
-        cur.close()
         return numUsers
 

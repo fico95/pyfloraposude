@@ -66,7 +66,8 @@ Drawer {
             text: "Add pot"
             font.pixelSize: height * 0.75
             onClicked: {
-                Qt.quit()
+                stackController.openPotLoaderScreen()
+                drawer.close()
             }
         }
         Button {

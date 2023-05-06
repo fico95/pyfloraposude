@@ -238,8 +238,4 @@ Item {
             updateInitialDesiredPlantData()
         }
     }
-
-    Component.onDestruction: {
-        floraManager.resetCurrentPlant()
-    }
 }

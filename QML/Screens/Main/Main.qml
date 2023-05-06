@@ -33,6 +33,10 @@ Item {
                     return plantLoaderComponent
                 case 5:
                 case 6:
+                case 10:
+                    return potLoaderComponent
+                case 11:
+                    return plantSelectComponent
                 default:
                     return null
             }
@@ -99,6 +103,21 @@ Item {
     }
 
     Component {
+        id: potLoaderComponent
+        PotLoader {
+            onPlantSelectTriggered: {
+                stackController.openPlantSelectScreen()
+            }
+            onPlantClearTriggered: {
+                floraManager.resetCurrentPlant()
+            }
+            onPotLoaded: {
+                stackController.goBack()
+            }
+        }
+    }
+
+    Component {
         id: plantsViewComponent
         PlantsView {
             onOpenPlantEditor: function(plantId) {
@@ -130,12 +149,21 @@ Item {
         }
     }
 
+    Component {
+        id: plantSelectComponent
+        PlantSelector {
+            onPlantSelected: {
+                if (floraManager.setCurrentPlant(plantId)) {
+                    stackController.goBack()
+                }
+            }
+        }
+    }
+
     CustomFileDialog {
         id: plantImageLoadDialog
         onAccepted: {
-            console.log("RRR")
             if (loader.item.handleFileDialogClose !== undefined) {
-                console.log("HUHU")
                 loader.item.handleFileDialogClose(plantImageLoadDialog.fileUrl.toString())
             }
         }

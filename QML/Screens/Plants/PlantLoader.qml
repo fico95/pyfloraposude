@@ -7,10 +7,6 @@ Item {
     signal imageLoadTriggered
     signal plantAdded
 
-    function handleFileDialogClose(filePath) {
-        plantIcon.source = filePath
-    }
-
     Image {
         id: plantIcon
         anchors {

@@ -7,7 +7,16 @@ from typing import List
 class PotDb:
     def __init__(self, dbPath: str):
         self.conn = sqlite3.connect(dbPath)
+        self.enableForeignKeys()
         self.createTable()
+
+    def __del__(self):
+        self.conn.close()
+
+    def enableForeignKeys(self):
+        cursor = self.conn.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON")
+        self.conn.commit()
 
     def createTable(self):
         cursor = self.conn.cursor()
@@ -28,7 +37,6 @@ class PotDb:
 
     def addPot(self, pot: Pot):
         cursor = self.conn.cursor()
-        print(pot.potName)
         cursor.execute('INSERT INTO pots (potName, plantId, sensorData, isBroken) VALUES (?, ?, ?, ?)',
                         (pot.potName, 
                          pot.plantId, 
