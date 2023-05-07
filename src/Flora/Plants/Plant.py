@@ -9,6 +9,6 @@ class Plant:
         self.plantCare = plantCare
         if ((len(imagePath) == 0) or (not os.path.isfile(imagePath))):
             print("Invalid image path provided.")
-            self.imagePath = None
+            self.imagePath = ""
             return
         self.imagePath = imagePath

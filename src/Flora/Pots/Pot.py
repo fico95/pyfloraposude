@@ -16,4 +16,6 @@ class Pot:
         self.sensorData.append(sensorData)
 
     def setBroken(self, isBroken : bool):
+        if (self.isBroken):
+            return
         self.isBroken = isBroken
