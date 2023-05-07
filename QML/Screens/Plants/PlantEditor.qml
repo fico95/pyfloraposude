@@ -21,6 +21,10 @@ Item {
                                              
     signal imageChangeTriggered
 
+    function updateCurrentPlantData() {
+        floraManager.updateCurrentPlantData(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
+    }
+
     function updateInitialDesiredPlantData() {
         initialPlantName = plantsHandler.getCurrentPlantName()
         initialPlantImagePath = "file://" + plantsHandler.getCurrentPlantImagePath()
@@ -94,6 +98,7 @@ Item {
         verticalAlignment: Text.AlignTop
         color: "black"
         text: initialPlantName
+        onTextChanged: updateCurrentPlantData()
     }
 
     Column {
@@ -102,7 +107,7 @@ Item {
             top: name.bottom
             rightMargin: parent.width * 0.05
             topMargin: parent.height * 0.1        
-            bottom: saveButton.top
+            bottom: parent.bottom
             bottomMargin: parent.height * 0.1
         }
         width: parent.width * 0.4
@@ -127,6 +132,7 @@ Item {
                 wrap: false
                 suffix: " %"
                 value: initialDesiredSoilMoisture
+                onValueChanged: updateCurrentPlantData()
             }
         }
 
@@ -147,6 +153,7 @@ Item {
                 decimals: 1
                 wrap: false
                 value: initialDesiredPh
+                onValueChanged: updateCurrentPlantData()
             }
         }
 
@@ -168,6 +175,7 @@ Item {
                 wrap: false
                 suffix: " %"
                 value: initialDesiredSalinity
+                onValueChanged: updateCurrentPlantData()
             }
         }
 
@@ -189,6 +197,7 @@ Item {
                 wrap: false
                 suffix: " %"
                 value: initialDesiredLightLevel
+                onValueChanged: updateCurrentPlantData()
             }
         }
 
@@ -211,24 +220,8 @@ Item {
                 wrap: false
                 suffix: " °C"
                 value: initialDesiredTemperature
+                onValueChanged: updateCurrentPlantData()
             }
-        }
-    }
-
-    Button {
-        id: saveButton
-        anchors {
-            bottom: parent.bottom
-            bottomMargin: parent.height * 0.1
-            right: parent.right
-            rightMargin: parent.width * 0.05
-        }
-        width: parent.width * 0.4
-        height: parent.height * 0.05
-        text: "Save"
-        enabled: plantDataModified
-        onClicked: {
-            floraManager.updateCurrentPlant(name.text, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)
         }
     }
 

@@ -27,6 +27,10 @@ class PlantsHandler(QObject):
         self.selectedPlant = None
         self.currentPlantChanged.emit()
 
+    @Slot(result=bool)
+    def isCurrentPlantSet(self):
+        return self.selectedPlant != None
+
     @Slot(result=int)
     def getCurrentPlantId(self):
         if (self.selectedPlant):

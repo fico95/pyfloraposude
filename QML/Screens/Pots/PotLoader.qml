@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 Item {
-    property string plantName: plantsHandler.getCurrentPlantName() === "" ? "No plant" : plantsHandler.getCurrentPlantName()
+    property bool isPlantSet: plantsHandler.isCurrentPlantSet()
     property string plantImagePath: plantsHandler.getCurrentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.getCurrentPlantImagePath()
 
     signal plantSelectTriggered
@@ -12,7 +12,7 @@ Item {
     signal potLoaded
 
     function updatePlantData() {
-        plantName = plantsHandler.getCurrentPlantName() === "" ? "No plant" : plantsHandler.getCurrentPlantName()
+        isPlantSet = plantsHandler.isCurrentPlantSet()
         plantImagePath = plantsHandler.getCurrentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.getCurrentPlantImagePath()
     }
 
@@ -39,7 +39,7 @@ Item {
         Text {
             visible: plantIcon.source == ""
             anchors.centerIn: parent
-            text: plantName
+            text: "No plant"
             height: parent.height * 0.1
             width: parent.width * 0.4
             font {
@@ -52,21 +52,7 @@ Item {
         }
 
         Button {
-            text: "X"
-            anchors {
-                top: parent.top
-                left: parent.left
-                margins: 10
-            }
-            width: parent.width * 0.1
-            height: width
-            onClicked: {
-                plantClearTriggered()
-            }
-        }
-
-        Button {
-            text: "..."
+            text: isPlantSet ? "X" : "..."
             anchors {
                 top: parent.top
                 right: parent.right
@@ -75,7 +61,12 @@ Item {
             width: parent.width * 0.1
             height: width
             onClicked: {
-                plantSelectTriggered()
+                if (isPlantSet) {
+                    plantClearTriggered()
+                }
+                else {
+                    plantSelectTriggered()
+                }
             }
         }
     }

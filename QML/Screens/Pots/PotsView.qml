@@ -9,7 +9,7 @@ Item {
 
     anchors.fill: parent
 
-    signal openPotView(int potId)
+    signal openPotEdit(int potId)
 
     FloraGridView {
         id: gridView
@@ -32,7 +32,7 @@ Item {
                     potName: name
                     plantIconSource: plantImagePath !== undefined ? "file://" + plantImagePath : ""
                     mouseArea.onClicked: {
-                        root.openPotView(potId)
+                        root.openPotEdit(potId)
                     }
                     Rectangle {
                         anchors.fill: parent

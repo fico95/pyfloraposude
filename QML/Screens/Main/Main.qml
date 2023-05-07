@@ -37,8 +37,6 @@ Item {
                     return potLoaderComponent
                 case 11:
                     return plantSelectComponent
-                case 12:
-                    return potViewerComponent
                 default:
                     return null
             }
@@ -101,9 +99,9 @@ Item {
     Component {
         id: potsViewComponent
         PotsView {
-            onOpenPotView: function(potId) {
+            onOpenPotEdit: function(potId) {
                 if (floraManager.setCurrentPot(potId)) {
-                    stackController.openPotViewerScreen()
+                    stackController.openPotEditorScreen()
                 }
             }
         }
@@ -164,12 +162,6 @@ Item {
                     stackController.goBack()
                 }
             }
-        }
-    }
-
-    Component {
-        id: potViewerComponent
-        PotViewer {
         }
     }
 

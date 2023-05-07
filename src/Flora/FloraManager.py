@@ -40,8 +40,8 @@ class FloraManager(QObject):
         self.potModel = PotModel(self)
         self.potsHandler = PotsHandler(self)
 
-        self.updatePlants()
-        self.updatePots()
+        self.updatePlantsAndResetCurrentPlant()
+        self.updatePotsAndResetCurrentPot()
 
     @Slot(str, str, float, float, float, float, float, result = bool)
     def addPlant(self, name, imagePath, soilMoisture, ph, salinity, lightLevel, temperature):
@@ -49,7 +49,7 @@ class FloraManager(QObject):
             plant = Plant(None, name, imagePath, PlantData(soilMoisture, ph, salinity, lightLevel, temperature))
             self.plantDb.addPlant(plant)
 
-            self.updatePlants()
+            self.updatePlantsAndResetCurrentPlant()
 
             return True
         except Exception as e:
@@ -62,8 +62,8 @@ class FloraManager(QObject):
             try:
                 self.plantDb.removePlantById(self.plantsHandler.selectedPlant.id)
 
-                self.updatePlants()
-                self.updatePots()
+                self.updatePlantsAndResetCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
                 
                 return True
             except Exception as e:
@@ -83,7 +83,7 @@ class FloraManager(QObject):
             return False
         
     @Slot(str, float, float, float, float, float, result = bool)
-    def updateCurrentPlant(self, name, soilMoisture, ph, salinity, lightLevel, temperature):
+    def updateCurrentPlantData(self, name, soilMoisture, ph, salinity, lightLevel, temperature):
         if (self.plantsHandler.selectedPlant):
             self.plantsHandler.selectedPlant.name = name
             self.plantsHandler.selectedPlant.plantCare.soilMoisture = soilMoisture
@@ -94,7 +94,8 @@ class FloraManager(QObject):
             try:
                 self.plantDb.updatePlant(self.plantsHandler.selectedPlant)
 
-                self.setCurrentPlant(self.plantsHandler.selectedPlant.id)
+                self.updateCurrentPlant()
+                self.updatePlants()
 
                 return False
             except Exception as e:
@@ -110,6 +111,7 @@ class FloraManager(QObject):
             try:
                 self.plantDb.updatePlant(self.plantsHandler.selectedPlant)
 
+                self.updateCurrentPlant()
                 self.updatePlants()
 
                 return True
@@ -123,15 +125,27 @@ class FloraManager(QObject):
     def resetCurrentPlant(self):
         self.plantsHandler.resetCurrentPlant()
 
+    def updateCurrentPlant(self):
+        if (self.plantsHandler.selectedPlant):
+            try:
+                self.plantsHandler.setCurrentPlant(self.plantDb.getPlantById(self.plantsHandler.selectedPlant.id))
+                return True
+            except Exception as e:
+                print(f"Error updating current plant: {e}")
+                return False
+
+    def updatePlantsAndResetCurrentPlant(self):
+        self.updatePlants()
+        self.resetCurrentPlant()
+
     def updatePlants(self):
         self.plantModel.updateModel(self.plantDb.getAllPlants())
-        self.resetCurrentPlant()
 
     @Slot()
     def tooglePotVisibility(self):
         self.allPotsVisible = not self.allPotsVisible
         self.allPotsShownChanged.emit()
-        self.updatePots()
+        self.updatePotsAndResetCurrentPot()
 
     @Slot(str, int, result = bool)
     def addPot(self, potName: str, plantId: int):
@@ -139,7 +153,7 @@ class FloraManager(QObject):
             pot = Pot(None, potName, None if plantId < 0 else plantId, None, False)
             self.potDb.addPot(pot)
 
-            self.updatePots()
+            self.updatePotsAndResetCurrentPot()
 
             return True
         except Exception as e:
@@ -150,6 +164,10 @@ class FloraManager(QObject):
     def setCurrentPot(self, id):
         try:
             pot = self.potDb.getPotById(id)
+
+            plant = self.plantDb.getPlantById(pot.plantId)
+            pot.setPlant(plant)
+
             self.potsHandler.setCurrentPot(pot)
             return True
         except Exception as e:
@@ -163,7 +181,7 @@ class FloraManager(QObject):
             try:
                 self.potDb.removePotById(self.potsHandler.selectedPot.id)
 
-                self.updatePots()
+                self.updatePotsAndResetCurrentPot()
                 
                 return True
             except Exception as e:
@@ -177,7 +195,7 @@ class FloraManager(QObject):
             try:
                 self.potDb.removePlantFromPot(self.potsHandler.selectedPot)
 
-                self.potsHandler.setCurrentPot(self.potDb.getPotById(self.potsHandler.selectedPot.id))
+                self.updateCurrentPot()
 
                 self.updatePots()
                 
@@ -194,7 +212,17 @@ class FloraManager(QObject):
     @Slot()
     def updatePotsSensorData(self):
         if (PotsDataSampler.updateSensorData(self.potDb)):
-            self.updatePots()
+            self.updatePotsAndResetCurrentPot()
+
+    def updateCurrentPot(self):
+        if (self.potsHandler.selectedPot):
+            try:
+                self.potsHandler.setCurrentPot(self.potDb.getPotById(self.potsHandler.selectedPot.id))
+                return True
+            except Exception as e:
+                print(f"Error updating current pot: {e}")
+                return False
+        return False
 
     def updatePots(self):
         pots = self.potDb.getAllPots() if self.allPotsVisible else self.potDb.getAllPotsWithoutPlants()
@@ -210,4 +238,7 @@ class FloraManager(QObject):
             potsMerged.append(pot)
 
         self.potModel.updateModel(potsMerged)
-        self.resetCurrentPot()
+
+    def updatePotsAndResetCurrentPot(self):
+        self.updatePots()
+        self.resetCurrentPot()    
