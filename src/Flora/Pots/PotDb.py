@@ -95,6 +95,17 @@ class PotDb:
             pot = Pot(potId, potName, plantId, sensorData, isBroken)
             pots.append(pot)
         return pots
+    
+    def getAllPotsWithoutPlants(self) -> List[Pot]:
+        cursor = self.conn.cursor()
+        cursor.execute('SELECT * FROM pots WHERE plantId IS NULL')
+        pots = []
+        for row in cursor.fetchall():
+            potId, potName, plantId, sensorDataJson, isBroken = row
+            sensorData = PlantData.listFromJson(sensorDataJson) if sensorDataJson else None
+            pot = Pot(potId, potName, plantId, sensorData, isBroken)
+            pots.append(pot)
+        return pots
 
     def getNumPots(self):
         cursor = self.conn.cursor()

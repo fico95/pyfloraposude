@@ -1,4 +1,4 @@
-from PySide2.QtCore import QObject, Slot
+from PySide2.QtCore import QObject, Slot, Signal, Property
 
 from Flora.Plants.PlantData import PlantData
 from Flora.Plants.Plant import Plant
@@ -15,8 +15,16 @@ from Flora.Pots.PotsDataSampler import PotsDataSampler
 
 class FloraManager(QObject):
 
+    allPotsShownChanged = Signal()
+
+    @Property(bool, notify=allPotsShownChanged)
+    def allPotsShown(self):
+        return self.allPotsVisible
+
     def __init__(self, dbPath, imagesPath, parent=None):
         super().__init__(parent)
+
+        self.allPotsVisible = True
 
         self.plantDb = PlantDb(dbPath)
         if (self.plantDb.getNumPlants() == 0):
@@ -119,6 +127,12 @@ class FloraManager(QObject):
         self.plantModel.updateModel(self.plantDb.getAllPlants())
         self.resetCurrentPlant()
 
+    @Slot()
+    def tooglePotVisibility(self):
+        self.allPotsVisible = not self.allPotsVisible
+        self.allPotsShownChanged.emit()
+        self.updatePots()
+
     @Slot(str, int, result = bool)
     def addPot(self, potName: str, plantId: int):
         try: 
@@ -167,7 +181,7 @@ class FloraManager(QObject):
             self.updatePots()
 
     def updatePots(self):
-        pots = self.potDb.getAllPots()    
+        pots = self.potDb.getAllPots() if self.allPotsVisible else self.potDb.getAllPotsWithoutPlants()
         potsMerged = []    
         self.plantDb.getAllPlantsDict()
         for pot in pots:

@@ -71,16 +71,25 @@ Drawer {
             }
         }
         Button {
+            visible: stackController.currentScreen === 4
+            width: parent.width
+            height: parent.height / 10
+            text: floraManager.allPotsShown ? "Show empty" : "Show all"
+            font.pixelSize: height * 0.75
+            onClicked: {
+                floraManager.tooglePotVisibility()
+                drawer.close()
+            }
+        }
+        Button {
             visible: stackController.currentScreen === 12
             width: parent.width
             height: parent.height / 10
-            text: "Remove pot"
+            text: "Edit pot"
             font.pixelSize: height * 0.75
             onClicked: {
-                if (floraManager.removeCurrentPot()) {
-                    stackController.handlePotRemove()
-                    drawer.close()
-                }
+                stackController.openPotEditorScreen()
+                drawer.close()
             }
         }
         Button {
