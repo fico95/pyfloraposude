@@ -24,9 +24,13 @@ class PotsDataSampler:
         
         success = True
         for pot, potSensorData in zip(pots, potsSensorData):
+            if (pot.isBroken):
+                continue
             try:
-                pot.addSensorData(potSensorData)
-                pot.setBroken(PotsDataSampler.getPotBroken())
+                broken = PotsDataSampler.getPotBroken()
+                pot.setBroken(broken)
+                if (not pot.isBroken):
+                    pot.addSensorData(potSensorData)
                 potDb.updatePotSensorDataAndBroken(pot)
             except Exception as e:
                 print(f"Error updating pot sensor data: {e}")

@@ -1,7 +1,7 @@
 import os
 import sys
 
-from PySide2.QtGui import QGuiApplication
+from PySide2.QtWidgets import QApplication
 from PySide2.QtQml import QQmlApplicationEngine
 from PySide2.QtQuickControls2 import QQuickStyle
 
@@ -10,9 +10,9 @@ from Users.UserHandler import UserHandler
 from Flora.FloraManager import FloraManager
 from Helpers.ImageManager import ImageManager
 
-class Application(QGuiApplication):
+class Application(QApplication):
     def __init__(self, *args, **kwargs):
-        QGuiApplication.__init__(self, *args, **kwargs)
+        QApplication.__init__(self, *args, **kwargs)
 
         self.setOrganizationName("None")
         self.setOrganizationDomain("None")

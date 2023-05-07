@@ -1,109 +1,142 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.12
+import QtCharts 2.5
 
 import "../../Controls"
 
 Item {
-    property bool isPotSet: potsHandler.isCurrentPotSet()
     property bool isPlantSet: potsHandler.getCurrentPotPlantExists()
-    property string potName: potsHandler.getCurrentPotName()
     property string potPlantImagePath: potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
 
+    signal plantSelectTriggered
     signal plantClearTriggered
 
-    function updatePotData() {
-        isPlantSet = potsHandler.getCurrentPotPlantExists()
-        potName = potsHandler.getCurrentPotName()
-        potPlantImagePath = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
-    }
-
-    Image {
-        id: plantIcon
+    Item {
         anchors {
-            left: parent.left
             top: parent.top
-            bottom: parent.bottom
-            leftMargin: parent.width * 0.1
             topMargin: parent.height * 0.1
-            bottomMargin: parent.height * 0.1
         }
-        width: parent.width * 0.4
-        height: parent.height * 0.8
-        source: potPlantImagePath
+        height: parent.height * 0.35
+        width: parent.width 
 
-        Rectangle {
-            visible: plantIcon.source == ""
-            anchors.fill: parent
-            color: "lightgray"
-        }
-
-        Text {
-            visible: plantIcon.source == ""
-            anchors.centerIn: parent
-            text: "No Plant"
-            height: parent.height * 0.1
+        Image {
+            id: plantIcon
+            anchors {
+                left: parent.left
+                top: parent.top
+                bottom: parent.bottom
+                leftMargin: parent.width * 0.1
+            }
             width: parent.width * 0.4
+            height: parent.height
+            source: potPlantImagePath
+
+            Rectangle {
+                visible: plantIcon.source == ""
+                anchors.fill: parent
+                color: "lightgray"
+            }
+
+            Text {
+                visible: !isPlantSet
+                anchors.centerIn: parent
+                text: "No Plant"
+                height: parent.height * 0.1
+                width: parent.width * 0.4
+                font {
+                    pixelSize: height
+                    bold: true
+                }
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                color: "black"
+            }
+
+            Button {
+                text: isPlantSet ? "X" : "..."
+                anchors {
+                    top: parent.top
+                    right: parent.right
+                    margins: 10
+                }
+                width: parent.width * 0.1
+                height: width
+                onClicked: {
+                    if (isPlantSet) {
+                        plantClearTriggered()
+                    }
+                    else {
+                        plantSelectTriggered()
+                    }
+                }
+            }
+        }
+
+        TextEdit {
+            id: name
+            anchors {
+                right: parent.right
+                top: parent.top
+                rightMargin: parent.width * 0.05
+            }
+            width: parent.width * 0.4
+            height: parent.height * 0.1
             font {
                 pixelSize: height
                 bold: true
             }
             horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
+            verticalAlignment: Text.AlignTop
             color: "black"
-        }
-
-        Button {
-            text: isPlantSet ? "X" : "..."
-            anchors {
-                top: parent.top
-                right: parent.right
-                margins: 10
-            }
-            width: parent.width * 0.1
-            height: width
-            onClicked: {
-                if (isPlantSet) {
-                    floraManager.removePlantFromCurrentPot()
-                }
-                else {
-                }
+            text: potsHandler.getCurrentPotName()
+            onTextChanged: {
+                floraManager.updateCurrentPotName(name.text)
             }
         }
     }
 
-    TextEdit {
-        id: name
+    Item {
         anchors {
+            left: parent.left
             right: parent.right
-            top: parent.top
-            rightMargin: parent.width * 0.05
-            topMargin: parent.height * 0.1
+            bottom: parent.bottom
+            leftMargin: parent.width * 0.1
+            rightMargin: parent.width * 0.1
+            bottomMargin: parent.height * 0.1
         }
-        width: parent.width * 0.4
-        height: parent.height * 0.1
-        font {
-            pixelSize: height
-            bold: true
-        }
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignTop
-        color: "black"
-        text: potName
-        onTextChanged: {
-            floraManager.updateCurrentPotName(name.text)
+        height: parent.height * 0.35
+        ChartView {
+            id: chart
+            title: "Top-5 car brand shares in Finland"
+            anchors.fill: parent
+            legend.alignment: Qt.AlignBottom
+            antialiasing: true
+
+            PieSeries {
+                id: pieSeries
+                PieSlice { label: "Volkswagen"; value: 13.5 }
+                PieSlice { label: "Toyota"; value: 10.9 }
+                PieSlice { label: "Ford"; value: 8.6 }
+                PieSlice { label: "Skoda"; value: 8.2 }
+                PieSlice { label: "Volvo"; value: 6.8 }
+            }
         }
     }
 
     Connections {
         target: potsHandler
         function onCurrentPotChanged() {
-            updatePotData()
+            isPlantSet = potsHandler.getCurrentPotPlantExists()
+            potPlantImagePath = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
         }
     }
 
     Component.onCompleted: {
-        if (!isPotSet) {
+        if (!potsHandler.isCurrentPotSet()) {
             stackController.goBack()
+        }
+        if (plantsHandler.isCurrentPlantSet() && plantsHandler.getCurrentPlantId() >= 0) {
+            floraManager.addPlantToCurrentPot(plantsHandler.getCurrentPlantId())
         }
     }
 }

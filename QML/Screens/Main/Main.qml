@@ -168,6 +168,12 @@ Item {
     Component {
         id: potEditorComponent
         PotEditor {
+            onPlantSelectTriggered: {
+                stackController.openPlantSelectScreen()
+            }
+            onPlantClearTriggered: {
+                floraManager.removePlantFromCurrentPot()
+            }
         }
     }
 
