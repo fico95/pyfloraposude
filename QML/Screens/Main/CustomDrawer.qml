@@ -93,17 +93,6 @@ Drawer {
             }
         }
         Button {
-            visible: stackController.currentScreen === 12
-            width: parent.width
-            height: parent.height / 10
-            text: "Edit pot"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.openPotEditorScreen()
-                drawer.close()
-            }
-        }
-        Button {
             visible: stackController.currentScreen === 4
             width: parent.width
             height: parent.height / 10
@@ -126,15 +115,22 @@ Drawer {
             }
         }
         Button {
-            visible: stackController.currentScreen === 7
+            visible: stackController.currentScreen === 6 
+                     || stackController.currentScreen === 7
             width: parent.width
             height: parent.height / 10
             text: "Remove plant"
             font.pixelSize: height * 0.75
             onClicked: {
-                if (floraManager.removeCurrentPlant()) {
-                    stackController.handlePlantRemove()
-                    drawer.close()
+                if (stackController.currentScreen === 6) {
+                    if (floraManager.removePlantFromCurrentPot()) {
+                        drawer.close()
+                    }
+                } else if (stackController.currentScreen === 7) {
+                    if (floraManager.removeCurrentPlant()) {
+                        stackController.handlePlantRemove()
+                        drawer.close()
+                    }
                 }
             }
         }

@@ -64,6 +64,12 @@ class PotDb:
                      pot.id))
         self.conn.commit()
 
+    def removePlantFromPot(self, pot: Pot):
+        cursor = self.conn.cursor()
+        cursor.execute('UPDATE pots SET plantId=?, sensorData=?, isBroken=? WHERE id=?',
+                    (None, None, False, pot.id))
+        self.conn.commit()
+
     def removePot(self, pot: Pot):
         cursor = self.conn.cursor()
         cursor.execute('DELETE FROM pots WHERE id=?', (pot.id,))
