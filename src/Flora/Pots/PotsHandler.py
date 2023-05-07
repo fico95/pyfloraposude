@@ -1,6 +1,7 @@
 from PySide2.QtCore import QObject, Slot, Signal, Property
 
 from Flora.Pots.Pot import Pot
+from Flora.Pots.PotsGraphHandler import PotsGraphHandler
 
 class PotsHandler(QObject):
 
@@ -14,13 +15,17 @@ class PotsHandler(QObject):
         super().__init__(parent)
 
         self.selectedPot = None
+        self.graphHandler = PotsGraphHandler(self)
 
     def setCurrentPot(self, pot: Pot):
         self.selectedPot = pot
+        self.graphHandler.setSensorData(pot.sensorData)
+        self.graphHandler.setLineGraph()
         self.currentPotChanged.emit()
 
     def resetCurrentPot(self):
         self.selectedPot = None
+        self.graphHandler.resetGraph()
         self.currentPotChanged.emit()
 
     @Slot(result=bool)

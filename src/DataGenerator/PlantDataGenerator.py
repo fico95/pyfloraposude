@@ -36,9 +36,9 @@ def getPlantDataForPosition(latitude, longitude, numberOfSamples, differentTempe
 
 def getTemperatureForPossition(latitude, longitude):
     # Get current temperature from OpenMeteo API, or generate random data if API call fails
-    temperatureCelsius = TemperatureGenerator.getTemperature(latitude, longitude)
+    temperatureCelsius = round(TemperatureGenerator.getTemperature(latitude, longitude), 1)
     if temperatureCelsius is not None:
-        return round(temperatureCelsius, 1)
+        return max(min(temperatureCelsius, 40), -10)
     return getTemperature()
 
 def getTemperature():

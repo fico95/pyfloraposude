@@ -51,6 +51,7 @@ class Application(QApplication):
         self.engine.rootContext().setContextProperty("plantsHandler", self.floraManager.plantsHandler)
         self.engine.rootContext().setContextProperty("potModel", self.floraManager.potModel)
         self.engine.rootContext().setContextProperty("potsHandler", self.floraManager.potsHandler)
+        self.engine.rootContext().setContextProperty("potsGraphHandler", self.floraManager.potsHandler.graphHandler)
 
         self.engine.load(rootPath + "/" + qmlMainPath)
 

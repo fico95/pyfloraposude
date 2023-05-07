@@ -11,6 +11,30 @@ Item {
     signal plantSelectTriggered
     signal plantClearTriggered
 
+    function updateGraph() {
+        chart.removeAllSeries()
+
+        if (potsGraphHandler.graphType < 1 || potsGraphHandler.graphType > 3) {
+            return
+        }
+
+        axisX.min = -0.5
+        axisX.max = potsGraphHandler.getNumberOfSensorDataValues() + 0.5
+
+        let gt = potsGraphHandler.graphType == 1 ? ChartView.SeriesTypeLine : potsGraphHandler.graphType == 2 ? ChartView.SeriesTypeBar : ChartView.SeriesTypeScatter
+        if (potsGraphHandler.graphType == 2) {
+            let series = chart.createSeries(gt, "" , axisX, axisY)
+            potsGraphHandler.updateSeriesForSensorBars(series)
+        }
+        else {
+            let numberOfSensors = potsGraphHandler.getNumberOfSensors()
+            for (let i = 0; i < numberOfSensors; ++i) {
+                let series = chart.createSeries(gt, "" , axisX, axisY)
+                potsGraphHandler.updateSeriesForSensor(series, i)
+            }
+        }
+    }
+
     Item {
         anchors {
             top: parent.top
@@ -96,6 +120,7 @@ Item {
     }
 
     Item {
+        id: graphItem
         anchors {
             left: parent.left
             right: parent.right
@@ -105,20 +130,53 @@ Item {
             bottomMargin: parent.height * 0.1
         }
         height: parent.height * 0.35
+
         ChartView {
             id: chart
-            title: "Top-5 car brand shares in Finland"
+            title: "Graph"
             anchors.fill: parent
             legend.alignment: Qt.AlignBottom
             antialiasing: true
 
-            PieSeries {
-                id: pieSeries
-                PieSlice { label: "Volkswagen"; value: 13.5 }
-                PieSlice { label: "Toyota"; value: 10.9 }
-                PieSlice { label: "Ford"; value: 8.6 }
-                PieSlice { label: "Skoda"; value: 8.2 }
-                PieSlice { label: "Volvo"; value: 6.8 }
+            ValueAxis{
+                id: axisX
+                min: 0
+                max: 1
+                tickType: ValueAxis.TicksFixed
+            }
+
+            ValueAxis{
+                id: axisY
+                min: -10
+                max: 100
+            }
+        }
+
+        Row {
+            anchors {
+                top: parent.top
+                left: parent.left
+                right: parent.right
+            }
+            spacing: 10
+            height: parent.height * 0.05
+            Button {
+                height: parent.height
+                width: parent.width / 3 - spacing / 2
+                text: "Line"
+                onClicked: potsGraphHandler.setLineGraph()
+            }
+            Button {
+                height: parent.height
+                width: parent.width / 3 - spacing / 2
+                text: "Bar"
+                onClicked: potsGraphHandler.setBarGraph()
+            }
+            Button {
+                height: parent.height
+                width: parent.width / 3 - spacing / 2
+                text: "Scatter"
+                onClicked: potsGraphHandler.setScatterGraph()
             }
         }
     }
@@ -128,13 +186,23 @@ Item {
         function onCurrentPotChanged() {
             isPlantSet = potsHandler.getCurrentPotPlantExists()
             potPlantImagePath = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
+            updateGraph()
+        }
+    }
+
+    Connections {
+        target: potsGraphHandler
+        onGraphChanged: {
+            updateGraph()
         }
     }
 
     Component.onCompleted: {
         if (!potsHandler.isCurrentPotSet()) {
             stackController.goBack()
+            return
         }
+        updateGraph()
         if (plantsHandler.isCurrentPlantSet() && plantsHandler.getCurrentPlantId() >= 0) {
             floraManager.addPlantToCurrentPot(plantsHandler.getCurrentPlantId())
         }
