@@ -204,6 +204,23 @@ class FloraManager(QObject):
                 print(f"Error removing plant from pot: {e}")
                 return False
         return False
+    
+    @Slot(str, result=bool)
+    def updateCurrentPotName(self, name):
+        if (self.potsHandler.selectedPot):
+            self.potsHandler.selectedPot.potName = name
+            try:
+                self.potDb.updatePotName(self.potsHandler.selectedPot)
+
+                self.updateCurrentPot()
+                self.updatePots()
+
+                return True
+            except Exception as e:
+                print(f"Error updating pot: {e}")
+                self.setCurrentPot(self.potsHandler.selectedPot.id)
+                return False
+        return False
 
     @Slot()
     def resetCurrentPot(self):

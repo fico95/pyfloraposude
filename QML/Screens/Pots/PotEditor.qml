@@ -89,6 +89,9 @@ Item {
         verticalAlignment: Text.AlignTop
         color: "black"
         text: potName
+        onTextChanged: {
+            floraManager.updateCurrentPotName(name.text)
+        }
     }
 
     Connections {

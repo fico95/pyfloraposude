@@ -56,6 +56,12 @@ class PotDb:
                      pot.id))
         self.conn.commit()
 
+    def updatePotName(self, pot: Pot):
+        cursor = self.conn.cursor()
+        cursor.execute('UPDATE pots SET potName=? WHERE id=?',
+                    (pot.potName, pot.id))
+        self.conn.commit()
+
     def updatePotSensorDataAndBroken(self, pot: Pot):
         cursor = self.conn.cursor()
         cursor.execute('UPDATE pots SET sensorData=?, isBroken=? WHERE id=?',
