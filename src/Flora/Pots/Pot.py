@@ -8,11 +8,14 @@ class Pot:
         self.plant = None
         self.sensorData = sensorData if sensorData else []
         self.isBroken = isBroken
+        self.maxSensorData = 50
 
     def setPlant(self, plant: Plant):
         self.plant = plant
 
     def addSensorData(self, sensorData):
+        if (len(self.sensorData) >= self.maxSensorData):
+            self.sensorData.pop(0)
         self.sensorData.append(sensorData)
 
     def setBroken(self, isBroken : bool):
