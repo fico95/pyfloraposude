@@ -71,7 +71,7 @@ class StackController(QObject):
         super().__init__(parent)
 
         self.stack = Stack()
-        self.stack.push(StackController.Screen.Pots)
+        self.stack.push(StackController.Screen.Welcome)
 
     @Slot()
     def openRegistrationScreen(self):

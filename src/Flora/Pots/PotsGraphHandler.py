@@ -68,25 +68,24 @@ class PotsGraphHandler(QObject):
             return None
         if (sensorIndex == 0):
             series.setName("Temperature")
-            for k in range(len(self.sensorData)):
-                print(self.sensorData[k].temperature)
-                series.append(k, self.sensorData[k].temperature)
+            for i in range(len(self.sensorData)):
+                series.append(i, self.sensorData[i].temperature)
         elif (sensorIndex == 1):
             series.setName("Salinity")
-            for k in range(len(self.sensorData)):
-                series.append(k, self.sensorData[k].salinity)
+            for i in range(len(self.sensorData)):
+                series.append(i, self.sensorData[i].salinity)
         elif (sensorIndex == 2):
             series.setName("Light level")
-            for k in range(len(self.sensorData)):
-                series.append(k, self.sensorData[k].lightLevel)
+            for i in range(len(self.sensorData)):
+                series.append(i, self.sensorData[i].lightLevel)
         elif (sensorIndex == 3):
             series.setName("Soil moisture")
-            for k in range(len(self.sensorData)):
-                series.append(k, self.sensorData[k].soilMoisture)
+            for i in range(len(self.sensorData)):
+                series.append(i, self.sensorData[i].soilMoisture)
         elif (sensorIndex == 4):
             series.setName("Ph")
-            for k in range(len(self.sensorData)):
-                series.append(k, self.sensorData[k].ph)
+            for i in range(len(self.sensorData)):
+                series.append(i, self.sensorData[i].ph)
 
     @Slot(QtCharts.QAbstractBarSeries)
     def updateSeriesForSensorBars(self, series):
