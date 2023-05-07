@@ -24,7 +24,7 @@ class PotsDataSampler:
         
         success = True
         for pot, potSensorData in zip(pots, potsSensorData):
-            if (pot.isBroken):
+            if (pot.isBroken or pot.plant is None):
                 continue
             try:
                 broken = PotsDataSampler.getPotBroken()
