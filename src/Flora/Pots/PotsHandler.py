@@ -46,104 +46,104 @@ class PotsHandler(QObject):
     
     @Slot(result=str)
     def getCurrentPotPlantName(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.name
+        if (self.selectedPot):
+            return self.selectedPot.getPlantName()
         return ""
     
     @Slot(result=float)
     def getCurrentPotPlantSoilMoisture(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.plantCare.soilMoisture
+        if (self.selectedPot):
+            return self.selectedPot.getPlantSoilMoisture()
         return 0.0
     
     @Slot(result=float)
     def getCurrentPotPlantTemperature(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.plantCare.temperature
+        if (self.selectedPot):
+            return self.selectedPot.getPlantTemperature()
         return 0.0
     
     @Slot(result=float)
     def getCurrentPotPlantLightLevel(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.plantCare.lightLevel
+        if (self.selectedPot):
+            return self.selectedPot.getPlantLightLevel()
         return 0.0
     
     @Slot(result=float)
     def getCurrentPotPlantSalinity(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.plantCare.salinity
+        if (self.selectedPot):
+            return self.selectedPot.getPlantSalinity()
         return 0.0
     
     @Slot(result=float)
     def getCurrentPotPlantPh(self):
-        if (self.getCurrentPotPlantExists()):
-            return self.selectedPot.plant.plantCare.ph
+        if (self.selectedPot):
+            return self.selectedPot.getPlantPh()
         return 0.0
     
     @Slot(result=float)
     def getLastSensorSoilMoisture(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.sensorData[-1].soilMoisture
+        if (self.selectedPot):
+            return self.selectedPot.getLastMeasuredSoilMoisture()
         return 0.0
     
     @Slot(result=float)
     def getLastSensorTemperature(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.sensorData[-1].temperature
+        if (self.selectedPot):
+            return self.selectedPot.getLastMeasuredTemperature()
         return 0.0
     
     @Slot(result=float)
     def getLastSensorLightLevel(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.sensorData[-1].lightLevel
+        if (self.selectedPot):
+            return self.selectedPot.getLastMeasuredLightLevel()
         return 0.0
     
     @Slot(result=float)
     def getLastSensorSalinity(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.sensorData[-1].salinity
+        if (self.selectedPot):
+            return self.selectedPot.getLastMeasuredSalinity()
         return 0.0
     
     @Slot(result=float)
     def getLastSensorPh(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.sensorData[-1].ph
+        if (self.selectedPot):
+            return self.selectedPot.getLastMeasuredPh()
         return 0.0
     
     @Slot(result=bool)
     def getCurrentPotPlantTemperatureOk(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.plant.plantCare.temperatureOk(self.getLastSensorTemperature())
+        if (self.selectedPot):
+            return self.selectedPot.getTemperatureOk()
         return True
     
     @Slot(result=bool)
     def getCurrentPotPlantSoilMoistureOk(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.plant.plantCare.soilMoistureOk(self.getLastSensorSoilMoisture())
+        if (self.selectedPot):
+            return self.selectedPot.getSoilMoistureOk()
         return True
     
     @Slot(result=bool)
     def getCurrentPotPlantLightLevelOk(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.plant.plantCare.lightLevelOk(self.getLastSensorLightLevel())
+        if (self.selectedPot):
+            return self.selectedPot.getLightLevelOk()
         return True
     
     @Slot(result=bool)
     def getCurrentPotPlantSalinityOk(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.plant.plantCare.salinityOk(self.getLastSensorSalinity())
+        if (self.selectedPot):
+            return self.selectedPot.getSalinityOk()
         return True
     
     @Slot(result=bool)
     def getCurrentPotPlantPhOk(self):
-        if (self.sensorDataExists()):
-            return self.selectedPot.plant.plantCare.phOk(self.getLastSensorPh())
+        if (self.selectedPot):
+            return self.selectedPot.getPhOk()
         return True
     
     @Slot(result=str)
     def getCurrentPotPlantImagePath(self):
-        if (self.selectedPot and self.selectedPot.plant):
-            return self.selectedPot.plant.imagePath
+        if (self.selectedPot):
+            return self.selectedPot.getPlantImagePath()
         return ""
     
     @Slot(result=bool)
@@ -154,7 +154,7 @@ class PotsHandler(QObject):
     
     @Slot(result = bool)
     def sensorDataExists(self) -> bool:
-        return bool(self.selectedPot \
-            and self.selectedPot.sensorData \
-            and len(self.selectedPot.sensorData) > 0)
+        if (self.selectedPot):
+            return self.selectedPot.sensorDataExists()
+        return False
     

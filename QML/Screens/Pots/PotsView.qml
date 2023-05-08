@@ -34,6 +34,54 @@ Item {
                     mouseArea.onClicked: {
                         root.openPotEdit(potId)
                     }
+                    Grid {
+                        anchors {
+                            right: parent.right
+                            rightMargin: parent.width * 0.05
+                            bottom: parent.bottom
+                            bottomMargin: parent.height * 0.05
+                        }
+                        width: parent.width * 0.4
+                        height: parent.height * 0.7
+                        columns: 2
+                        spacing: 5
+                        Image {
+                            visible: broken || !temperatureOk
+                            height: parent.height / 3
+                            width: parent.width / 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/icons/temperature.png"
+                        }
+                        Image {
+                            visible: !soilMoistureOk
+                            height: parent.height / 3
+                            width: parent.width / 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/icons/moisture.png"
+                        }
+                        Image {
+                            visible: broken || !phOk
+                            height: parent.height / 3
+                            width: parent.width / 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/icons/ph.png"
+                        }
+                        Image {
+                            visible: broken || !lightLevelOk
+                            height: parent.height / 3
+                            width: parent.width / 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/icons/light.png"
+                        }
+                        Image {
+                            visible: broken || !salinityOk
+                            height: parent.height / 3
+                            width: parent.width / 2
+                            fillMode: Image.PreserveAspectFit
+                            source: "qrc:/icons/salinity.png"
+                        }
+
+                    }
                     Rectangle {
                         anchors.fill: parent
                         anchors.margins: 5

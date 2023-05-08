@@ -11,6 +11,11 @@ class PotModel(QAbstractListModel):
     PlantImagePath = Qt.UserRole + 4
     PlantId = Qt.UserRole + 5
     Broken = Qt.UserRole + 6
+    TemperatureOk = Qt.UserRole + 7
+    SoilMoistureOk = Qt.UserRole + 8
+    LightLevelOk = Qt.UserRole + 9
+    SalinityOk = Qt.UserRole + 10
+    PhOk = Qt.UserRole + 11
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -31,13 +36,23 @@ class PotModel(QAbstractListModel):
         elif role == PotModel.PotId:
             return pot.id
         elif role == PotModel.PlantName:
-            return None if pot.plant is None else pot.plant.name
+            return pot.getPlantName()
         elif role == PotModel.PlantImagePath:
-            return None if pot.plant is None else pot.plant.imagePath
+            return pot.getPlantImagePath()
         elif role == PotModel.PlantId:
-            return None if pot.plant is None else pot.plant.id
+            return pot.getPlantId()
         elif role == PotModel.Broken:
             return pot.isBroken
+        elif role == PotModel.TemperatureOk:
+            return pot.getTemperatureOk()
+        elif role == PotModel.SoilMoistureOk:
+            return pot.getSoilMoistureOk()
+        elif role == PotModel.LightLevelOk:
+            return pot.getLightLevelOk()
+        elif role == PotModel.SalinityOk:
+            return pot.getSalinityOk()
+        elif role == PotModel.PhOk:
+            return pot.getPhOk()
 
         return None
     
@@ -48,7 +63,12 @@ class PotModel(QAbstractListModel):
             PotModel.PlantName: b'plantName',
             PotModel.PlantImagePath: b'plantImagePath',
             PotModel.PlantId: b'plantId',
-            PotModel.Broken: b'broken'
+            PotModel.Broken: b'broken',
+            PotModel.TemperatureOk: b'temperatureOk',
+            PotModel.SoilMoistureOk: b'soilMoistureOk',
+            PotModel.LightLevelOk: b'lightLevelOk',
+            PotModel.SalinityOk: b'salinityOk',
+            PotModel.PhOk: b'phOk'
         }
 
     def updateModel(self, pots: List[Pot]):
