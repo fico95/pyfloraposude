@@ -116,6 +116,19 @@ Drawer {
                 }
             }
         }
+        Button {
+            visible: stackController.currentScreen === 6
+            width: parent.width
+            height: parent.height / 10
+            text: "Remove pot"
+            font.pixelSize: height * 0.75
+            onClicked: {
+               if (floraManager.removeCurrentPot()) {
+                    stackController.handlePotRemove()
+                    drawer.close()
+                }
+            }
+        }
     }
                 
     Button {

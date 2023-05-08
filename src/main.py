@@ -1,6 +1,7 @@
 import sys
 import signal
 
+import IconsResources
 from Application import Application
 
 if __name__ == "__main__":

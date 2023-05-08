@@ -6,10 +6,49 @@ import "../../Controls"
 
 Item {
     property bool isPlantSet: potsHandler.getCurrentPotPlantExists()
-    property string potPlantImagePath: potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
 
     signal plantSelectTriggered
     signal plantClearTriggered
+
+    function updateData() {
+        isPlantSet = potsHandler.getCurrentPotPlantExists()
+        plantIcon.source = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
+        name.text = potsHandler.getCurrentPotName()
+        potAndPlantData.visible = isPlantSet
+
+        let potBroken = potsHandler.getCurrentPotIsBroken()
+        rectBroken.visible = potBroken
+
+        temperatureData.plantValueText = potsHandler.getCurrentPotPlantTemperature()
+        temperatureData.dataExists = potsHandler.sensorDataExists()
+        temperatureData.sensorValueText = potsHandler.getLastSensorTemperature()
+        temperatureData.potBroken = potBroken
+        temperatureData.dataOk = potsHandler.getCurrentPotPlantTemperatureOk()
+
+        soilMoistureData.plantValueText = potsHandler.getCurrentPotPlantSoilMoisture()
+        soilMoistureData.dataExists = potsHandler.sensorDataExists()
+        soilMoistureData.sensorValueText = potsHandler.getLastSensorSoilMoisture()
+        soilMoistureData.potBroken = potBroken
+        soilMoistureData.dataOk = potsHandler.getCurrentPotPlantSoilMoistureOk()
+
+        lightLevelData.plantValueText = potsHandler.getCurrentPotPlantLightLevel()
+        lightLevelData.dataExists = potsHandler.sensorDataExists()
+        lightLevelData.sensorValueText = potsHandler.getLastSensorLightLevel()
+        lightLevelData.potBroken = potBroken
+        lightLevelData.dataOk = potsHandler.getCurrentPotPlantLightLevelOk()
+
+        phData.plantValueText = potsHandler.getCurrentPotPlantPh()
+        phData.dataExists = potsHandler.sensorDataExists()
+        phData.sensorValueText = potsHandler.getLastSensorPh()
+        phData.potBroken = potBroken
+        phData.dataOk = potsHandler.getCurrentPotPlantPhOk()
+
+        salinityData.plantValueText = potsHandler.getCurrentPotPlantSalinity()
+        salinityData.dataExists = potsHandler.sensorDataExists()
+        salinityData.sensorValueText = potsHandler.getLastSensorSalinity()
+        salinityData.potBroken = potBroken
+        salinityData.dataOk = potsHandler.getCurrentPotPlantSalinityOk()
+    }
 
     function updateGraph() {
         chart.removeAllSeries()
@@ -52,8 +91,6 @@ Item {
                 leftMargin: parent.width * 0.1
             }
             width: parent.width * 0.4
-            height: parent.height
-            source: potPlantImagePath
 
             Rectangle {
                 visible: plantIcon.source == ""
@@ -104,7 +141,7 @@ Item {
                 rightMargin: parent.width * 0.05
             }
             width: parent.width * 0.4
-            height: parent.height * 0.1
+            height: parent.height * 0.2
             font {
                 pixelSize: height
                 bold: true
@@ -115,6 +152,60 @@ Item {
             text: potsHandler.getCurrentPotName()
             onTextChanged: {
                 floraManager.updateCurrentPotName(name.text)
+            }
+
+            Rectangle {
+                id: rectBroken
+                anchors.fill: parent
+                color: "red"
+                opacity: 0.5
+            }
+        }
+
+        Item {
+            id: potAndPlantData
+            anchors {
+                right: parent.right
+                top: name.bottom
+                bottom: parent.bottom
+                topMargin: parent.height * 0.05
+                rightMargin: parent.width * 0.05
+                bottomMargin: parent.height * 0.05
+            }
+            width: parent.width * 0.4
+            
+            Column {
+                anchors.fill: parent
+
+                spacing: parent.height * 0.01
+
+                PotDataInfo {
+                }
+
+                PotData {
+                    id: temperatureData
+                    nameText: "Temperature"
+                }
+
+                PotData {
+                    id: soilMoistureData
+                    nameText: "Soil Moisture"
+                }
+
+                PotData {
+                    id: lightLevelData
+                    nameText: "Light Level"
+                }
+
+                PotData {
+                    id: phData
+                    nameText: "Ph"
+                }
+
+                PotData {
+                    id: salinityData
+                    nameText: "Salinity"
+                }
             }
         }
     }
@@ -184,8 +275,7 @@ Item {
     Connections {
         target: potsHandler
         function onCurrentPotChanged() {
-            isPlantSet = potsHandler.getCurrentPotPlantExists()
-            potPlantImagePath = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
+            updateData()
             updateGraph()
         }
     }
@@ -203,6 +293,7 @@ Item {
             return
         }
         updateGraph()
+        updateData()
         if (plantsHandler.isCurrentPlantSet() && plantsHandler.getCurrentPlantId() >= 0) {
             floraManager.addPlantToCurrentPot(plantsHandler.getCurrentPlantId())
         }

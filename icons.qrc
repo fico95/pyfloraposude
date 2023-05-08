@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/light.png</file>
+        <file>icons/moisture.png</file>
+        <file>icons/ph.png</file>
+        <file>icons/salinity.png</file>
+        <file>icons/temperature.png</file>
+        <file>icons/ok.png</file>
+        <file>icons/not_ok.png</file>
+        <file>icons/broken.png</file>
+    </qresource>
+</RCC>
