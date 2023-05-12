@@ -55,7 +55,7 @@ class StackController(QObject):
         super().__init__(parent)
 
         self.stack = Stack()
-        self.stack.push(Enums.Screen.Pots)
+        self.stack.push(Enums.Screen.Welcome)
 
     @Slot()
     def openRegistrationScreen(self):
@@ -95,6 +95,16 @@ class StackController(QObject):
     @Slot()
     def openUserEditorScreen(self):
         self.stack.push(Enums.Screen.UserEditor)
+        self.screenChanged.emit()
+
+    @Slot()
+    def openUserPasswordChangeScreen(self):
+        self.stack.push(Enums.Screen.UserPasswordChange)
+        self.screenChanged.emit()
+
+    @Slot()
+    def openUserDeleteScreen(self):
+        self.stack.push(Enums.Screen.UserDelete)
         self.screenChanged.emit()
 
     @Slot()

@@ -10,14 +10,16 @@ class Enums(QObject):
         Registration, \
         Login, \
         ForgottenPassword, \
-        Pots, \
-        Plants, \
-        PotEditor, \
-        PlantEditor, \
         UserEditor, \
-        PlantLoader, \
+        UserPasswordChange, \
+        UserDelete, \
+        Pots, \
+        PotEditor, \
         PotLoader, \
-        PlantSelect = range(12)
+        Plants, \
+        PlantEditor, \
+        PlantLoader, \
+        PlantSelect = range(14)
 
     @QEnum
     class GraphType(IntEnum):

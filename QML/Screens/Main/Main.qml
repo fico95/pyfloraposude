@@ -23,6 +23,8 @@ Item {
     signal plantSelectClicked
     signal plantEditClicked
     signal potEditClicked
+    signal userModifyClicked
+    signal userDeleteClicked
     signal openImageLoadDialog
 
     function handleFileDialogClose(filePath) {
@@ -44,20 +46,24 @@ Item {
                    return loginComponent
                 case Enums.Screen.ForgottenPassword:
                    return forgottenPasswordComponent
-                case Enums.Screen.Pots:
-                    return potsViewComponent
-                case Enums.Screen.Plants:
-                    return plantsViewComponent
-                case Enums.Screen.PotEditor:
-                    return potEditorComponent
-                case Enums.Screen.PlantEditor:
-                    return plantEditorComponent
                 case Enums.Screen.UserEditor:
                     return editComponent
-                case Enums.Screen.PlantLoader:
-                    return plantLoaderComponent
+                case Enums.Screen.UserPasswordChange:
+                    return modifyComponent
+                case Enums.Screen.UserDelete:
+                    return deleteComponent
+                case Enums.Screen.Pots:
+                    return potsViewComponent
                 case Enums.Screen.PotLoader:
                     return potLoaderComponent
+                case Enums.Screen.PotEditor:
+                    return potEditorComponent
+                case Enums.Screen.Plants:
+                    return plantsViewComponent
+                case Enums.Screen.PlantEditor:
+                    return plantEditorComponent
+                case Enums.Screen.PlantLoader:
+                    return plantLoaderComponent
                 case Enums.Screen.PlantSelect:
                     return plantSelectComponent
                 default:
@@ -80,7 +86,7 @@ Item {
 
     Component {
         id: registrationComponent
-        Registration {
+        UserRegistration {
             onRegistrationTriggered: {
                 if (userHandler.addUser(userNameText, passwordText)) {
                     root.registrationSuccessful()
@@ -95,7 +101,7 @@ Item {
 
     Component {
         id: loginComponent
-        Login {
+        UserLogin {
             onLoginTriggered: {
                 if (userHandler.authenticateUser(userNameText, passwordText)) {
                     root.loginSuccessful()
@@ -113,7 +119,7 @@ Item {
 
     Component {
         id: forgottenPasswordComponent
-        ForgottenPassword {
+        UserForgottenPassword {
             onAcceptClicked: {
                 if (userHandler.removeUsers()) {
                     root.userModified()
@@ -124,7 +130,39 @@ Item {
 
     Component {
         id: editComponent
-        Edit {  
+        UserEditor {  
+            onModifyClicked: {
+                root.userModifyClicked()
+            }
+            onDeleteClicked: {
+                root.userDeleteClicked()
+            }
+        }
+    }
+
+    Component {
+        id: deleteComponent
+        UserDelete {  
+            onAcceptClicked: {
+                if (userHandler.removeUsers()) {
+                    root.userModified()
+                }
+            }
+        }
+    }
+
+    Component {
+        id: modifyComponent
+        UserModify {  
+            onPasswordChangeTriggered: {
+                if (userHandler.updateUserPassword(userNameText, passwordText, newPasswordText)) {
+                    root.userModified()
+                }
+                else {
+                    modifyFailed = true
+                    updateWarningText()
+                }
+            }
         }
     }
 

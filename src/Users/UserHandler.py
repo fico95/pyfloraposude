@@ -40,11 +40,11 @@ class UserHandler(QObject):
         
     @Slot(str, str, str, result=bool)
     def updateUserPassword(self, username: str, oldPassword: str, newPassword: str) -> bool:
-        if (not self.checkPasswordStrength(newPassword)):
-            print("Error updating user password: New password is not strong enough.")
-            return False
         if (not self.authenticateUser(username, oldPassword)):
             print("Error updating user password: Incorrect password or username.")
+            return False
+        if (not self.checkPasswordStrength(newPassword)):
+            print("Error updating user password: New password is not strong enough.")
             return False
         try:
             self.userDb.updateUserPassword(username, newPassword)

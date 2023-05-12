@@ -71,6 +71,14 @@ Window {
         onPotEditClicked: {
             stackController.openPotEditorScreen()
         }
+        onUserDeleteClicked: {
+            stackController.openUserDeleteScreen()
+            drawer.close()
+        }
+        onUserModifyClicked: {
+            stackController.openUserPasswordChangeScreen()
+            drawer.close()
+        }
         onOpenImageLoadDialog: {
             imageLoadDialog.open()
         }
