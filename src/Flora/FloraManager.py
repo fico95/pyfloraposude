@@ -46,8 +46,21 @@ class FloraManager(QObject):
         self.updatePlantsAndResetCurrentPlant()
         self.updatePotsAndResetCurrentPot()
 
+
+    @Slot()
+    def tooglePotVisibility(self):
+        self.allPotsVisible = not self.allPotsVisible
+        self.allPotsShownChanged.emit()
+        self.updatePotsAndResetCurrentPot()
+
+    @Slot()
+    def updatePotsSensorData(self):
+        if (PotsDataSampler.updateSensorData(self.potDb)):
+            self.updatePotsAndResetCurrentPot()
+
+
     @Slot(str, str, float, float, float, float, float, result = bool)
-    def addPlant(self, name, imagePath, soilMoisture, ph, salinity, lightLevel, temperature):
+    def addPlant(self, name, imagePath, soilMoisture, ph, salinity, lightLevel, temperature) -> bool:
         try:
             plant = Plant(None, name, imagePath, PlantData(soilMoisture, ph, salinity, lightLevel, temperature))
             self.plantDb.addPlant(plant)
@@ -58,10 +71,11 @@ class FloraManager(QObject):
         except Exception as e:
             print(f"Error adding plant: {e}")
             return False
+        return False
         
     @Slot(result = bool)
-    def removeCurrentPlant(self):
-        if (self.plantsHandler.currentPlant):
+    def removeCurrentPlant(self) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
             try:
                 self.plantDb.removePlantById(self.plantsHandler.currentPlant.id)
 
@@ -75,7 +89,7 @@ class FloraManager(QObject):
         return False
         
     @Slot(int, result=bool)
-    def setCurrentPlant(self, id):
+    def setCurrentPlant(self, id) -> bool:
         try:
             plant = self.plantDb.fetchPlantById(id)
             self.plantsHandler.setCurrentPlant(plant)
@@ -84,10 +98,15 @@ class FloraManager(QObject):
             self.plantsHandler.setCurrentPlant(None)
             print(f"Error setting current plant: {e}")
             return False
+        return False
+        
+    @Slot()
+    def resetCurrentPlant(self):
+        self.plantsHandler.resetCurrentPlant()
         
     @Slot(str, float, float, float, float, float, result = bool)
-    def updateCurrentPlantData(self, name, soilMoisture, ph, salinity, lightLevel, temperature):
-        if (self.plantsHandler.currentPlant):
+    def updateCurrentPlantData(self, name, soilMoisture, ph, salinity, lightLevel, temperature) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
             self.plantsHandler.currentPlant.name = name
             self.plantsHandler.currentPlant.plantCare.soilMoisture = soilMoisture
             self.plantsHandler.currentPlant.plantCare.ph = ph
@@ -97,61 +116,35 @@ class FloraManager(QObject):
             try:
                 self.plantDb.updatePlant(self.plantsHandler.currentPlant)
 
-                self.updateCurrentPlant()
-                self.updatePlants()
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
 
                 return False
             except Exception as e:
                 print(f"Error updating plant: {e}")
-                self.setCurrentPlant(self.plantsHandler.currentPlant.id)
+                self.updateCurrentPlant()
                 return False
         return False
     
     @Slot(str, result = bool)
     def updateCurrentPlantImage(self, imagePath):
-        if (self.plantsHandler.currentPlant):
+        if (self.plantsHandler.currentPlantValid()):
             self.plantsHandler.currentPlant.imagePath = imagePath
             try:
                 self.plantDb.updatePlant(self.plantsHandler.currentPlant)
 
-                self.updateCurrentPlant()
-                self.updatePlants()
+                self.updatePlantsAndCurrentPlant()
 
                 return True
             except Exception as e:
                 print(f"Error updating plant image: {e}")
-                self.setCurrentPlant(self.plantsHandler.currentPlant.id)
+                self.updateCurrentPlant()
                 return False
         return False
     
-    @Slot()
-    def resetCurrentPlant(self):
-        self.plantsHandler.resetCurrentPlant()
-
-    def updateCurrentPlant(self):
-        if (self.plantsHandler.currentPlant):
-            try:
-                self.plantsHandler.setCurrentPlant(self.plantDb.fetchPlantById(self.plantsHandler.currentPlant.id))
-                return True
-            except Exception as e:
-                print(f"Error updating current plant: {e}")
-                return False
-
-    def updatePlantsAndResetCurrentPlant(self):
-        self.updatePlants()
-        self.resetCurrentPlant()
-
-    def updatePlants(self):
-        self.plantModel.updateModel(self.plantDb.plants())
-
-    @Slot()
-    def tooglePotVisibility(self):
-        self.allPotsVisible = not self.allPotsVisible
-        self.allPotsShownChanged.emit()
-        self.updatePotsAndResetCurrentPot()
-
+    
     @Slot(str, int, result = bool)
-    def addPot(self, potName: str, plantId: int):
+    def addPot(self, potName: str, plantId: int) -> bool:
         try: 
             pot = Pot(None, potName, None if plantId < 0 else plantId, None, False)
             self.potDb.addPot(pot)
@@ -162,9 +155,24 @@ class FloraManager(QObject):
         except Exception as e:
             print(f"Error adding pot: {e}")
             return False
+        return False
+    
+    @Slot(result=bool)
+    def removeCurrentPot(self) -> bool:
+        if (self.potsHandler.currentPotValid()):
+            try:
+                self.potDb.removePotById(self.potsHandler.currentPot.id)
+
+                self.updatePotsAndResetCurrentPot()
+                
+                return True
+            except Exception as e:
+                print(f"Error removing pot: {e}")
+                return False
+        return False
         
     @Slot(int, result=bool)
-    def setCurrentPot(self, id):
+    def setCurrentPot(self, id) -> bool:
         try:
             pot = self.potDb.fetchPotById(id)
 
@@ -177,88 +185,91 @@ class FloraManager(QObject):
             self.potsHandler.setCurrentPot(None)
             print(f"Error setting current pot: {e}")
             return False
+        return False
         
-    @Slot(result=bool)
-    def removeCurrentPot(self):
-        if (self.potsHandler.currentPot):
-            try:
-                self.potDb.removePotById(self.potsHandler.currentPot.id)
+    @Slot()
+    def resetCurrentPot(self):
+        self.potsHandler.resetCurrentPot()
 
-                self.updatePotsAndResetCurrentPot()
-                
+    @Slot(str, result=bool)
+    def updateCurrentPotName(self, name) -> bool:
+        if (self.potsHandler.currentPotValid()):
+            self.potsHandler.currentPot.potName = name
+            try:
+                self.potDb.updatePotName(self.potsHandler.currentPot)
+
+                self.updatePotsAndCurrentPot()
+
                 return True
             except Exception as e:
-                print(f"Error removing pot: {e}")
+                print(f"Error updating pot: {e}")
+                self.updateCurrentPot()
                 return False
         return False
 
     @Slot(int, result=bool)
-    def addPlantToCurrentPot(self, plantId):
-        if (self.potsHandler.currentPot):
+    def addPlantToCurrentPot(self, plantId) -> bool:
+        if (self.potsHandler.currentPotValid()):
             try:
                 plant = self.plantDb.fetchPlantById(plantId)
                 if (plant == None):
                     return False
                 self.potDb.addPlantToPot(self.potsHandler.currentPot, plant)
 
-                self.updateCurrentPot()
-                # TODO: MOVEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-                self.resetCurrentPlant()
-
-                self.updatePots()
+                self.updatePotsAndCurrentPot()
                 
                 return True
             except Exception as e:
                 print(f"Error adding plant to pot: {e}")
+                self.updateCurrentPot()
                 return False
         return False
 
     @Slot(result=bool)
-    def removePlantFromCurrentPot(self):
+    def removePlantFromCurrentPot(self) -> bool:
         if (self.potsHandler.currentPot):
             try:
                 self.potDb.removePlantFromPot(self.potsHandler.currentPot)
 
-                self.updateCurrentPot()
-
-                self.updatePots()
+                self.updatePotsAndCurrentPot()
                 
                 return True
             except Exception as e:
                 print(f"Error removing plant from pot: {e}")
+                self.updateCurrentPot()
+                return False
+        return False
+
+
+    def updatePlantsAndCurrentPlant(self):
+        self.updatePlants()
+        self.updateCurrentPlant()
+
+    def updatePlantsAndResetCurrentPlant(self):
+        self.updatePlants()
+        self.resetCurrentPlant()
+
+    def updatePlants(self):
+        self.plantModel.updateModel(self.plantDb.plants())
+
+    def updateCurrentPlant(self) -> bool:
+        if (self.plantsHandler.currentPlant):
+            try:
+                self.plantsHandler.setCurrentPlant(self.plantDb.fetchPlantById(self.plantsHandler.currentPlant.id))
+                return True
+            except Exception as e:
+                print(f"Error updating current plant: {e}")
                 return False
         return False
     
-    @Slot(str, result=bool)
-    def updateCurrentPotName(self, name):
-        if (self.potsHandler.currentPot):
-            self.potsHandler.currentPot.potName = name
-            try:
-                self.potDb.updatePotName(self.potsHandler.currentPot)
 
-                self.updateCurrentPot()
-                self.updatePots()
+    def updatePotsAndCurrentPot(self):
+        self.updatePots()
+        self.updateCurrentPot()
 
-                return True
-            except Exception as e:
-                print(f"Error updating pot: {e}")
-                self.setCurrentPot(self.potsHandler.currentPot.id)
-                return False
-        return False
-
-    @Slot()
-    def resetCurrentPot(self):
-        self.potsHandler.resetCurrentPot()
-
-    @Slot()
-    def updatePotsSensorData(self):
-        if (PotsDataSampler.updateSensorData(self.potDb)):
-            self.updatePotsAndResetCurrentPot()
-
-    def updateCurrentPot(self):
-        if (self.potsHandler.currentPot):
-            return self.setCurrentPot(self.potsHandler.currentPot.id)
-        return False
+    def updatePotsAndResetCurrentPot(self):
+        self.updatePots()
+        self.resetCurrentPot()
 
     def updatePots(self):
         pots = self.potDb.pots() if self.allPotsVisible else self.potDb.potsWithoutPlants()
@@ -272,9 +283,9 @@ class FloraManager(QObject):
             if plant:
                 pot.setPlant(plant)
             potsMerged.append(pot)
-
         self.potModel.updateModel(potsMerged)
 
-    def updatePotsAndResetCurrentPot(self):
-        self.updatePots()
-        self.resetCurrentPot()    
+    def updateCurrentPot(self) -> bool:
+        if (self.potsHandler.currentPot):
+            return self.setCurrentPot(self.potsHandler.currentPot.id)
+        return False
