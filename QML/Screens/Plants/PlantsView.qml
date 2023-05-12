@@ -29,7 +29,6 @@ Item {
                     anchors.margins: 10
                     nameText: name
                     iconSource: imagePath !== "" ? "file://" + imagePath : ""
-                    Component.onCompleted: console.log("imagePath: " + imagePath)
                     mouseArea.onClicked: {
                         openPlantEditor(id)
                     }
