@@ -151,7 +151,7 @@ Drawer {
         spacing: 5
         delegate: CustomButton {
             height: visible ? listView.height / 10 : -listView.spacing
-            onClicked: action()
+            onClicked: model.action()
             Component.onCompleted: {
                 text = Qt.binding(buttonText)
                 visible = Qt.binding(model.shown)

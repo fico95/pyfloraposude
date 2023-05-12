@@ -91,27 +91,27 @@ class Pot:
         return 0.0
     
     def soilMoistureOk(self) -> bool:
-        if (self.plantValid()):
+        if (self.plantValid() and self.sensorDataExists()):
             return self.plant.plantCare.soilMoistureOk(self.lastSensorSoilMoisture())
         return True
     
     def temperatureOk(self) -> bool:
-        if (self.plantValid()):
+        if (self.plantValid() and self.sensorDataExists()):
             return self.plant.plantCare.temperatureOk(self.lastSensorTemperature())
         return True
     
     def lightLevelOk(self) -> bool:
-        if (self.plantValid()):
+        if (self.plantValid() and self.sensorDataExists()):
             return self.plant.plantCare.lightLevelOk(self.lastSensorLightLevel())
         return True
     
     def salinityOk(self) -> bool:
-        if (self.plantValid()):
+        if (self.plantValid() and self.sensorDataExists()):
             return self.plant.plantCare.salinityOk(self.lastSensorSalinity())
         return True
     
     def phOk(self) -> bool:
-        if (self.plantValid()):
+        if (self.plantValid() and self.sensorDataExists()):
             return self.plant.plantCare.phOk(self.lastSensorPh())
         return True
 

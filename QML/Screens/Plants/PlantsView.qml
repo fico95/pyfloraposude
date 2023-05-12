@@ -24,11 +24,11 @@ Item {
             delegate: Item {
                 width: gridView.mainGrid.cellWidth 
                 height: gridView.mainGrid.cellHeight
-                PotButton {
+                GridButton {
                     anchors.fill: parent
                     anchors.margins: 10
-                    potName: name
-                    plantIconSource: "file://" + imagePath
+                    nameText: name
+                    iconSource: imagePath !== "" ? "file://" + imagePath : ""
                     mouseArea.onClicked: {
                         openPlantEditor(id)
                     }
