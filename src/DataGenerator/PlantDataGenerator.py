@@ -35,33 +35,33 @@ def getPlantDataForPosition(latitude, longitude, numberOfSamples, differentTempe
     return data
 
 def getTemperatureForPossition(latitude, longitude):
-    # Get current temperature from OpenMeteo API, or generate random data if API call fails
+    temperatureCelsiusRangeLow, temperatureCelsiusRangeHigh = PlantData.temperatureRange()
     temperatureCelsius = round(TemperatureGenerator.getTemperature(latitude, longitude), 1)
     if temperatureCelsius is not None:
-        return max(min(temperatureCelsius, 40), -10)
+        return max(min(temperatureCelsius, temperatureCelsiusRangeHigh), temperatureCelsiusRangeLow)
     return getTemperature()
 
 def getTemperature():
-    # Generate random data for temperature
-    temperatureCelsius = round(random.uniform(-10, 40), 1)
+    temperatureCelsiusRangeLow, temperatureCelsiusRangeHigh = PlantData.temperatureRange()
+    temperatureCelsius = round(random.uniform(temperatureCelsiusRangeLow, temperatureCelsiusRangeHigh), 1)
     return temperatureCelsius
 
 def getSoilMoisture():
-    # Generate random data for soil moisture
-    soilMoisture = round(random.uniform(0, 100), 1)
+    soilMoistureRangeLow, soilMoistureRangeHigh = PlantData.soilMoistureRange()
+    soilMoisture = round(random.uniform(soilMoistureRangeLow, soilMoistureRangeHigh), 1)
     return soilMoisture
 
 def getPh():
-    # Generate random data for pH values
-    ph = round(random.uniform(0, 14), 1)
+    phLevelRangeLow, phLevelRangeHigh = PlantData.phRange()
+    ph = round(random.uniform(phLevelRangeLow, phLevelRangeHigh), 1)
     return ph
 
 def getSalinity():
-    # Generate random data for salinity
-    salinity = round(random.uniform(0, 100), 1)
+    salinitLevelRangeLow, salinitLevelRangeHigh = PlantData.salinityRange()
+    salinity = round(random.uniform(salinitLevelRangeLow, salinitLevelRangeHigh), 1)
     return salinity
 
 def getLightLevel():
-    # Generate random data for light level
-    lightLevel = round(random.uniform(0, 100), 1)
+    lightLevelRangeLow, lightLevelRangeHigh = PlantData.lightLevelRange()
+    lightLevel = round(random.uniform(lightLevelRangeLow, lightLevelRangeHigh), 1)
     return lightLevel

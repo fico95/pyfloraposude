@@ -9,25 +9,65 @@ class PlantData:
         self.lightLevel = lightLevel
         self.temperature = temperature
 
+    @staticmethod
+    def soilMoistureRange():
+        return (0.0, 100.0)
+    
+    @staticmethod
+    def phRange():
+        return (0.0, 14.0)
+    
+    @staticmethod
+    def salinityRange():
+        return (0.0, 100.0)
+    
+    @staticmethod
+    def lightLevelRange():
+        return (0.0, 100.0)
+    
+    @staticmethod
+    def temperatureRange():
+        return (-10.0, 40.0)
+    
+    @staticmethod
+    def soilMouistureOkTolerance():
+        return 20.0
+    
+    @staticmethod
+    def phOkTolerance():
+        return 1.5
+    
+    @staticmethod
+    def salinityOkTolerance():
+        return 20.0
+    
+    @staticmethod
+    def lightLevelOkTolerance():
+        return 20.0
+    
+    @staticmethod
+    def temperatureOkTolerance():
+        return 5.0
+
     def soilMoistureOk(self, soilMoisture: float):
-        return ((soilMoisture >= self.soilMoisture - 20.0) and \
-                (soilMoisture <= self.soilMoisture + 20.0))
+        return ((soilMoisture >= self.soilMoisture - self.soilMouistureOkTolerance()) and \
+                (soilMoisture <= self.soilMoisture + self.soilMouistureOkTolerance()))
     
     def phOk(self, ph: float):
-        return ((ph >= self.ph - 1.5) and \
-                (ph <= self.ph + 1.5))
+        return ((ph >= self.ph - self.phOkTolerance()) and \
+                (ph <= self.ph + self.phOkTolerance()))
 
     def salinityOk(self, salinity: float):
-        return ((salinity >= self.salinity - 20) and \
-                (salinity <= self.salinity + 20))
+        return ((salinity >= self.salinity - self.salinityOkTolerance()) and \
+                (salinity <= self.salinity + self.salinityOkTolerance()))
     
     def lightLevelOk(self, lightLevel: float):
-        return ((lightLevel >= self.lightLevel - 20) and \
-                (lightLevel <= self.lightLevel + 20))
+        return ((lightLevel >= self.lightLevel - self.lightLevelOkTolerance()) and \
+                (lightLevel <= self.lightLevel + self.lightLevelOkTolerance()))
 
     def temperatureOk(self, temperature: float):
-        return ((temperature >= self.temperature - 5) and \
-                (temperature <= self.temperature + 5))
+        return ((temperature >= self.temperature - self.temperatureOkTolerance()) and \
+                (temperature <= self.temperature + self.temperatureOkTolerance()))
 
     @classmethod
     def fromJson(cls, jsonData: str):
