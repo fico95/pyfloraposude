@@ -2,7 +2,7 @@ import QtQuick 2.14
 import QtQuick.Controls 2.12
 
 Item {
-    readonly property bool registeredUsers: userHandler.numUsers > 0
+    readonly property bool registeredUsers: userHandler.usersCount > 0
 
     signal registerClicked
     signal loginClicked

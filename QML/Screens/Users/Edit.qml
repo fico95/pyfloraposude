@@ -114,7 +114,7 @@ Item {
                 if (!validateUserDelete()) {
                     return
                 }
-                if (!userHandler.deleteUser(textFieldUsername.text, textFieldOldPassword.text)) {
+                if (!userHandler.removeUserByUsername(textFieldUsername.text, textFieldOldPassword.text)) {
                     warningText.text = "Failed to delete account."
                     return
                 }

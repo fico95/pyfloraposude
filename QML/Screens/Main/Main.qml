@@ -80,7 +80,7 @@ Item {
         id: forgottenPasswordComponent
         ForgottenPassword {
             onAcceptClicked: {
-                if (userHandler.deleteAllUsers()) {
+                if (userHandler.removeUsers()) {
                     stackController.handleUserChange()
                 }
             }

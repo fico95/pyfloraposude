@@ -33,7 +33,7 @@ class Stack:
 class StackController(QObject):
     @Signal
     def screenChanged(self):
-         pass
+        pass
 
     @Property(int, notify=screenChanged)
     def currentScreen(self):
