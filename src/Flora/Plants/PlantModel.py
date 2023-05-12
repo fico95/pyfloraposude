@@ -14,7 +14,7 @@ class PlantModel(QAbstractListModel):
 
         self.plants = []
     
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QModelIndex()) -> int:
         return len(self.plants)
 
     def data(self, index, role=Qt.DisplayRole):

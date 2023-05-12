@@ -36,23 +36,23 @@ class PotModel(QAbstractListModel):
         elif role == PotModel.PotId:
             return pot.id
         elif role == PotModel.PlantName:
-            return pot.getPlantName()
+            return pot.plantName()
         elif role == PotModel.PlantImagePath:
-            return pot.getPlantImagePath()
+            return pot.plantImagePath()
         elif role == PotModel.PlantId:
-            return pot.getPlantId()
+            return pot.plantId()
         elif role == PotModel.Broken:
             return pot.isBroken
         elif role == PotModel.TemperatureOk:
-            return pot.getTemperatureOk()
+            return pot.temperatureOk()
         elif role == PotModel.SoilMoistureOk:
-            return pot.getSoilMoistureOk()
+            return pot.soilMoistureOk()
         elif role == PotModel.LightLevelOk:
-            return pot.getLightLevelOk()
+            return pot.lightLevelOk()
         elif role == PotModel.SalinityOk:
-            return pot.getSalinityOk()
+            return pot.salinityOk()
         elif role == PotModel.PhOk:
-            return pot.getPhOk()
+            return pot.phOk()
 
         return None
     

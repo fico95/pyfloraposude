@@ -1,4 +1,4 @@
-from DataGenerator.PlantDataGenerator import getPlantDataCampus
+from DataGenerator.PlantDataGenerator import generatePlantDataCampus
 
 from Flora.Pots.PotDb import PotDb
 
@@ -17,7 +17,7 @@ class PotsDataSampler:
             return False
         
         try:
-            potsSensorData = getPlantDataCampus(len(pots))
+            potsSensorData = generatePlantDataCampus(len(pots))
         except Exception as e:
             print(f"Error getting pots sensor data: {e}")
             return False
@@ -27,7 +27,7 @@ class PotsDataSampler:
             if (pot.isBroken or pot.plantId is None):
                 continue
             try:
-                broken = PotsDataSampler.getPotBroken()
+                broken = PotsDataSampler.generateBrokenProbability()
                 pot.setBroken(broken)
                 if (not pot.isBroken):
                     pot.addSensorData(potSensorData)
@@ -40,5 +40,5 @@ class PotsDataSampler:
         return success
     
     @staticmethod
-    def getPotBroken() -> bool:
+    def generateBrokenProbability() -> bool:
         return random.random() > 0.95

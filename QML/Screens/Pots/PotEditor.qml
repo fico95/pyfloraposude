@@ -1,76 +1,79 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.12
 import QtCharts 2.5
+import Enums 1.0
 
 import "../../Controls"
 
 Item {
-    property bool isPlantSet: potsHandler.getCurrentPotPlantExists()
+    property bool isPlantSet: potsHandler.currentPotPlantValid()
 
     signal plantSelectTriggered
     signal plantClearTriggered
 
     function updateData() {
-        isPlantSet = potsHandler.getCurrentPotPlantExists()
-        plantIcon.source = potsHandler.getCurrentPotPlantImagePath() !== "" ? "file://" + potsHandler.getCurrentPotPlantImagePath() : ""
-        name.text = potsHandler.getCurrentPotName()
+        isPlantSet = potsHandler.currentPotPlantValid()
+        plantIcon.source = potsHandler.currentPotPlantImagePath() !== "" ? "file://" + potsHandler.currentPotPlantImagePath() : ""
+        name.text = potsHandler.currentPotName()
         potAndPlantData.visible = isPlantSet
 
-        let potBroken = potsHandler.getCurrentPotIsBroken()
+        let potBroken = potsHandler.currentPotIsBroken()
         rectBroken.visible = potBroken
 
-        temperatureData.plantValueText = potsHandler.getCurrentPotPlantTemperature()
+        temperatureData.plantValueText = potsHandler.currentPotPlantTemperature()
         temperatureData.dataExists = potsHandler.sensorDataExists()
-        temperatureData.sensorValueText = potsHandler.getLastSensorTemperature()
+        temperatureData.sensorValueText = potsHandler.currentPotLastSensorTemperature()
         temperatureData.potBroken = potBroken
-        temperatureData.dataOk = potsHandler.getCurrentPotPlantTemperatureOk()
+        temperatureData.dataOk = potsHandler.currentPotTemperatureOk()
 
-        soilMoistureData.plantValueText = potsHandler.getCurrentPotPlantSoilMoisture()
+        soilMoistureData.plantValueText = potsHandler.currentPotPlantSoilMoisture()
         soilMoistureData.dataExists = potsHandler.sensorDataExists()
-        soilMoistureData.sensorValueText = potsHandler.getLastSensorSoilMoisture()
+        soilMoistureData.sensorValueText = potsHandler.currentPotLastSensorSoilMoisture()
         soilMoistureData.potBroken = potBroken
-        soilMoistureData.dataOk = potsHandler.getCurrentPotPlantSoilMoistureOk()
+        soilMoistureData.dataOk = potsHandler.currentPotSoilMoistureOk()
 
-        lightLevelData.plantValueText = potsHandler.getCurrentPotPlantLightLevel()
+        lightLevelData.plantValueText = potsHandler.currentPotPlantLightLevel()
         lightLevelData.dataExists = potsHandler.sensorDataExists()
-        lightLevelData.sensorValueText = potsHandler.getLastSensorLightLevel()
+        lightLevelData.sensorValueText = potsHandler.currentPotLastSensorLightLevel()
         lightLevelData.potBroken = potBroken
-        lightLevelData.dataOk = potsHandler.getCurrentPotPlantLightLevelOk()
+        lightLevelData.dataOk = potsHandler.currentPotLightLevelOk()
 
-        phData.plantValueText = potsHandler.getCurrentPotPlantPh()
+        phData.plantValueText = potsHandler.currentPotPlantPh()
         phData.dataExists = potsHandler.sensorDataExists()
-        phData.sensorValueText = potsHandler.getLastSensorPh()
+        phData.sensorValueText = potsHandler.currentPotLastSensorPh()
         phData.potBroken = potBroken
-        phData.dataOk = potsHandler.getCurrentPotPlantPhOk()
+        phData.dataOk = potsHandler.currentPotPhOk()
 
-        salinityData.plantValueText = potsHandler.getCurrentPotPlantSalinity()
+        salinityData.plantValueText = potsHandler.currentPotPlantSalinity()
         salinityData.dataExists = potsHandler.sensorDataExists()
-        salinityData.sensorValueText = potsHandler.getLastSensorSalinity()
+        salinityData.sensorValueText = potsHandler.currentPotLastSensorSalinity()
         salinityData.potBroken = potBroken
-        salinityData.dataOk = potsHandler.getCurrentPotPlantSalinityOk()
+        salinityData.dataOk = potsHandler.currentPotSalinityOk()
     }
 
     function updateGraph() {
         chart.removeAllSeries()
 
-        if (potsGraphHandler.graphType < 1 || potsGraphHandler.graphType > 3) {
-            return
-        }
-
         axisX.min = -0.5
-        axisX.max = potsGraphHandler.getNumberOfSensorDataValues() + 0.5
+        axisX.max = potsGraphHandler.sensorDataCount() + 0.5
 
-        let gt = potsGraphHandler.graphType == 1 ? ChartView.SeriesTypeLine : potsGraphHandler.graphType == 2 ? ChartView.SeriesTypeBar : ChartView.SeriesTypeScatter
-        if (potsGraphHandler.graphType == 2) {
-            let series = chart.createSeries(gt, "" , axisX, axisY)
-            potsGraphHandler.updateSeriesForSensorBars(series)
-        }
-        else {
-            let numberOfSensors = potsGraphHandler.getNumberOfSensors()
-            for (let i = 0; i < numberOfSensors; ++i) {
-                let series = chart.createSeries(gt, "" , axisX, axisY)
-                potsGraphHandler.updateSeriesForSensor(series, i)
-            }
+        switch (potsGraphHandler.graphType) {
+            case Enums.GraphType.Line:
+                for (let i = 0; i < potsGraphHandler.numberOfSensors(); ++i) {
+                    let series = chart.createSeries(ChartView.SeriesTypeLine, "" , axisX, axisY)
+                    potsGraphHandler.updateGraphSeries(series, i)
+                }
+                break
+            case Enums.GraphType.Scatter:
+                for (let i = 0; i < potsGraphHandler.numberOfSensors(); ++i) {
+                    let series = chart.createSeries(ChartView.SeriesTypeScatter, "" , axisX, axisY)
+                    potsGraphHandler.updateGraphSeries(series, i)
+                }
+                break
+            case Enums.GraphType.Bar:
+                let series = chart.createSeries(ChartView.SeriesTypeBar, "" , axisX, axisY)
+                potsGraphHandler.updateGraphBarSeries(series)
+                break
         }
     }
 
@@ -149,7 +152,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             verticalAlignment: Text.AlignTop
             color: "black"
-            text: potsHandler.getCurrentPotName()
+            text: potsHandler.currentPotName()
             onTextChanged: {
                 floraManager.updateCurrentPotName(name.text)
             }
@@ -288,7 +291,7 @@ Item {
     }
 
     Component.onCompleted: {
-        if (!potsHandler.isCurrentPotSet()) {
+        if (!potsHandler.currentPotValid()) {
             stackController.goBack()
             return
         }

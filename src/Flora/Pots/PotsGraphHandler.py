@@ -2,10 +2,9 @@ from PySide2.QtCore import QObject, Signal, Slot, Property
 from PySide2.QtCharts import QtCharts
 
 from Flora.Plants.Plant import PlantData
+from Utils.Enums import Enums
 
-from enum import IntEnum
 from typing import List
-import random
 
 class PotsGraphHandler(QObject):
 
@@ -13,58 +12,57 @@ class PotsGraphHandler(QObject):
 
     @Property(int, notify=graphChanged)
     def graphType(self):
-        return self.selectedGraph
-
-    class GraphType(IntEnum):
-        Unknown, \
-        Line, \
-        Bar, \
-        Scatter = range(4)
+        return self.selectedGraphType
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.sensorData = None
+        self.selectedGraphType = Enums.GraphType.Line
 
     def resetGraph(self):
         self.sensorData = None
-        self.selectedGraph = PotsGraphHandler.GraphType.Unknown
+        self.selectedGraphType = Enums.GraphType.Line
         self.graphChanged.emit()        
+
+    def sensorDataValid(self) -> bool:
+        return self.sensorData is not None
 
     def setSensorData(self, sensorData: List[PlantData]):
         self.sensorData = sensorData
+        self.setLineGraph()
 
     @Slot()
     def setLineGraph(self):
-        self.selectedGraph = PotsGraphHandler.GraphType.Line
+        self.selectedGraphType = Enums.GraphType.Line
         self.graphChanged.emit()
 
     @Slot()
     def setBarGraph(self):
-        self.selectedGraph = PotsGraphHandler.GraphType.Bar
+        self.selectedGraphType = Enums.GraphType.Bar
         self.graphChanged.emit()
 
     @Slot()
     def setScatterGraph(self):
-        self.selectedGraph = PotsGraphHandler.GraphType.Scatter
+        self.selectedGraphType = Enums.GraphType.Scatter
         self.graphChanged.emit()
 
     @Slot(result=int)
-    def getNumberOfSensors(self):
-        return 5
+    def numberOfSensors(self) -> int:
+        return PlantData.propertiesCount()
     
     @Slot(result=int)
-    def getNumberOfSensorDataValues(self):
-        if (self.sensorData is None):
-            return 0
-        return len(self.sensorData) - 1
+    def sensorDataCount(self) -> int:
+        if (self.sensorDataValid):
+            return len(self.sensorData)
+        return 0
     
     @Slot(QtCharts.QAbstractSeries, int)
-    def updateSeriesForSensor(self, series: QtCharts.QAbstractSeries, sensorIndex: int):
+    def updateGraphSeries(self, series: QtCharts.QAbstractSeries, sensorIndex: int):
         series.clear()
-        if (sensorIndex >= self.getNumberOfSensors() or sensorIndex < 0):
-            return None
         if (self.sensorData is None):
+            return None
+        if (sensorIndex > (self.numberOfSensors() - 1) or sensorIndex < 0):
             return None
         if (sensorIndex == 0):
             series.setName("Temperature")
@@ -88,21 +86,21 @@ class PotsGraphHandler(QObject):
                 series.append(i, self.sensorData[i].ph)
 
     @Slot(QtCharts.QAbstractBarSeries)
-    def updateSeriesForSensorBars(self, series):
+    def updateGraphBarSeries(self, series: QtCharts.QAbstractBarSeries):
         series.clear()
-        if (self.sensorData is None):
+        if (not self.sensorDataValid()):
             return None
         barSetTemperature = QtCharts.QBarSet("Temperature")
         barSetSalinity = QtCharts.QBarSet("Salinity")
         barSetLight = QtCharts.QBarSet("Light level")
         barSetSoil = QtCharts.QBarSet("Soil moisture")
         barSetPh = QtCharts.QBarSet("Ph")
-        for i in range(len(self.sensorData)):
-            barSetTemperature.append(self.sensorData[i].temperature)
-            barSetSalinity.append(self.sensorData[i].salinity)
-            barSetLight.append(self.sensorData[i].lightLevel)
-            barSetSoil.append(self.sensorData[i].soilMoisture)
-            barSetPh.append(self.sensorData[i].ph)
+        for data in self.sensorData:
+            barSetTemperature.append(data.temperature)
+            barSetSalinity.append(data.salinity)
+            barSetLight.append(data.lightLevel)
+            barSetSoil.append(data.soilMoisture)
+            barSetPh.append(data.ph)
         series.append(barSetTemperature)
         series.append(barSetSalinity)
         series.append(barSetLight)

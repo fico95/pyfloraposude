@@ -14,20 +14,15 @@ class ImageManager(QObject):
     @Slot(str, result=str)
     def copyImage(self, imagePath):
         try:
-            # Open the image file and validate it
             with Image.open(imagePath) as img:
                 img.verify()
 
-            # Construct the destination path and copy the image file
             baseName = os.path.basename(imagePath)
             destinationPath = os.path.join(self.imagesPath, baseName)
             shutil.copy2(imagePath, destinationPath)
 
-
-            # Return the destination path
             return destinationPath
 
         except Exception as e:
-            # If the image is not valid or cannot be opened, return an empty string
             print(f"Error copying image: {e}")
-            return ''
+            return ""

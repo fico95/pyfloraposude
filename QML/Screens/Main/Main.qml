@@ -1,5 +1,5 @@
 import QtQuick 2.14
-
+import Enums 1.0
 import "../../Controls"
 
 import "../Users"

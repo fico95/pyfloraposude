@@ -1,6 +1,6 @@
 from Flora.Plants.Plant import Plant
 from Flora.Plants.PlantData import PlantData
-from DataGenerator.PlantDataGenerator import randomPlantData
+from DataGenerator.PlantDataGenerator import generateRandomPlantData
 
 import sqlite3
 from typing import List
@@ -18,7 +18,7 @@ class PlantDb:
         cursor.execute("PRAGMA foreign_keys = ON")
         self.conn.commit()
 
-    def tableCreated(self):
+    def tableCreated(self) -> bool:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT name FROM sqlite_master WHERE type='table' AND name='plants'
@@ -52,7 +52,7 @@ class PlantDb:
                       ("Bird of Paradise", imagesPath + "/bird_of_paradise.png"),
                       ("Chinese Money Plant", imagesPath + "/chinese_money_plant.png"),
                       ("Calathea", imagesPath + "/calathea.png")]
-        plantData = randomPlantData(len(plantNames))
+        plantData = generateRandomPlantData(len(plantNames))
 
         for name, data in zip(plantNames, plantData):
             plant = Plant(None, name[0], name[1], data)

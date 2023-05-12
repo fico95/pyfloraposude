@@ -1,7 +1,10 @@
 from Flora.Plants.Plant import Plant
+from Flora.Plants.PlantData import PlantData
+
+from typing import List
 
 class Pot:
-    def __init__(self, id : int, potName : str, plantId : int, sensorData : list, isBroken : bool):
+    def __init__(self, id: int, potName: str, plantId: int, sensorData: List[PlantData], isBroken: bool):
         self.id = id
         self.potName = potName
         self.plantId = plantId
@@ -10,106 +13,105 @@ class Pot:
         self.isBroken = isBroken
         self.maxSensorData = 50
 
+    def plantValid(self) -> bool:
+        return self.plant != None
+
     def setPlant(self, plant: Plant):
         self.plant = plant
 
-    def addSensorData(self, sensorData):
+    def addSensorData(self, sensorData: PlantData):
         if (len(self.sensorData) >= self.maxSensorData):
             self.sensorData.pop(0)
         self.sensorData.append(sensorData)
 
-    def setBroken(self, isBroken : bool):
+    def setBroken(self, isBroken: bool):
         self.isBroken = isBroken
 
-    def getPlantId(self) -> int:
-        if (self.plant):
-            return self.plant.id
-        return -1
-
-    def getPlantName(self) -> str:
-        if (self.plant):
+    def plantName(self) -> str:
+        if (self.plantValid()):
             return self.plant.name
         return ""
     
-    def getPlantImagePath(self) -> str:
-        if (self.plant):
+    def plantImagePath(self) -> str:
+        if (self.plantValid()):
             return self.plant.imagePath
         return ""
     
-    def getPlantSoilMoisture(self) -> float:
-        if (self.plant):
+    def plantSoilMoisture(self) -> float:
+        if (self.plantValid()):
             return self.plant.plantCare.soilMoisture
         return 0.0
     
-    def getPlantTemperature(self) -> float:
-        if (self.plant):
+    def plantTemperature(self) -> float:
+        if (self.plantValid()):
             return self.plant.plantCare.temperature
         return 0.0
     
-    def getPlantLightLevel(self) -> float:
-        if (self.plant):
+    def plantLightLevel(self) -> float:
+        if (self.plantValid()):
             return self.plant.plantCare.lightLevel
         return 0.0
     
-    def getPlantSalinity(self) -> float:
-        if (self.plant):
+    def plantSalinity(self) -> float:
+        if (self.plantValid()):
             return self.plant.plantCare.salinity
         return 0.0
 
-    def getPlantPh(self) -> float:
-        if (self.plant):
+    def plantPh(self) -> float:
+        if (self.plantValid()):
             return self.plant.plantCare.ph
         return 0.0
     
-    def getLastMeasuredSoilMoisture(self) -> float:
+    def sensorDataExists(self) -> bool:
+        return len(self.sensorData) > 0
+    
+    def lastSensorSoilMoisture(self) -> float:
         if (self.sensorDataExists()):
             return self.sensorData[-1].soilMoisture
         return 0.0
     
-    def getLastMeasuredTemperature(self) -> float:
+    def lastSensorTemperature(self) -> float:
         if (self.sensorDataExists()):
             return self.sensorData[-1].temperature
         return 0.0
     
-    def getLastMeasuredLightLevel(self) -> float:
+    def lastSensorLightLevel(self) -> float:
         if (self.sensorDataExists()):
             return self.sensorData[-1].lightLevel
         return 0.0
     
-    def getLastMeasuredSalinity(self) -> float:
+    def lastSensorSalinity(self) -> float:
         if (self.sensorDataExists()):
             return self.sensorData[-1].salinity
         return 0.0
     
-    def getLastMeasuredPh(self) -> float:
+    def lastSensorPh(self) -> float:
         if (self.sensorDataExists()):
             return self.sensorData[-1].ph
         return 0.0
     
-    def getSoilMoistureOk(self) -> bool:
-        if (self.plant):
-            return self.plant.plantCare.soilMoistureOk(self.getLastMeasuredSoilMoisture())
+    def soilMoistureOk(self) -> bool:
+        if (self.plantValid()):
+            return self.plant.plantCare.soilMoistureOk(self.lastSensorSoilMoisture())
         return True
     
-    def getTemperatureOk(self) -> bool:
-        if (self.plant):
-            return self.plant.plantCare.temperatureOk(self.getLastMeasuredTemperature())
+    def temperatureOk(self) -> bool:
+        if (self.plantValid()):
+            return self.plant.plantCare.temperatureOk(self.lastSensorTemperature())
         return True
     
-    def getLightLevelOk(self) -> bool:
-        if (self.plant):
-            return self.plant.plantCare.lightLevelOk(self.getLastMeasuredLightLevel())
+    def lightLevelOk(self) -> bool:
+        if (self.plantValid()):
+            return self.plant.plantCare.lightLevelOk(self.lastSensorLightLevel())
         return True
     
-    def getSalinityOk(self) -> bool:
-        if (self.plant):
-            return self.plant.plantCare.salinityOk(self.getLastMeasuredSalinity())
+    def salinityOk(self) -> bool:
+        if (self.plantValid()):
+            return self.plant.plantCare.salinityOk(self.lastSensorSalinity())
         return True
     
-    def getPhOk(self) -> bool:
-        if (self.plant):
-            return self.plant.plantCare.phOk(self.getLastMeasuredPh())
+    def phOk(self) -> bool:
+        if (self.plantValid()):
+            return self.plant.plantCare.phOk(self.lastSensorPh())
         return True
 
-    def sensorDataExists(self) -> bool:
-        return len(self.sensorData) > 0

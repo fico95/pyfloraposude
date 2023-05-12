@@ -2,13 +2,14 @@ import os
 import sys
 
 from PySide2.QtWidgets import QApplication
-from PySide2.QtQml import QQmlApplicationEngine
+from PySide2.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PySide2.QtQuickControls2 import QQuickStyle
 
 from StackController.StackController import StackController
 from Users.UserHandler import UserHandler
 from Flora.FloraManager import FloraManager
-from Helpers.ImageManager import ImageManager
+from Utils.ImageManager import ImageManager
+from Utils.Enums import Enums
 
 class Application(QApplication):
     def __init__(self, *args, **kwargs):
@@ -16,6 +17,8 @@ class Application(QApplication):
 
         self.setOrganizationName("None")
         self.setOrganizationDomain("None")
+
+        qmlRegisterType(Enums, "Enums", 1, 0, "Enums")
 
         self.initialized = False
 

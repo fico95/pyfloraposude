@@ -20,53 +20,53 @@ class PlantsHandler(QObject):
         self.currentPlantChanged.emit()
 
     @Slot(result=bool)
-    def currentPlantValid(self):
+    def currentPlantValid(self) -> bool:
         return self.currentPlant != None
 
     @Slot(result=int)
-    def curentPlantId(self):
+    def curentPlantId(self) -> int:
         if (self.currentPlantValid()):
             return self.currentPlant.id
         return -1
 
     @Slot(result=str)
-    def currentPlantName(self):
+    def currentPlantName(self) -> str:
         if (self.currentPlantValid()):
             return self.currentPlant.name
         return ""
     
     @Slot(result=str)
-    def currentPlantImagePath(self):
+    def currentPlantImagePath(self) -> str:
         if (self.currentPlantValid()):
             return self.currentPlant.imagePath
         return ""
     
     @Slot(result=float)
-    def currentPlantDesiredSoilMoisture(self):
+    def currentPlantDesiredSoilMoisture(self) -> float:
         if (self.currentPlantValid()):
             return self.currentPlant.plantCare.soilMoisture
         return 0.0
     
     @Slot(result=float)
-    def currentPlantDesiredPh(self):
+    def currentPlantDesiredPh(self) -> float:
         if (self.currentPlantValid()):
             return self.currentPlant.plantCare.ph
         return 0.0
     
     @Slot(result=float)
-    def currentPlantDesiredSalinity(self):
+    def currentPlantDesiredSalinity(self) -> float:
         if (self.currentPlantValid()):
             return self.currentPlant.plantCare.salinity
         return 0.0
     
     @Slot(result=float)
-    def currentPlantDesiredLightLevel(self):
+    def currentPlantDesiredLightLevel(self) -> float:
         if (self.currentPlantValid()):
             return self.currentPlant.plantCare.lightLevel
         return 0.0
     
     @Slot(result=float)
-    def currentPlantDesiredTemperature(self):
+    def currentPlantDesiredTemperature(self) -> float:
         if (self.currentPlantValid()):
             return self.currentPlant.plantCare.temperature
         return 0.0

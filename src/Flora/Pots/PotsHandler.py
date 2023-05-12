@@ -1,4 +1,4 @@
-from PySide2.QtCore import QObject, Slot, Signal, Property
+from PySide2.QtCore import QObject, Slot, Signal
 
 from Flora.Pots.Pot import Pot
 from Flora.Pots.PotsGraphHandler import PotsGraphHandler
@@ -7,154 +7,149 @@ class PotsHandler(QObject):
 
     currentPotChanged = Signal()
 
-    @Property(Pot, notify=currentPotChanged)
-    def currentPot(self):
-        return self.selectedPot
-    
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.selectedPot = None
+        self.currentPot = None
         self.graphHandler = PotsGraphHandler(self)
 
     def setCurrentPot(self, pot: Pot):
-        self.selectedPot = pot
+        self.currentPot = pot
         self.graphHandler.setSensorData(pot.sensorData)
-        self.graphHandler.setLineGraph()
         self.currentPotChanged.emit()
 
     def resetCurrentPot(self):
-        self.selectedPot = None
+        self.currentPot = None
         self.graphHandler.resetGraph()
         self.currentPotChanged.emit()
 
     @Slot(result=bool)
-    def isCurrentPotSet(self):
-        return self.selectedPot != None
+    def currentPotValid(self) -> bool:
+        return self.currentPot != None
 
     @Slot(result=bool)
-    def getCurrentPotPlantExists(self):
-        if (self.selectedPot):
-            return self.selectedPot.plant is not None
+    def currentPotPlantValid(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.plant is not None
         return False
 
     @Slot(result=str)
-    def getCurrentPotName(self):
-        if (self.selectedPot):
-            return self.selectedPot.potName
+    def currentPotName(self) -> str:
+        if (self.currentPotValid()):
+            return self.currentPot.potName
         return ""
     
     @Slot(result=str)
-    def getCurrentPotPlantName(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantName()
+    def currentPotPlantName(self) -> str:
+        if (self.currentPotValid()):
+            return self.currentPot.plantName()
         return ""
     
     @Slot(result=float)
-    def getCurrentPotPlantSoilMoisture(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantSoilMoisture()
+    def currentPotPlantSoilMoisture(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.plantSoilMoisture()
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPotPlantTemperature(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantTemperature()
+    def currentPotPlantTemperature(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.plantTemperature()
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPotPlantLightLevel(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantLightLevel()
+    def currentPotPlantLightLevel(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.plantLightLevel()
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPotPlantSalinity(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantSalinity()
+    def currentPotPlantSalinity(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.plantSalinity()
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPotPlantPh(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantPh()
+    def currentPotPlantPh(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.plantPh()
         return 0.0
     
     @Slot(result=float)
-    def getLastSensorSoilMoisture(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLastMeasuredSoilMoisture()
+    def currentPotLastSensorSoilMoisture(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.lastSensorSoilMoisture()
         return 0.0
     
     @Slot(result=float)
-    def getLastSensorTemperature(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLastMeasuredTemperature()
+    def currentPotLastSensorTemperature(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.lastSensorTemperature()
         return 0.0
     
     @Slot(result=float)
-    def getLastSensorLightLevel(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLastMeasuredLightLevel()
+    def currentPotLastSensorLightLevel(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.lastSensorLightLevel()
         return 0.0
     
     @Slot(result=float)
-    def getLastSensorSalinity(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLastMeasuredSalinity()
+    def currentPotLastSensorSalinity(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.lastSensorSalinity()
         return 0.0
     
     @Slot(result=float)
-    def getLastSensorPh(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLastMeasuredPh()
+    def currentPotLastSensorPh(self) -> float:
+        if (self.currentPotValid()):
+            return self.currentPot.lastSensorPh()
         return 0.0
     
     @Slot(result=bool)
-    def getCurrentPotPlantTemperatureOk(self):
-        if (self.selectedPot):
-            return self.selectedPot.getTemperatureOk()
+    def currentPotTemperatureOk(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.temperatureOk()
         return True
     
     @Slot(result=bool)
-    def getCurrentPotPlantSoilMoistureOk(self):
-        if (self.selectedPot):
-            return self.selectedPot.getSoilMoistureOk()
+    def currentPotSoilMoistureOk(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.soilMoistureOk()
         return True
     
     @Slot(result=bool)
-    def getCurrentPotPlantLightLevelOk(self):
-        if (self.selectedPot):
-            return self.selectedPot.getLightLevelOk()
+    def currentPotLightLevelOk(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.lightLevelOk()
         return True
     
     @Slot(result=bool)
-    def getCurrentPotPlantSalinityOk(self):
-        if (self.selectedPot):
-            return self.selectedPot.getSalinityOk()
+    def currentPotSalinityOk(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.salinityOk()
         return True
     
     @Slot(result=bool)
-    def getCurrentPotPlantPhOk(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPhOk()
+    def currentPotPhOk(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.phOk()
         return True
     
     @Slot(result=str)
-    def getCurrentPotPlantImagePath(self):
-        if (self.selectedPot):
-            return self.selectedPot.getPlantImagePath()
+    def currentPotPlantImagePath(self) -> str:
+        if (self.currentPotValid()):
+            return self.currentPot.plantImagePath()
         return ""
     
     @Slot(result=bool)
-    def getCurrentPotIsBroken(self):
-        if (self.selectedPot):
-            return self.selectedPot.isBroken
+    def currentPotIsBroken(self) -> bool:
+        if (self.currentPotValid()):
+            return self.currentPot.isBroken
         return False
     
     @Slot(result = bool)
     def sensorDataExists(self) -> bool:
-        if (self.selectedPot):
-            return self.selectedPot.sensorDataExists()
+        if (self.currentPotValid()):
+            return self.currentPot.sensorDataExists()
         return False
     
