@@ -1,6 +1,8 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.12
 
+import "../../Controls"
+
 Item {
     readonly property bool registeredUsers: userHandler.usersCount > 0
 
@@ -13,25 +15,33 @@ Item {
         id: mainColumn
 
         width: parent.width / 2
-        anchors.verticalCenter: parent.verticalCenter
+        anchors {
+            top: parent.top
+            topMargin: parent.height / 4
+            bottom: parent.bottom
+        }
         anchors.horizontalCenter: parent.horizontalCenter
 
-        spacing: 10
+        spacing: 20
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 36
+        CustomText {
+            height: parent.height / 4
             text: "Welcome"
+            textBold: true
         }
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
+        CustomText {
+            height: parent.height / 20
             text: registeredUsers ? "Registered user found." : "No registered user found."
         }
 
-        Button {
+        Item {
+            width: parent.width
+            height: parent.height / 12
+        }
+
+        CustomButton {
             anchors.horizontalCenter: parent.horizontalCenter
-            width: mainColumn.width / 2
             text: registeredUsers ? "Login" : "Register"
             onClicked: {
                 if (registeredUsers) {

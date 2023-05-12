@@ -1,17 +1,7 @@
-import QtQuick 2.15
+import QtQuick.Controls 2.12
 
-CustomButtonBackground {
-    property alias text: text
-
-    Text {
-        id: text
-        anchors.centerIn: parent
-        width: parent.width
-        height: parent.height * 0.5
-        font.pixelSize: height
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        elide: Text.ElideRight
-        color: mouseArea.containsMouse ? "#333333" : "#555555"
-    }
+Button {
+    height: parent.height / 10
+    width: parent.width 
+    font.pixelSize: Math.max(10, height / 2)
 }

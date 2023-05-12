@@ -2,6 +2,8 @@ import QtQuick 2.14
 import QtQuick.Controls 2.12
 import Enums 1.0
 
+import "../../Controls"
+
 Drawer {
     id: drawer
 
@@ -147,10 +149,8 @@ Drawer {
         anchors.fill: parent
         model: model
         spacing: 5
-        delegate: Button {
-            width: parent.width
+        delegate: CustomButton {
             height: visible ? listView.height / 10 : -listView.spacing
-            font.pixelSize: Math.max(10, height * 0.75)
             onClicked: action()
             Component.onCompleted: {
                 text = Qt.binding(buttonText)
@@ -159,12 +159,9 @@ Drawer {
         }
     }
                
-    Button {
+    CustomButton {
         anchors.bottom: parent.bottom
-        width: parent.width
-        height: parent.height / 10
         text: "Quit"
-        font.pixelSize: Math.max(10, height * 0.75)
         onClicked: {
             quitClicked()
         }

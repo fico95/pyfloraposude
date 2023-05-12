@@ -20,8 +20,7 @@ ToolBar {
         sizeCale: 0.5
     }
 
-    ToolButton {
-        id: backButton
+    CustomToolButton {
         visible: !isWelcomeScreen
         anchors {
             left: parent.left
@@ -29,22 +28,17 @@ ToolBar {
             bottom: parent.bottom
             margins: parent.height * 0.1
         }
-        width: height
-        font.pointSize: Math.max(10, parent.height * 0.5)
         text: "‹"
         onClicked: backButtonClicked()
     }
 
-    ToolButton {
-        id: toolButton
+    CustomToolButton {
         anchors {
             right: parent.right
             top: parent.top
             bottom: parent.bottom
             margins: parent.height * 0.1
         }
-        width: height
-        font.pointSize: Math.max(10, parent.height * 0.5)
         text: "⋮"
         onClicked: drawerButtonClicked()
     }

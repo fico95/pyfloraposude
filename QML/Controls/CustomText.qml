@@ -12,6 +12,7 @@ Text {
         bold: root.textBold
         pointSize: Math.max(10, parent.height * root.sizeCale)
     }
+    fontSizeMode: Text.Fit
     horizontalAlignment: Text.AlignHCenter
     verticalAlignment: Text.AlignVCenter
 }
