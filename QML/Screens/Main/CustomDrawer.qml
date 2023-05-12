@@ -1,8 +1,22 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.12
+import Enums 1.0
 
 Drawer {
     id: drawer
+
+    readonly property int currentScreen: stackController.currentScreen
+
+    signal homeClicked()
+    signal profileClicked()
+    signal syncClicked()
+    signal addPotClicked()
+    signal removePotClicked()
+    signal togglePotVisibilityClicked()
+    signal showPlantsClicked()
+    signal addPlantClicked()
+    signal removePlantClicked()
+    signal quitClicked()
 
     function toggle() {
         if(!drawer.opened) {
@@ -21,124 +35,138 @@ Drawer {
         color: "white"
     }
 
-    Column {
-        anchors {
-            fill: parent
-            margins: 5
-        }
-        spacing: 5
-        Button {
-            visible: stackController.currentScreen !== 0
-            width: parent.width
-            height: parent.height / 10
-            text: "Home"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.goToWelcomeScreen()
-                drawer.close()
+    ListModel {
+        id: model
+        ListElement {
+            buttonText: function() {
+                return "Home"
+            }
+            shown: function() { 
+                return currentScreen !== Enums.Screen.Welcome 
+            }
+            action: function() {
+                homeClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 4
-            width: parent.width
-            height: parent.height / 10
-            text: "Sync"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                floraManager.updatePotsSensorData()
+        ListElement {
+            buttonText: function() {
+                return "Profile"
+            }
+            shown: function() { 
+                return currentScreen !== Enums.Screen.Welcome
+                    && currentScreen !== Enums.Screen.Login
+                    && currentScreen !== Enums.Screen.Registration
+                    && currentScreen !== Enums.Screen.ForgottenPassword
+                    && currentScreen !== Enums.Screen.UserEditor 
+            }
+            action: function() {
+                profileClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen !== 0 && stackController.currentScreen !== 1 && stackController.currentScreen !== 2 && stackController.currentScreen !== 3 && stackController.currentScreen !== 8
-            width: parent.width
-            height: parent.height / 10
-            text: "Profile"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.openUserEditorScreen()
-                drawer.close()
+        ListElement {
+            buttonText: function() {
+                return "Sync"
+            }
+            shown: function() { 
+                return currentScreen === Enums.Screen.Pots 
+            }
+            action: function() {
+                syncClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 4
-            width: parent.width
-            height: parent.height / 10
-            text: "Add pot"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.openPotLoaderScreen()
-                drawer.close()
+        ListElement {
+            buttonText: function() {
+                return "Add pot"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.Pots 
+            }
+            action: function() {
+                addPotClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 4
-            width: parent.width
-            height: parent.height / 10
-            text: floraManager.allPotsShown ? "Show empty" : "Show all"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                floraManager.tooglePotVisibility()
-                drawer.close()
+        ListElement {
+            buttonText: function() {
+                return "Remove pot"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.PotEditor 
+            }
+            action: function() {
+                removePotClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 4
-            width: parent.width
-            height: parent.height / 10
-            text: "Show plants"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.openPlantsScreen()
-                drawer.close()
+        ListElement {
+            buttonText: function() {
+                return floraManager.allPotsShown ? "Show empty" : "Show all"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.Pots 
+            }
+            action: function() {
+                togglePotVisibilityClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 5
-            width: parent.width
-            height: parent.height / 10
-            text: "Add plant"
-            font.pixelSize: height * 0.75
-            onClicked: {
-                stackController.openPlantLoaderScreen()
-                drawer.close()
+        ListElement {
+            buttonText: function() {
+                return "Show plants"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.Pots 
+            }
+            action: function() {
+                showPlantsClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 7
-            width: parent.width
-            height: parent.height / 10
-            text: "Remove plant"
-            font.pixelSize: height * 0.75
-            onClicked: {
-               if (floraManager.removeCurrentPlant()) {
-                    stackController.handlePlantRemove()
-                    drawer.close()
-                }
+        ListElement {
+            buttonText: function() {
+                return "Add plant"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.Plants 
+            }
+            action: function() {
+                addPlantClicked()
             }
         }
-        Button {
-            visible: stackController.currentScreen === 6
-            width: parent.width
-            height: parent.height / 10
-            text: "Remove pot"
-            font.pixelSize: height * 0.75
-            onClicked: {
-               if (floraManager.removeCurrentPot()) {
-                    stackController.handlePotRemove()
-                    drawer.close()
-                }
+        ListElement {
+            buttonText: function() {
+                return "Remove plant"
+            }
+            shown: function() { 
+                return currentScreen  === Enums.Screen.PlantEditor 
+            }
+            action: function() {
+                removePlantClicked()
             }
         }
     }
-                
+
+    ListView {
+        id: listView
+        anchors.fill: parent
+        model: model
+        spacing: 5
+        delegate: Button {
+            width: parent.width
+            height: visible ? listView.height / 10 : -listView.spacing
+            font.pixelSize: Math.max(10, height * 0.75)
+            onClicked: action()
+            Component.onCompleted: {
+                text = Qt.binding(buttonText)
+                visible = Qt.binding(model.shown)
+            }
+        }
+    }
+               
     Button {
         anchors.bottom: parent.bottom
         width: parent.width
         height: parent.height / 10
         text: "Quit"
-        font.pixelSize: height * 0.75
+        font.pixelSize: Math.max(10, height * 0.75)
         onClicked: {
-            Qt.quit()
+            quitClicked()
         }
     }
 }

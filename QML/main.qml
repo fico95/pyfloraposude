@@ -19,6 +19,7 @@ Window {
             left: parent.left
             right: parent.right
         }
+        onBackButtonClicked: stackController.goBack()
         onDrawerButtonClicked: drawer.toggle()
     }    
 
@@ -37,5 +38,47 @@ Window {
         y: header.height
         width: parent.width / 2
         height: parent.height - header.height
+        onHomeClicked: {
+            stackController.goToWelcomeScreen(); 
+            drawer.close() 
+        }
+        onProfileClicked: {
+            stackController.openUserEditorScreen()
+            drawer.close()
+        }
+        onSyncClicked: {
+            floraManager.updatePotsSensorData()
+        }
+        onAddPotClicked: {
+            stackController.openPotLoaderScreen()
+            drawer.close()
+        }
+        onRemovePotClicked: {
+            if (floraManager.removeCurrentPot()) {
+                stackController.handlePotRemove()
+                drawer.close()
+            }
+        }
+        onTogglePotVisibilityClicked: {
+            floraManager.tooglePotVisibility()
+            drawer.close()
+        }
+        onShowPlantsClicked: {
+            stackController.openPlantsScreen()
+            drawer.close()
+        }
+        onAddPlantClicked: {
+            stackController.openPlantLoaderScreen()
+            drawer.close()
+        }
+        onRemovePlantClicked: {
+            if (floraManager.removeCurrentPlant()) {
+                stackController.handlePlantRemove()
+                drawer.close()
+            }
+        }
+        onQuitClicked: {
+            Qt.quit()
+        }
     }
 }

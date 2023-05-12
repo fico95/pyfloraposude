@@ -1,19 +1,23 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.12
+import Enums 1.0
+
+import "../../Controls"
 
 ToolBar {
-    readonly property bool isWelcomeScreen: stackController.currentScreen === 0
+    readonly property bool isWelcomeScreen: stackController.currentScreen === Enums.Screen.Welcome
 
+    signal backButtonClicked
     signal drawerButtonClicked
 
     width: parent.width
     height: parent.height * 0.1
 
-    Text {
+    CustomText {
         anchors.centerIn: parent
-        font.pointSize: Math.max(12, parent.height * 0.5)
         text: "PyFloraPosude"
         color: "white"
+        sizeCale: 0.5
     }
 
     ToolButton {
@@ -26,9 +30,9 @@ ToolBar {
             margins: parent.height * 0.1
         }
         width: height
-        font.pointSize: Math.max(12, parent.height * 0.5)
+        font.pointSize: Math.max(10, parent.height * 0.5)
         text: "‹"
-        onClicked: stackController.goBack()
+        onClicked: backButtonClicked()
     }
 
     ToolButton {
@@ -40,7 +44,7 @@ ToolBar {
             margins: parent.height * 0.1
         }
         width: height
-        font.pointSize: Math.max(12, parent.height * 0.5)
+        font.pointSize: Math.max(10, parent.height * 0.5)
         text: "⋮"
         onClicked: drawerButtonClicked()
     }
