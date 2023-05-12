@@ -69,8 +69,14 @@ Item {
     Component {
         id: registrationComponent
         Registration {
-            onRegistrationSuccessful: {
-                root.registrationSuccessful()
+            onRegistrationTriggered: {
+                if (userHandler.addUser(userNameText, passwordText)) {
+                    root.registrationSuccessful()
+                }
+                else {
+                    registrationFailed = true
+                    updateWarningText()
+                }
             }
         }
     }

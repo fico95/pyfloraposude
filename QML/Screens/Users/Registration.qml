@@ -1,69 +1,91 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import "../../Controls"
+
 Item {
-    signal registrationSuccessful
+    property alias userNameText: textFieldUsername.text
+    property alias passwordText: textFieldPassword.text
+    property alias confirmPasswordText: textFieldConfirmPassword.text
+
+    property bool userClicked: false
+    property bool registrationFailed: false
+
+    signal registrationTriggered()
+
+    function updateWarningText() {
+        if (textFieldPassword == "" && !userClicked) {
+            warningText.text = ""
+        }
+        else if (!userHandler.checkPasswordStrength(passwordText)) {
+            warningText.text = "Password must be at least 8 characters long and contain at least one capital letter, one lowercase letter, one number, and one special character."
+        }
+        else if (passwordText !== confirmPasswordText) {
+            warningText.text = "Passwords do not match."
+        }
+        else if (registrationFailed) {
+            warningText.text = "Registration failed."
+        }
+        else {
+            warningText.text = ""
+        }
+    }
 
     anchors.fill: parent   
 
     Column {
         width: parent.width / 2
-        anchors.verticalCenter: parent.verticalCenter
+        anchors {
+            top: parent.top
+            topMargin: parent.height / 10
+            bottom: parent.bottom
+        }
         anchors.horizontalCenter: parent.horizontalCenter
 
-        spacing: 10
 
-        Label {
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
-            horizontalAlignment: Text.AlignHCenter
+        CustomText {
+            height: parent.height / 4
             text: "Registration"
-            font.pixelSize: 20
+            textBold: true
         }
 
-        TextField {
+        CustomTextField {
             id: textFieldUsername
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             placeholderText: "Username"
         }
 
-        TextField {
+        CustomTextField {
             id: textFieldPassword
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             placeholderText: "Password"
+            enabled: textFieldUsername.text !== ""
             echoMode: TextInput.Password
+            onTextChanged: updateWarningText()
         }
 
-        TextField {
+        CustomTextField {
             id: textFieldConfirmPassword
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             placeholderText: "Confirm Password"
+            enabled: textFieldPassword.text !== ""
             echoMode: TextInput.Password
+            onTextChanged: updateWarningText()
         }
 
-        Label {
+        CustomText {
             id: warningText
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             color: "red"
-            visible: text !== ""
+            height: parent.height / 16
+            opacity: text !== "" ? 1 : 0
+            font.pointSize: Math.max(8, Math.min(14, parent.height * root.sizeCale))
         }
 
-        Button {
-            anchors.horizontalCenter: parent.horizontalCenter
+        CustomButton {
             width: parent.width
             text: "Register"
             onClicked: {
-                if (textFieldPassword.text !== textFieldConfirmPassword.text) {
-                    warningText.text = "Passwords do not match."
-                } else if (userHandler.addUser(textFieldUsername.text, textFieldPassword.text)) {
-                    warningText.text = "Registration successful."
-                    registrationSuccessful()
-                } else {
-                    warningText.text = "Registration failed."
+                userClicked = true
+                updateWarningText()
+                if (warningText.text === "") {
+                    registrationTriggered()
                 }
             }
         }
