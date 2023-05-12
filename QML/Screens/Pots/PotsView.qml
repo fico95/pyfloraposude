@@ -41,4 +41,9 @@ Item {
             }
         }
     }
+
+    Component.onCompleted: {
+        floraManager.resetCurrentPot()
+        floraManager.resetCurrentPlant()
+    }
 }

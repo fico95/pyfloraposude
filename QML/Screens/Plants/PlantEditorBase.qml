@@ -25,7 +25,6 @@ FloraLoader {
         iconSource = ""
     }
 
-    iconRemoveAllowed: false
     nameTextField.placeholderText: "Plant name"
 
     ListModel {

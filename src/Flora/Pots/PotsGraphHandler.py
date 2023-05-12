@@ -53,14 +53,14 @@ class PotsGraphHandler(QObject):
     
     @Slot(result=int)
     def sensorDataCount(self) -> int:
-        if (self.sensorDataValid):
+        if (self.sensorDataValid()):
             return len(self.sensorData)
         return 0
     
     @Slot(QtCharts.QAbstractSeries, int)
     def updateGraphSeries(self, series: QtCharts.QAbstractSeries, sensorIndex: int):
         series.clear()
-        if (self.sensorData is None):
+        if (not self.sensorDataValid()):
             return None
         if (sensorIndex > (self.numberOfSensors() - 1) or sensorIndex < 0):
             return None

@@ -1,58 +1,40 @@
 import QtQuick 2.14
 
+import "../../Controls"
+
 Row {
     width: parent.width
     height: parent.height / 5 - spacing / 4
 
-    Text {
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+    CustomText {
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-            bold: true
-        }
+        textBold: true
         text: "Data"
-        fontSizeMode: Text.Fit
     }
 
-    Text {
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+    CustomText {
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-            bold: true
-        }
+        textBold: true
         text: "Plant"
-        fontSizeMode: Text.Fit
     }
 
-    Text {
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+    CustomText {
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-            bold: true
-        }
+        textBold: true
         text: "Sensor"
-        fontSizeMode: Text.Fit
     }
 
-    Text {
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+    CustomText {
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-            bold: true
-        }
+        textBold: true
         text: "Action"
-        fontSizeMode: Text.Fit
     }
 }

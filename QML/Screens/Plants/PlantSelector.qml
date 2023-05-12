@@ -7,7 +7,7 @@ Item {
 
     signal plantSelected(int plantId)
 
-    PlantsView {
+    PlantsViewBase {
         onOpenPlantEditor: {
             root.plantSelected(plantId)
         }

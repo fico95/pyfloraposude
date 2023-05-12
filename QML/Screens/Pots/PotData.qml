@@ -1,5 +1,7 @@
 import QtQuick 2.14
 
+import "../../Controls"
+
 Row {
     property alias nameText: nameText.text
     property alias plantValueText: plantValueText.text
@@ -11,41 +13,25 @@ Row {
     width: parent.width
     height: parent.height / 5 - spacing / 4
 
-    Text {
+    CustomText {
         id: nameText
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-        }
-        fontSizeMode: Text.Fit
     }
 
-    Text {
+    CustomText {
         id: plantValueText
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
-        height: parent.height
-        font {
-            pixelSize: height / 2
-        }
-        fontSizeMode: Text.Fit
+        height: parent.height 
     }
 
-    Text {
+    CustomText {
         id: sensorValueText
-        visible: dataExists
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
+        anchors.horizontalCenter: undefined
         width: parent.width / 4
         height: parent.height
-        font {
-            pixelSize: height / 2
-        }
-        fontSizeMode: Text.Fit
     }
     
     Rectangle {
@@ -53,7 +39,7 @@ Row {
         anchors.verticalCenter: parent.verticalCenter
         width: parent.width / 4
         height: parent.height
-        color: dataOk && !potBroken ? "lightgreen" : "red"
+        color: dataOk && !potBroken ? "green" : "red"
         Image {
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit

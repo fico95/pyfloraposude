@@ -3,9 +3,7 @@ import QtQuick.Controls 2.12
 
 import "../../Controls"
 
-FloraLoader {
-    readonly property string potName: nameTextField.text
-    
+PotEditorBase {
     signal saveClicked
 
     function updatePlantData() {
@@ -15,8 +13,6 @@ FloraLoader {
     onRemoveTriggered: {
         floraManager.resetCurrentPlant()
     }
-
-    nameTextField.placeholderText: "Pot name"
 
     CustomButton {
         id: saveButton
@@ -28,7 +24,6 @@ FloraLoader {
         }
         width: parent.width * 0.4
         height: parent.height * 0.05
-        enabled: potName !== ""
         text: "Save"
         onClicked: {
             saveClicked()

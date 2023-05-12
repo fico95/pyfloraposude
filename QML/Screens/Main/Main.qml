@@ -247,11 +247,8 @@ Item {
     Component {
         id: potEditorComponent
         PotEditor {
-            onPlantSelectTriggered: {
+            onLoadTriggered: {
                 root.plantSelectClicked()
-            }
-            onPlantClearTriggered: {
-                floraManager.removePlantFromCurrentPot()
             }
         }
     }

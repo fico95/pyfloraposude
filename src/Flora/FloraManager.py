@@ -104,10 +104,26 @@ class FloraManager(QObject):
     def resetCurrentPlant(self):
         self.plantsHandler.resetCurrentPlant()
         
-    @Slot(str, float, float, float, float, float, result = bool)
-    def updateCurrentPlantData(self, name, soilMoisture, ph, salinity, lightLevel, temperature) -> bool:
+    @Slot(str, result=bool)
+    def updateCurrentPlantName(self, name) -> bool:
         if (self.plantsHandler.currentPlantValid()):
             self.plantsHandler.currentPlant.name = name
+            try:
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
+
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
+
+                return True
+            except Exception as e:
+                print(f"Error updating plant name: {e}")
+                self.updateCurrentPlant()
+                return False
+        return False
+
+    @Slot(float, float, float, float, float, result = bool)
+    def updateCurrentPlantData(self, soilMoisture, ph, salinity, lightLevel, temperature) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
             self.plantsHandler.currentPlant.plantCare.soilMoisture = soilMoisture
             self.plantsHandler.currentPlant.plantCare.ph = ph
             self.plantsHandler.currentPlant.plantCare.salinity = salinity

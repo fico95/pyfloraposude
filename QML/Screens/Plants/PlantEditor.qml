@@ -4,11 +4,8 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 PlantEditorBase {
-    readonly property string initialPlantName: plantsHandler.currentPlantName()
-    readonly property string initialPlantImagePath: plantsHandler.currentPlantImagePath()
-
     function updateCurrentPlantData() {
-        floraManager.updateCurrentPlantData(plantName == "" ? initialPlantName : plantName, soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)
+        floraManager.updateCurrentPlantData(soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)
     }
 
     function updateShownPlantData() {
@@ -30,14 +27,12 @@ PlantEditorBase {
     }
 
     onIconSourceChanged: {
-        if (iconSource == "") {
-            return
-        }
         floraManager.updateCurrentPlantImage(iconSource.toString().replace("file://", ""))
     }
 
     onPlantNameChanged: {
-        updateCurrentPlantData()
+
+        floraManager.updateCurrentPlantName(plantName)
     }
 
     onUpdateSoilMoistureValue: function(value) {
@@ -75,6 +70,7 @@ PlantEditorBase {
     Component.onCompleted: {
         updateShownPlantData()
     }
+
     Component.onDestruction: {
         updateCurrentPlantData()
     }
