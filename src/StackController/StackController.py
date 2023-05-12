@@ -55,7 +55,7 @@ class StackController(QObject):
         super().__init__(parent)
 
         self.stack = Stack()
-        self.stack.push(Enums.Screen.Plants)
+        self.stack.push(Enums.Screen.Pots)
 
     @Slot()
     def openRegistrationScreen(self):

@@ -180,14 +180,13 @@ Item {
     Component {
         id: potLoaderComponent
         PotLoader {
-            onPlantSelectTriggered: {
+            onLoadTriggered: {
                 root.plantSelectClicked()
             }
-            onPlantClearTriggered: {
-                floraManager.resetCurrentPlant()
-            }
-            onPotLoaded: {
-                root.potAdded()
+            onSaveClicked: {
+                if (floraManager.addPot(potName, plantsHandler.curentPlantId())) {
+                    root.potAdded()
+                }
             }
         }
     }

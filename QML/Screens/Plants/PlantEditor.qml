@@ -4,16 +4,11 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 PlantEditorBase {
-    nameTextField.text: plantsHandler.currentPlantName()
-    iconSource: "file://" + plantsHandler.currentPlantImagePath()
-    soilMoistureValue: plantsHandler.currentPlantDesiredSoilMoisture()
-    phValue: plantsHandler.currentPlantDesiredPh()
-    salinityValue: plantsHandler.currentPlantDesiredSalinity()
-    lightLevelValue: plantsHandler.currentPlantDesiredLightLevel()
-    temperatureValue: plantsHandler.currentPlantDesiredTemperature()
-                                             
+    readonly property string initialPlantName: plantsHandler.currentPlantName()
+    readonly property string initialPlantImagePath: plantsHandler.currentPlantImagePath()
+
     function updateCurrentPlantData() {
-        floraManager.updateCurrentPlantData(plantName, soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)
+        floraManager.updateCurrentPlantData(plantName == "" ? initialPlantName : plantName, soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)
     }
 
     function updateShownPlantData() {
@@ -35,6 +30,9 @@ PlantEditorBase {
     }
 
     onIconSourceChanged: {
+        if (iconSource == "") {
+            return
+        }
         floraManager.updateCurrentPlantImage(iconSource.toString().replace("file://", ""))
     }
 
@@ -72,5 +70,12 @@ PlantEditorBase {
         function onCurrentPlantChanged() {
             updateShownPlantData()
         }
+    }
+
+    Component.onCompleted: {
+        updateShownPlantData()
+    }
+    Component.onDestruction: {
+        updateCurrentPlantData()
     }
 }

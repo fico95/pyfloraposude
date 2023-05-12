@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 
 Item {
     readonly property bool iconSourceExists: iconSource != undefined && iconSource != ""
+    property bool iconRemoveAllowed: true
 
     property alias iconSource: icon.source
     property alias nameTextField: nameTextField
@@ -40,7 +41,7 @@ Item {
         }
 
         CustomButton {
-            text: iconSourceExists ? "X" : "..."
+            text: iconSourceExists && iconRemoveAllowed ? "X" : "..."
             anchors {
                 top: parent.top
                 right: parent.right
@@ -49,7 +50,7 @@ Item {
             width: parent.width * 0.1
             height: width
             onClicked: {
-                if (iconSourceExists) {
+                if (iconSourceExists && iconRemoveAllowed) {
                     removeTriggered()
                 } else {
                     loadTriggered()
