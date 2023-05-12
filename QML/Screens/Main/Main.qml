@@ -206,7 +206,7 @@ Item {
     Component {
         id: plantEditorComponent
         PlantEditor {
-            onImageChangeTriggered: {
+            onLoadTriggered: {
                 root.openImageLoadDialog()
             }
         }
