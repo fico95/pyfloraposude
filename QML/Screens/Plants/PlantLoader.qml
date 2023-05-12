@@ -4,7 +4,7 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 FloraLoader {
-    property alias plantName: nameTextField.text
+    readonly property string plantName: nameTextField.text
     property real soilMoistureValue: 0
     property real phValue: 0
     property real salinityValue: 0
