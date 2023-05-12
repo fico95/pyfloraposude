@@ -1,6 +1,6 @@
-from enum import IntEnum
-
 from PySide2.QtCore import QObject, Property, Signal, Slot
+
+from Utils.Enums import Enums
 
 class Stack:
     def __init__(self):
@@ -14,7 +14,6 @@ class Stack:
 
     def pop(self):
         if self.isEmpty():
-            print('Stack is empty')
             return
         return self.items.pop()
 
@@ -23,7 +22,6 @@ class Stack:
 
     def peek(self):
         if self.isEmpty():
-            print('Stack is empty')
             return None
         return self.items[-1]
 
@@ -37,20 +35,6 @@ class StackController(QObject):
     def screenChanged(self):
          pass
 
-    class Screen(IntEnum):
-        Welcome, \
-        Registration, \
-        Login, \
-        ForgottenPassword, \
-        Pots, \
-        Plants, \
-        PotEditor, \
-        PlantEditor, \
-        UserEditor, \
-        PlantLoader, \
-        PotLoader, \
-        PlantSelect = range(12)
-
     @Property(int, notify=screenChanged)
     def currentScreen(self):
         if (self.stack.peek()):
@@ -60,72 +44,72 @@ class StackController(QObject):
     @Property(bool, notify=screenChanged)
     def userEditable(self):
         screen = self.currentScreen
-        return screen == StackController.Screen.Pots \
-               or screen == StackController.Screen.Plants \
-               or screen == StackController.Screen.PotEditor \
-               or screen == StackController.Screen.PlantEditor \
-               or screen == StackController.Screen.PlantLoader \
-               or screen == StackController.Screen.PotLoader
+        return screen == Enums.Screen.Pots \
+               or screen == Enums.Screen.Plants \
+               or screen == Enums.Screen.PotEditor \
+               or screen == Enums.Screen.PlantEditor \
+               or screen == Enums.Screen.PlantLoader \
+               or screen == Enums.Screen.PotLoader
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.stack = Stack()
-        self.stack.push(StackController.Screen.Welcome)
+        self.stack.push(Enums.Screen.Welcome)
 
     @Slot()
     def openRegistrationScreen(self):
-        self.stack.push(StackController.Screen.Registration)
+        self.stack.push(Enums.Screen.Registration)
         self.screenChanged.emit()
 
     @Slot()
     def openLoginScreen(self):
-        self.stack.push(StackController.Screen.Login)
+        self.stack.push(Enums.Screen.Login)
         self.screenChanged.emit()
 
     @Slot()
     def openForgottenPasswordScreen(self):
-        self.stack.push(StackController.Screen.ForgottenPassword)
+        self.stack.push(Enums.Screen.ForgottenPassword)
         self.screenChanged.emit()
 
     @Slot()
     def openPotsScreen(self):
-        self.stack.push(StackController.Screen.Pots)
+        self.stack.push(Enums.Screen.Pots)
         self.screenChanged.emit()
 
     @Slot()
     def openPlantsScreen(self):
-        self.stack.push(StackController.Screen.Plants)
+        self.stack.push(Enums.Screen.Plants)
         self.screenChanged.emit()
 
     @Slot()
     def openPotEditorScreen(self):
-        self.stack.push(StackController.Screen.PotEditor)
+        self.stack.push(Enums.Screen.PotEditor)
         self.screenChanged.emit()
 
     @Slot()
     def openPlantEditorScreen(self):
-        self.stack.push(StackController.Screen.PlantEditor)
+        self.stack.push(Enums.Screen.PlantEditor)
         self.screenChanged.emit()
 
     @Slot()
     def openUserEditorScreen(self):
-        self.stack.push(StackController.Screen.UserEditor)
+        self.stack.push(Enums.Screen.UserEditor)
         self.screenChanged.emit()
 
     @Slot()
     def openPlantLoaderScreen(self):
-        self.stack.push(StackController.Screen.PlantLoader)
+        self.stack.push(Enums.Screen.PlantLoader)
         self.screenChanged.emit()
 
     @Slot()
     def openPotLoaderScreen(self):
-        self.stack.push(StackController.Screen.PotLoader)
+        self.stack.push(Enums.Screen.PotLoader)
         self.screenChanged.emit()
 
     @Slot()
     def openPlantSelectScreen(self):
-        self.stack.push(StackController.Screen.PlantSelect)
+        self.stack.push(Enums.Screen.PlantSelect)
         self.screenChanged.emit()
 
     @Slot()
@@ -134,18 +118,18 @@ class StackController(QObject):
 
     @Slot()
     def handlePlantRemove(self):
-        if (self.stack.peek() == StackController.Screen.PlantEditor):
+        if (self.stack.peek() == Enums.Screen.PlantEditor):
             self.goBack()
 
     @Slot()
     def handlePotRemove(self):
-        if (self.stack.peek() == StackController.Screen.PotEditor):
+        if (self.stack.peek() == Enums.Screen.PotEditor):
             self.goBack()
 
     @Slot()
     def goToWelcomeScreen(self):
         self.stack.clear()
-        self.stack.push(StackController.Screen.Welcome)
+        self.stack.push(Enums.Screen.Welcome)
         self.screenChanged.emit()
 
     @Slot()
