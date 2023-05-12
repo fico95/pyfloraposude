@@ -1,61 +1,69 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.15
 
+import "../../Controls"
+
 Item {
-    signal loginSuccessful
+    property alias userNameText: textFieldUsername.text
+    property alias passwordText: textFieldPassword.text
+
+    property bool loginFailed: false
+
+    signal loginTriggered
     signal forgottenPasswordClicked
+
+    function updateWarningText() {
+        if (loginFailed) {
+            warningText.text = "Incorrect username or password."
+        } else {
+            warningText.text = ""
+        }
+    }
 
     anchors.fill: parent
 
     Column {
         width: parent.width / 2
-        anchors.verticalCenter: parent.verticalCenter
+        anchors {
+            top: parent.top
+            topMargin: parent.height / 3
+            bottom: parent.bottom
+        }
         anchors.horizontalCenter: parent.horizontalCenter
 
         spacing: 10
 
-        TextField {
+        CustomTextField {
             id: textFieldUsername
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             placeholderText: "Username"
         }
 
-        TextField {
+        CustomTextField {
             id: textFieldPassword
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             placeholderText: "Password"
+            enabled: userNameText !== ""
             echoMode: TextInput.Password
+            onTextChanged: updateWarningText()
         }
 
-        Text {
+        CustomText {
             id: warningText
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
             color: "red"
-            visible: text !== ""
+            height: parent.height / 16
+            opacity: text !== "" ? 1 : 0
+            font.pointSize: Math.max(8, Math.min(14, parent.height * root.sizeCale))
         }
 
-        Button {
-            anchors.horizontalCenter: parent.horizontalCenter
+        CustomButton {
             width: parent.width
             text: "Login"
+            enabled: textFieldUsername.text !== "" && textFieldPassword.text !== ""
             onClicked: {
-                if (textFieldUsername.text === "" || textFieldPassword.text === "") {
-                    warningText.text = "Username and password are required."
-                } else {
-                    if (userHandler.authenticateUser(textFieldUsername.text, textFieldPassword.text)) {
-                        loginSuccessful()
-                    }
-                    else {
-                        warningText.text = "Incorrect username or password."
-                    }
-                }
+                loginTriggered()
             }
         }
 
-        Button {
+        CustomButton {
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width
             text: "Forgotten Password"

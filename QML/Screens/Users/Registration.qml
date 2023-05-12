@@ -8,13 +8,12 @@ Item {
     property alias passwordText: textFieldPassword.text
     property alias confirmPasswordText: textFieldConfirmPassword.text
 
-    property bool userClicked: false
     property bool registrationFailed: false
 
     signal registrationTriggered()
 
     function updateWarningText() {
-        if (textFieldPassword == "" && !userClicked) {
+        if (passwordText == "") {
             warningText.text = ""
         }
         else if (!userHandler.checkPasswordStrength(passwordText)) {
@@ -42,6 +41,7 @@ Item {
         }
         anchors.horizontalCenter: parent.horizontalCenter
 
+        spacing: 10
 
         CustomText {
             height: parent.height / 4
@@ -57,7 +57,7 @@ Item {
         CustomTextField {
             id: textFieldPassword
             placeholderText: "Password"
-            enabled: textFieldUsername.text !== ""
+            enabled: userNameText !== ""
             echoMode: TextInput.Password
             onTextChanged: updateWarningText()
         }
@@ -65,7 +65,7 @@ Item {
         CustomTextField {
             id: textFieldConfirmPassword
             placeholderText: "Confirm Password"
-            enabled: textFieldPassword.text !== ""
+            enabled: passwordText !== ""
             echoMode: TextInput.Password
             onTextChanged: updateWarningText()
         }
@@ -81,12 +81,9 @@ Item {
         CustomButton {
             width: parent.width
             text: "Register"
+            enabled: userNameText !== "" && passwordText !== "" && confirmPasswordText !== ""
             onClicked: {
-                userClicked = true
-                updateWarningText()
-                if (warningText.text === "") {
-                    registrationTriggered()
-                }
+                registrationTriggered()
             }
         }
     }

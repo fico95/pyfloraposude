@@ -17,7 +17,7 @@ Item {
         width: parent.width / 2
         anchors {
             top: parent.top
-            topMargin: parent.height / 10
+            topMargin: parent.height / 4
             bottom: parent.bottom
         }
         anchors.horizontalCenter: parent.horizontalCenter

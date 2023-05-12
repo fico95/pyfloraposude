@@ -1,9 +1,10 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 
+import "../../Controls"
+
 Item {
     signal acceptClicked
-    signal cancelClicked
 
     anchors.fill: parent
 
@@ -11,23 +12,21 @@ Item {
         id: mainColumn
 
         width: parent.width / 2
-        anchors.verticalCenter: parent.verticalCenter
+        anchors {
+            top: parent.top
+            topMargin: parent.height / 3
+            bottom: parent.bottom
+        }
         anchors.horizontalCenter: parent.horizontalCenter
 
-        spacing: 10
+        spacing: parent.height / 20
 
-        Text {
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width
+        CustomText {
+            height: parent.height / 4
             text: "There is no option to restore password. All accounts will be deleted. Are you sure you want to continue?"
-            font.pixelSize: 20
-            wrapMode: Text.Wrap
-            horizontalAlignment: Text.AlignHCenter
         }
 
-        Button {
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: mainColumn.width / 2
+        CustomButton {
             text: "Accept"
             onClicked: acceptClicked()
         }

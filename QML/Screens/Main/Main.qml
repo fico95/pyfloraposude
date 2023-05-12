@@ -67,6 +67,18 @@ Item {
     }
 
     Component {
+        id: welcomeComponent
+        Welcome {
+            onLoginClicked: {
+                root.loginClicked()
+            }
+            onRegisterClicked: {
+                root.registerClicked()
+            }
+        }
+    }
+
+    Component {
         id: registrationComponent
         Registration {
             onRegistrationTriggered: {
@@ -82,22 +94,16 @@ Item {
     }
 
     Component {
-        id: welcomeComponent
-        Welcome {
-            onLoginClicked: {
-                root.loginClicked()
-            }
-            onRegisterClicked: {
-                root.registerClicked()
-            }
-        }
-    }
-
-    Component {
         id: loginComponent
         Login {
-            onLoginSuccessful: {
-                root.loginSuccessful()
+            onLoginTriggered: {
+                if (userHandler.authenticateUser(userNameText, passwordText)) {
+                    root.loginSuccessful()
+                }
+                else {
+                    loginFailed = true
+                    updateWarningText()
+                }
             }
             onForgottenPasswordClicked: {
                 root.forgottenPasswordClicked()
@@ -112,9 +118,6 @@ Item {
                 if (userHandler.removeUsers()) {
                     root.userModified()
                 }
-            }
-            onCancelClicked: {
-                root.actionCanceled()
             }
         }
     }
