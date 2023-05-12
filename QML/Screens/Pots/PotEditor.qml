@@ -285,16 +285,12 @@ Item {
 
     Connections {
         target: potsGraphHandler
-        onGraphChanged: {
+        function onGraphChanged() {
             updateGraph()
         }
     }
 
     Component.onCompleted: {
-        if (!potsHandler.currentPotValid()) {
-            stackController.goBack()
-            return
-        }
         updateGraph()
         updateData()
         if (plantsHandler.currentPlantValid() && plantsHandler.curentPlantId() >= 0) {

@@ -1,44 +1,67 @@
 import QtQuick 2.14
 import Enums 1.0
-import "../../Controls"
 
+import "../../Controls"
 import "../Users"
 import "../Welcome"
 import "../Pots"
 import "../Plants"
 
 Item {
+    id: root
+
+    signal registrationSuccessful
+    signal loginSuccessful
+    signal plantAdded
+    signal potAdded
+    signal plantSelected
+    signal actionCanceled
+    signal userModified
+    signal loginClicked
+    signal registerClicked
+    signal forgottenPasswordClicked
+    signal plantSelectClicked
+    signal plantEditClicked
+    signal potEditClicked
+    signal openImageLoadDialog
+
+    function handleFileDialogClose(filePath) {
+        if (loader.item.handleFileDialogClose !== undefined) {
+            loader.item.handleFileDialogClose(filePath)
+        }
+    }
+
     Loader {
         id: loader
         anchors.fill: parent
         sourceComponent: {
             switch (stackController.currentScreen) {
-                case 0:
+                case Enums.Screen.Welcome:
                    return welcomeComponent
-                case 1:
+                case Enums.Screen.Registration:
                     return registrationComponent
-                case 2:
+                case Enums.Screen.Login:
                    return loginComponent
-                case 3:
+                case Enums.Screen.ForgottenPassword:
                    return forgottenPasswordComponent
-                case 4:
+                case Enums.Screen.Pots:
                     return potsViewComponent
-                case 5:
+                case Enums.Screen.Plants:
                     return plantsViewComponent
-                case 6:
+                case Enums.Screen.PotEditor:
                     return potEditorComponent
-                case 7:
+                case Enums.Screen.PlantEditor:
                     return plantEditorComponent
-                case 8:
+                case Enums.Screen.UserEditor:
                     return editComponent
-                case 9:
+                case Enums.Screen.PlantLoader:
                     return plantLoaderComponent
-                case 10:
+                case Enums.Screen.PotLoader:
                     return potLoaderComponent
-                case 11:
+                case Enums.Screen.PlantSelect:
                     return plantSelectComponent
                 default:
-                    return null
+                    return Qt.quit()
             }
         }
     }
@@ -47,7 +70,7 @@ Item {
         id: registrationComponent
         Registration {
             onRegistrationSuccessful: {
-                stackController.goBack()
+                root.registrationSuccessful()
             }
         }
     }
@@ -56,10 +79,10 @@ Item {
         id: welcomeComponent
         Welcome {
             onLoginClicked: {
-                stackController.openLoginScreen()
+                root.loginClicked()
             }
             onRegisterClicked: {
-                stackController.openRegistrationScreen()
+                root.registerClicked()
             }
         }
     }
@@ -68,10 +91,10 @@ Item {
         id: loginComponent
         Login {
             onLoginSuccessful: {
-                stackController.openPotsScreen()
+                root.loginSuccessful()
             }
             onForgottenPasswordClicked: {
-                stackController.openForgottenPasswordScreen()
+                root.forgottenPasswordClicked()
             }
         }
     }
@@ -81,11 +104,11 @@ Item {
         ForgottenPassword {
             onAcceptClicked: {
                 if (userHandler.removeUsers()) {
-                    stackController.handleUserChange()
+                    root.userModified()
                 }
             }
             onCancelClicked: {
-                stackController.goBack()
+                root.actionCanceled()
             }
         }
     }
@@ -101,7 +124,7 @@ Item {
         PotsView {
             onOpenPotEdit: function(potId) {
                 if (floraManager.setCurrentPot(potId)) {
-                    stackController.openPotEditorScreen()
+                    root.potEditClicked()
                 }
             }
         }
@@ -111,13 +134,13 @@ Item {
         id: potLoaderComponent
         PotLoader {
             onPlantSelectTriggered: {
-                stackController.openPlantSelectScreen()
+                root.plantSelectClicked()
             }
             onPlantClearTriggered: {
                 floraManager.resetCurrentPlant()
             }
             onPotLoaded: {
-                stackController.goBack()
+                root.potAdded()
             }
         }
     }
@@ -127,7 +150,7 @@ Item {
         PlantsView {
             onOpenPlantEditor: function(plantId) {
                 if (floraManager.setCurrentPlant(plantId)) {
-                    stackController.openPlantEditorScreen()
+                    root.plantEditClicked()
                 }
             }
         }
@@ -137,7 +160,7 @@ Item {
         id: plantEditorComponent
         PlantEditor {
             onImageChangeTriggered: {
-                plantImageLoadDialog.open()
+                root.openImageLoadDialog()
             }
         }
     }
@@ -146,10 +169,10 @@ Item {
         id: plantLoaderComponent
         PlantLoader {
             onImageLoadTriggered: {
-                plantImageLoadDialog.open()
+                root.openImageLoadDialog()
             }
             onPlantAdded: {
-                stackController.goBack()
+                root.plantAdded()
             }
         }
     }
@@ -157,9 +180,9 @@ Item {
     Component {
         id: plantSelectComponent
         PlantSelector {
-            onPlantSelected: {
+            onPlantSelected: function(plantId) {
                 if (floraManager.setCurrentPlant(plantId)) {
-                    stackController.goBack()
+                    root.plantSelected()
                 }
             }
         }
@@ -169,19 +192,10 @@ Item {
         id: potEditorComponent
         PotEditor {
             onPlantSelectTriggered: {
-                stackController.openPlantSelectScreen()
+                root.plantSelectClicked()
             }
             onPlantClearTriggered: {
                 floraManager.removePlantFromCurrentPot()
-            }
-        }
-    }
-
-    CustomFileDialog {
-        id: plantImageLoadDialog
-        onAccepted: {
-            if (loader.item.handleFileDialogClose !== undefined) {
-                loader.item.handleFileDialogClose(plantImageLoadDialog.fileUrl.toString())
             }
         }
     }
