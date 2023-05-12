@@ -42,6 +42,8 @@ class PlantDb:
         self.conn.commit()
 
     def fillTable(self, imagesPath):
+        if (imagesPath == ""):
+            return
         plantNames = [("Monstera Deliciosa", imagesPath + "/monstera_deliciosa.png"),
                       ("Fiddle Leaf Fig", imagesPath + "/fiddle_leaf_fig.png"),
                       ("Snake Plant", imagesPath + "/snake_plant.png"),
@@ -60,42 +62,30 @@ class PlantDb:
 
     def addPlant(self, plant: Plant):
         cursor = self.conn.cursor()
-        cursor.execute("""
-            INSERT INTO plants (name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature))
+        cursor.execute("""INSERT INTO plants (name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature)
+            VALUES (?, ?, ?, ?, ?, ?, ?)""", 
+            (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature))
         self.conn.commit()
 
     def updatePlant(self, plant: Plant):
         cursor = self.conn.cursor()
-        cursor.execute("""
-            UPDATE plants
-            SET name=?, imagePath=?, desiredMoisture=?, desiredPh=?, desiredSalinity=?, desiredLight=?, desiredTemperature=?
-            WHERE id=?
-        """, (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature, plant.id))
+        cursor.execute("""UPDATE plants
+                            SET name=?, imagePath=?, desiredMoisture=?, desiredPh=?, desiredSalinity=?, desiredLight=?, desiredTemperature=?
+                            WHERE id=?""", 
+                            (plant.name, plant.imagePath, plant.plantCare.soilMoisture, plant.plantCare.ph, plant.plantCare.salinity, plant.plantCare.lightLevel, plant.plantCare.temperature, plant.id))
         self.conn.commit()
 
     def removePlant(self, plant: Plant):
-        cursor = self.conn.cursor()
-        cursor.execute("""
-            DELETE FROM plants
-            WHERE id=?
-        """, (plant.id,))
-        self.conn.commit()
+        self.removePlantById(plant.id)
 
     def removePlantById(self, plantId: int):
         cursor = self.conn.cursor()
-        cursor.execute("""
-            DELETE FROM plants
-            WHERE id=?
-        """, (plantId,))
+        cursor.execute("DELETE FROM plants WHERE id=?", (plantId,))
         self.conn.commit()
 
     def fetchPlantById(self, plantId: int) -> Plant:
         cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT * FROM plants WHERE id=?
-        """, (plantId,))
+        cursor.execute("SELECT * FROM plants WHERE id=?", (plantId,))
         data = cursor.fetchone()
         if data is None:
             return None
@@ -106,9 +96,7 @@ class PlantDb:
     
     def randomPlant(self) -> Plant:
         cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT * FROM plants ORDER BY RANDOM() LIMIT 1
-        """)
+        cursor.execute("SELECT * FROM plants ORDER BY RANDOM() LIMIT 1")
         data = cursor.fetchone()
         if data is None:
             return None
@@ -119,9 +107,7 @@ class PlantDb:
 
     def plants(self) -> List[Plant]:
         cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT * FROM plants
-        """)
+        cursor.execute("SELECT * FROM plants")
         plants = []
         for data in cursor.fetchall():
             plantId, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data
@@ -132,9 +118,7 @@ class PlantDb:
     
     def plantsDictionary(self) -> dict:
         cursor = self.conn.cursor()
-        cursor.execute("""
-            SELECT * FROM plants
-        """)
+        cursor.execute("SELECT * FROM plants")
         plants = {}
         for data in cursor.fetchall():
             plantId, name, imagePath, desiredMoisture, desiredPh, desiredSalinity, desiredLight, desiredTemperature = data

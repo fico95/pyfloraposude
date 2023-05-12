@@ -35,8 +35,10 @@ class FloraManager(QObject):
         self.plantsHandler = PlantsHandler(self)
 
         self.potDb = PotDb(dbPath)
-        if (self.potDb.getNumPots() == 0):
-            self.potDb.fillTable(self.plantDb.randomPlant())
+        if (not self.potDb.tableCreated()):
+            self.potDb.createTable()
+            if (self.potDb.potsCount() == 0):
+                self.potDb.fillTable(self.plantDb.randomPlant())
 
         self.potModel = PotModel(self)
         self.potsHandler = PotsHandler(self)
@@ -164,7 +166,7 @@ class FloraManager(QObject):
     @Slot(int, result=bool)
     def setCurrentPot(self, id):
         try:
-            pot = self.potDb.getPotById(id)
+            pot = self.potDb.fetchPotById(id)
 
             plant = self.plantDb.fetchPlantById(pot.plantId)
             pot.setPlant(plant)
@@ -259,7 +261,7 @@ class FloraManager(QObject):
         return False
 
     def updatePots(self):
-        pots = self.potDb.getAllPots() if self.allPotsVisible else self.potDb.getAllPotsWithoutPlants()
+        pots = self.potDb.pots() if self.allPotsVisible else self.potDb.potsWithoutPlants()
         potsMerged = []    
         self.plantDb.plantsDictionary()
         for pot in pots:

@@ -11,7 +11,7 @@ class PotsDataSampler:
     @staticmethod
     def updateSensorData(potDb: PotDb) -> bool:
         try:
-            pots = potDb.getAllPots()
+            pots = potDb.pots()
         except Exception as e:
             print(f"Error getting pots: {e}")
             return False
