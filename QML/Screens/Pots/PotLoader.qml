@@ -31,13 +31,13 @@ Item {
         source: plantImagePath
 
         Rectangle {
-            visible: plantIcon.source == ""
+            visible: plantIcon.source === ""
             anchors.fill: parent
             color: "lightgray"
         }
 
         Text {
-            visible: plantIcon.source == ""
+            visible: plantIcon.source === ""
             anchors.centerIn: parent
             text: "No plant"
             height: parent.height * 0.1

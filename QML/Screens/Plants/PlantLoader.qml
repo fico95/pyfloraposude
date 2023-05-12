@@ -3,200 +3,116 @@ import QtQuick.Controls 2.12
 
 import "../../Controls"
 
-Item {
-    signal imageLoadTriggered
-    signal plantAdded
+FloraLoader {
+    property alias plantName: nameTextField.text
+    property real soilMoistureValue: 0
+    property real phValue: 0
+    property real salinityValue: 0
+    property real lightLevelValue: 0
+    property real temperatureValue: 0
 
-    Image {
-        id: plantIcon
-        anchors {
-            left: parent.left
-            top: parent.top
-            bottom: parent.bottom
-            leftMargin: parent.width * 0.1
-            topMargin: parent.height * 0.1
-            bottomMargin: parent.height * 0.1
-        }
-        width: parent.width * 0.4
-        height: parent.height * 0.8
-        source: ""
+    signal saveClicked
 
-        Rectangle {
-            visible: plantIcon.source == ""
-            anchors.fill: parent
-            color: "lightgray"
-        }
+    function handleFileDialogClose(filePath) {
+        iconSource = filePath
+    }
 
-        Text {
-            visible: plantIcon.source == ""
-            anchors.centerIn: parent
-            text: "No image"
-            height: parent.height * 0.1
-            width: parent.width * 0.4
-            font {
-                pixelSize: height
-                bold: true
+    onRemoveTriggered: {
+        iconSource = ""
+    }
+
+    nameTextField.placeholderText: "Plant name"
+
+    ListModel {
+        id: valueModel
+
+        ListElement {
+            buttonText: "Soil moisture [0-100]%"
+            from: 0
+            to: 100
+            sufix: " %"
+            updateValue: function(value) { 
+                soilMoistureValue = value
             }
-            horizontalAlignment: Text.AlignHCenter
-            verticalAlignment: Text.AlignVCenter
-            color: "black"
         }
-
-        Button {
-            text: "..."
-            anchors {
-                top: parent.top
-                right: parent.right
-                margins: 10
+        ListElement {
+            buttonText: "PH [0-14]"
+            from: 0
+            to: 14
+            sufix: ""
+            updateValue: function(value) { 
+                phValue = value
             }
-            width: parent.width * 0.1
-            height: width
-            onClicked: {
-                imageLoadTriggered()
+        }
+        ListElement {
+            buttonText: "Salinity [0-100]%"
+            from: 0
+            to: 100
+            sufix: " %"
+            updateValue: function(value) { 
+                salinityValue = value
+            }
+        }
+        ListElement {
+            buttonText: "Light level [0-100]%"
+            from: 0
+            to: 100
+            sufix: " %"
+            updateValue: function(value) { 
+                lightLevelValue = value
+            }
+        }
+        ListElement {
+            buttonText: "Temperature [-10,40]°C"
+            from: -10
+            to: 40
+            sufix: " °C"
+            updateValue: function(value) { 
+                temperatureValue = value
             }
         }
     }
 
-    TextEdit {
-        id: name
+    ListView {
+        id: listView
         anchors {
             right: parent.right
-            top: parent.top
-            rightMargin: parent.width * 0.05
-            topMargin: parent.height * 0.1
-        }
-        width: parent.width * 0.4
-        height: parent.height * 0.1
-        font {
-            pixelSize: height
-            bold: true
-        }
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignTop
-        color: "black"
-        text: "Plant name"
-    }
-
-    Column {
-        anchors {
-            right: parent.right
-            top: name.bottom
+            top: nameTextField.bottom
             rightMargin: parent.width * 0.05
             topMargin: parent.height * 0.1        
             bottom: saveButton.top
             bottomMargin: parent.height * 0.1
         }
         width: parent.width * 0.4
-
+        interactive: false
         spacing: parent.height * 0.05
-
-        Item {
-            height: parent.height * 0.05
+        model: valueModel
+        delegate: Item {
+            height: listView.height * 0.05
             width: parent.width
-            Text {
+            CustomText {
                 anchors.left: parent.left
-                text: "Soil moisture [0-100]%"
+                height: parent.height
+                text: model.buttonText
+                horizontalAlignment: Text.AlignLeft
             }
             DoubleSpinBox {
-                id: spinBoxSoilMoisture
                 width: parent.width / 3
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
-                from: 0
-                to: 100
-                decimals: 1
-                wrap: false
-                suffix: " %"
-                value: (to - from) / 2
-            }
-        }
-
-        Item {
-            height: parent.height * 0.05
-            width: parent.width
-            Text {
-                anchors.left: parent.left
-                text: "PH [0-14]"
-            }
-            DoubleSpinBox {
-                id: spinBoxPh
-                width: parent.width / 3
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                from: 0
-                to: 14
+                from: model.from
+                to: model.to
                 decimals: 1
                 wrap: false
                 value: (to - from) / 2
-            }
-        }
-
-        Item {
-            height: parent.height * 0.05
-            width: parent.width
-            Text {
-                anchors.left: parent.left
-                text: "Salinity [0-100]%"
-            }
-            DoubleSpinBox {
-                id: spinBoxSalinity
-                width: parent.width / 3
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                from: 0
-                to: 100
-                decimals: 1
-                wrap: false
-                suffix: " %"
-                value: (to - from) / 2
-            }
-        }
-
-        Item {
-            height: parent.height * 0.05
-            width: parent.width
-            Text {
-                anchors.left: parent.left
-                text: "Light level [0-100]%"
-            }
-            DoubleSpinBox {
-                id: spinBoxLightLevel
-                width: parent.width / 3
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                from: 0
-                to: 100
-                decimals: 1
-                wrap: false
-                suffix: " %"
-                value: (to - from) / 2
-            }
-        }
-
-        Item {
-            height: parent.height * 0.05
-            width: parent.width
-            Text {
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.left: parent.left
-                text: "Temperature [-10,40]°C"
-            }
-            DoubleSpinBox {
-                id: spinBoxTemperature
-                width: parent.width / 3
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.right: parent.right
-                from: -10
-                to: 40
-                decimals: 1
-                wrap: false
-                suffix: " °C"
-                value: (to - from) / 2
+                onValueChanged: {
+                    model.updateValue(value)
+                }
             }
         }
     }
 
-    Button {
+    CustomButton {
         id: saveButton
         anchors {
             bottom: parent.bottom
@@ -206,19 +122,10 @@ Item {
         }
         width: parent.width * 0.4
         height: parent.height * 0.05
+        enabled: plantName !== "" && iconSourceExists
         text: "Save"
         onClicked: {
-            let filePath = plantIcon.source.toString()
-            filePath = filePath.replace("file://", "")
-            if (filePath !== "") {
-                filePath = imageManager.copyImage(filePath)
-                if (filePath === "") {
-                    return
-                }
-            }
-            if (floraManager.addPlant(name.text, filePath, spinBoxSoilMoisture.value, spinBoxPh.value, spinBoxSalinity.value, spinBoxLightLevel.value, spinBoxTemperature.value)) {
-                plantAdded()
-            }
+            saveClicked()
         }
     }
 }

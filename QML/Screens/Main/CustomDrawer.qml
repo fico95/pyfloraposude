@@ -147,6 +147,7 @@ Drawer {
     ListView {
         id: listView
         anchors.fill: parent
+        interactive: false
         model: model
         spacing: 5
         delegate: CustomButton {

@@ -215,11 +215,21 @@ Item {
     Component {
         id: plantLoaderComponent
         PlantLoader {
-            onImageLoadTriggered: {
+            onLoadTriggered: {
                 root.openImageLoadDialog()
             }
-            onPlantAdded: {
-                root.plantAdded()
+            onSaveClicked: {
+                let filePath = iconSource.toString()
+                filePath = filePath.replace("file://", "")
+                if (filePath !== "") {
+                    filePath = imageManager.copyImage(filePath)
+                    if (filePath === "") {
+                        return
+                    }
+                }
+                if (floraManager.addPlant(plantName, filePath, soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)) {
+                    root.plantAdded()
+                }
             }
         }
     }
