@@ -27,7 +27,8 @@ class FloraManager(QObject):
         self.allPotsVisible = True
 
         self.plantDb = PlantDb(dbPath)
-        if (self.plantDb.getNumPlants() == 0):
+        if (not self.plantDb.tableCreated()):
+            self.plantDb.createTable()
             self.plantDb.fillTable(imagesPath)
 
         self.plantModel = PlantModel(self)
@@ -35,7 +36,7 @@ class FloraManager(QObject):
 
         self.potDb = PotDb(dbPath)
         if (self.potDb.getNumPots() == 0):
-            self.potDb.fillTable(self.plantDb.getRandomPlant())
+            self.potDb.fillTable(self.plantDb.randomPlant())
 
         self.potModel = PotModel(self)
         self.potsHandler = PotsHandler(self)
@@ -58,9 +59,9 @@ class FloraManager(QObject):
         
     @Slot(result = bool)
     def removeCurrentPlant(self):
-        if (self.plantsHandler.selectedPlant):
+        if (self.plantsHandler.currentPlant):
             try:
-                self.plantDb.removePlantById(self.plantsHandler.selectedPlant.id)
+                self.plantDb.removePlantById(self.plantsHandler.currentPlant.id)
 
                 self.updatePlantsAndResetCurrentPlant()
                 self.updatePotsAndResetCurrentPot()
@@ -74,7 +75,7 @@ class FloraManager(QObject):
     @Slot(int, result=bool)
     def setCurrentPlant(self, id):
         try:
-            plant = self.plantDb.getPlantById(id)
+            plant = self.plantDb.fetchPlantById(id)
             self.plantsHandler.setCurrentPlant(plant)
             return True
         except Exception as e:
@@ -84,15 +85,15 @@ class FloraManager(QObject):
         
     @Slot(str, float, float, float, float, float, result = bool)
     def updateCurrentPlantData(self, name, soilMoisture, ph, salinity, lightLevel, temperature):
-        if (self.plantsHandler.selectedPlant):
-            self.plantsHandler.selectedPlant.name = name
-            self.plantsHandler.selectedPlant.plantCare.soilMoisture = soilMoisture
-            self.plantsHandler.selectedPlant.plantCare.ph = ph
-            self.plantsHandler.selectedPlant.plantCare.salinity = salinity
-            self.plantsHandler.selectedPlant.plantCare.lightLevel = lightLevel
-            self.plantsHandler.selectedPlant.plantCare.temperature = temperature
+        if (self.plantsHandler.currentPlant):
+            self.plantsHandler.currentPlant.name = name
+            self.plantsHandler.currentPlant.plantCare.soilMoisture = soilMoisture
+            self.plantsHandler.currentPlant.plantCare.ph = ph
+            self.plantsHandler.currentPlant.plantCare.salinity = salinity
+            self.plantsHandler.currentPlant.plantCare.lightLevel = lightLevel
+            self.plantsHandler.currentPlant.plantCare.temperature = temperature
             try:
-                self.plantDb.updatePlant(self.plantsHandler.selectedPlant)
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
 
                 self.updateCurrentPlant()
                 self.updatePlants()
@@ -100,16 +101,16 @@ class FloraManager(QObject):
                 return False
             except Exception as e:
                 print(f"Error updating plant: {e}")
-                self.setCurrentPlant(self.plantsHandler.selectedPlant.id)
+                self.setCurrentPlant(self.plantsHandler.currentPlant.id)
                 return False
         return False
     
     @Slot(str, result = bool)
     def updateCurrentPlantImage(self, imagePath):
-        if (self.plantsHandler.selectedPlant):
-            self.plantsHandler.selectedPlant.imagePath = imagePath
+        if (self.plantsHandler.currentPlant):
+            self.plantsHandler.currentPlant.imagePath = imagePath
             try:
-                self.plantDb.updatePlant(self.plantsHandler.selectedPlant)
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
 
                 self.updateCurrentPlant()
                 self.updatePlants()
@@ -117,7 +118,7 @@ class FloraManager(QObject):
                 return True
             except Exception as e:
                 print(f"Error updating plant image: {e}")
-                self.setCurrentPlant(self.plantsHandler.selectedPlant.id)
+                self.setCurrentPlant(self.plantsHandler.currentPlant.id)
                 return False
         return False
     
@@ -126,9 +127,9 @@ class FloraManager(QObject):
         self.plantsHandler.resetCurrentPlant()
 
     def updateCurrentPlant(self):
-        if (self.plantsHandler.selectedPlant):
+        if (self.plantsHandler.currentPlant):
             try:
-                self.plantsHandler.setCurrentPlant(self.plantDb.getPlantById(self.plantsHandler.selectedPlant.id))
+                self.plantsHandler.setCurrentPlant(self.plantDb.fetchPlantById(self.plantsHandler.currentPlant.id))
                 return True
             except Exception as e:
                 print(f"Error updating current plant: {e}")
@@ -139,7 +140,7 @@ class FloraManager(QObject):
         self.resetCurrentPlant()
 
     def updatePlants(self):
-        self.plantModel.updateModel(self.plantDb.getAllPlants())
+        self.plantModel.updateModel(self.plantDb.plants())
 
     @Slot()
     def tooglePotVisibility(self):
@@ -165,7 +166,7 @@ class FloraManager(QObject):
         try:
             pot = self.potDb.getPotById(id)
 
-            plant = self.plantDb.getPlantById(pot.plantId)
+            plant = self.plantDb.fetchPlantById(pot.plantId)
             pot.setPlant(plant)
 
             self.potsHandler.setCurrentPot(pot)
@@ -193,7 +194,7 @@ class FloraManager(QObject):
     def addPlantToCurrentPot(self, plantId):
         if (self.potsHandler.selectedPot):
             try:
-                plant = self.plantDb.getPlantById(plantId)
+                plant = self.plantDb.fetchPlantById(plantId)
                 if (plant == None):
                     return False
                 self.potDb.addPlantToPot(self.potsHandler.selectedPot, plant)
@@ -260,9 +261,9 @@ class FloraManager(QObject):
     def updatePots(self):
         pots = self.potDb.getAllPots() if self.allPotsVisible else self.potDb.getAllPotsWithoutPlants()
         potsMerged = []    
-        self.plantDb.getAllPlantsDict()
+        self.plantDb.plantsDictionary()
         for pot in pots:
-            plant = self.plantDb.getPlantById(pot.plantId)
+            plant = self.plantDb.fetchPlantById(pot.plantId)
             if (pot.plantId is not None and plant is None):
                 Exception(f"Pot {pot.id} has invalid plant id {pot.plantId}, cascade delete not working")
                 exit(1)

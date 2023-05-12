@@ -4,13 +4,13 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 Item {
-    property string initialPlantName: plantsHandler.getCurrentPlantName()
-    property string initialPlantImagePath: "file://" + plantsHandler.getCurrentPlantImagePath()
-    property real initialDesiredSoilMoisture: plantsHandler.getCurrentPlantDesiredSoilMoisture()
-    property real initialDesiredPh: plantsHandler.getCurrentPlantDesiredPh()
-    property real initialDesiredSalinity: plantsHandler.getCurrentPlantDesiredSalinity()
-    property real initialDesiredLightLevel: plantsHandler.getCurrentPlantDesiredLightLevel()
-    property real initialDesiredTemperature: plantsHandler.getCurrentPlantDesiredTemperature()
+    property string initialPlantName: plantsHandler.currentPlantName()
+    property string initialPlantImagePath: "file://" + plantsHandler.currentPlantImagePath()
+    property real initialDesiredSoilMoisture: plantsHandler.currentPlantDesiredSoilMoisture()
+    property real initialDesiredPh: plantsHandler.currentPlantDesiredPh()
+    property real initialDesiredSalinity: plantsHandler.currentPlantDesiredSalinity()
+    property real initialDesiredLightLevel: plantsHandler.currentPlantDesiredLightLevel()
+    property real initialDesiredTemperature: plantsHandler.currentPlantDesiredTemperature()
 
     readonly property bool plantDataModified: initialPlantName !== name.text || 
                                              initialDesiredSoilMoisture !== spinBoxSoilMoisture.value ||
@@ -26,13 +26,13 @@ Item {
     }
 
     function updateInitialDesiredPlantData() {
-        initialPlantName = plantsHandler.getCurrentPlantName()
-        initialPlantImagePath = "file://" + plantsHandler.getCurrentPlantImagePath()
-        initialDesiredSoilMoisture = plantsHandler.getCurrentPlantDesiredSoilMoisture()
-        initialDesiredPh = plantsHandler.getCurrentPlantDesiredPh()
-        initialDesiredSalinity = plantsHandler.getCurrentPlantDesiredSalinity()
-        initialDesiredLightLevel = plantsHandler.getCurrentPlantDesiredLightLevel()
-        initialDesiredTemperature = plantsHandler.getCurrentPlantDesiredTemperature()
+        initialPlantName = plantsHandler.currentPlantName()
+        initialPlantImagePath = "file://" + plantsHandler.currentPlantImagePath()
+        initialDesiredSoilMoisture = plantsHandler.currentPlantDesiredSoilMoisture()
+        initialDesiredPh = plantsHandler.currentPlantDesiredPh()
+        initialDesiredSalinity = plantsHandler.currentPlantDesiredSalinity()
+        initialDesiredLightLevel = plantsHandler.currentPlantDesiredLightLevel()
+        initialDesiredTemperature = plantsHandler.currentPlantDesiredTemperature()
 
         name.text = initialPlantName
         plantIcon.source = initialPlantImagePath

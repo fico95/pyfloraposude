@@ -6,75 +6,67 @@ class PlantsHandler(QObject):
 
     currentPlantChanged = Signal()
 
-    @Property(Plant, notify=currentPlantChanged)
-    def currentPlant(self):
-        return self.selectedPlant
-
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.selectedPlant = None
-
-    @Slot(result=QObject)
-    def getCurrentPlant(self):
-        return self.selectedPlant
+        self.currentPlant = None
 
     def setCurrentPlant(self, plant: Plant):
-        self.selectedPlant = plant
+        self.currentPlant = plant
         self.currentPlantChanged.emit()
     
     def resetCurrentPlant(self):
-        self.selectedPlant = None
+        self.currentPlant = None
         self.currentPlantChanged.emit()
 
     @Slot(result=bool)
-    def isCurrentPlantSet(self):
-        return self.selectedPlant != None
+    def currentPlantValid(self):
+        return self.currentPlant != None
 
     @Slot(result=int)
-    def getCurrentPlantId(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.id
+    def curentPlantId(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.id
         return -1
 
     @Slot(result=str)
-    def getCurrentPlantName(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.name
+    def currentPlantName(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.name
         return ""
     
     @Slot(result=str)
-    def getCurrentPlantImagePath(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.imagePath
+    def currentPlantImagePath(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.imagePath
         return ""
     
     @Slot(result=float)
-    def getCurrentPlantDesiredSoilMoisture(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.plantCare.soilMoisture
+    def currentPlantDesiredSoilMoisture(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.plantCare.soilMoisture
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPlantDesiredPh(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.plantCare.ph
+    def currentPlantDesiredPh(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.plantCare.ph
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPlantDesiredSalinity(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.plantCare.salinity
+    def currentPlantDesiredSalinity(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.plantCare.salinity
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPlantDesiredLightLevel(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.plantCare.lightLevel
+    def currentPlantDesiredLightLevel(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.plantCare.lightLevel
         return 0.0
     
     @Slot(result=float)
-    def getCurrentPlantDesiredTemperature(self):
-        if (self.selectedPlant):
-            return self.selectedPlant.plantCare.temperature
+    def currentPlantDesiredTemperature(self):
+        if (self.currentPlantValid()):
+            return self.currentPlant.plantCare.temperature
         return 0.0

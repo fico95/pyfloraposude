@@ -294,8 +294,8 @@ Item {
         }
         updateGraph()
         updateData()
-        if (plantsHandler.isCurrentPlantSet() && plantsHandler.getCurrentPlantId() >= 0) {
-            floraManager.addPlantToCurrentPot(plantsHandler.getCurrentPlantId())
+        if (plantsHandler.currentPlantValid() && plantsHandler.curentPlantId() >= 0) {
+            floraManager.addPlantToCurrentPot(plantsHandler.curentPlantId())
         }
     }
 }

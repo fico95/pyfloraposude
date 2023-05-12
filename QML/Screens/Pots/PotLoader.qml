@@ -4,16 +4,16 @@ import QtQuick.Controls 2.12
 import "../../Controls"
 
 Item {
-    property bool isPlantSet: plantsHandler.isCurrentPlantSet()
-    property string plantImagePath: plantsHandler.getCurrentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.getCurrentPlantImagePath()
+    property bool isPlantSet: plantsHandler.currentPlantValid()
+    property string plantImagePath: plantsHandler.currentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.currentPlantImagePath()
 
     signal plantSelectTriggered
     signal plantClearTriggered
     signal potLoaded
 
     function updatePlantData() {
-        isPlantSet = plantsHandler.isCurrentPlantSet()
-        plantImagePath = plantsHandler.getCurrentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.getCurrentPlantImagePath()
+        isPlantSet = plantsHandler.currentPlantValid()
+        plantImagePath = plantsHandler.currentPlantImagePath() === "" ?  "" : "file://" + plantsHandler.currentPlantImagePath()
     }
 
     Image {
@@ -103,7 +103,7 @@ Item {
         height: parent.height * 0.05
         text: "Save"
         onClicked: {
-            if (floraManager.addPot(name.text, plantsHandler.getCurrentPlantId())) {
+            if (floraManager.addPot(name.text, plantsHandler.curentPlantId())) {
                 potLoaded()
             }
         }

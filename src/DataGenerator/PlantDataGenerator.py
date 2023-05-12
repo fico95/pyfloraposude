@@ -8,7 +8,7 @@ def getPlantDataCampus(numberOfSamples, differentTemperature = False):
     longitudeCampus = 15.9411
     return getPlantDataForPosition(latitudeCampus, longitudeCampus, numberOfSamples, differentTemperature)
 
-def getRandomPlantData(numberOfSamples):
+def randomPlantData(numberOfSamples):
     data = []
     for i in range(numberOfSamples):
         plantData = PlantData(getSoilMoisture(),

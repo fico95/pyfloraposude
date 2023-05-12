@@ -1,6 +1,6 @@
 from Flora.Plants.Plant import Plant
 from Flora.Plants.PlantData import PlantData
-from DataGenerator.PlantDataGenerator import getRandomPlantData
+from DataGenerator.PlantDataGenerator import randomPlantData
 
 import sqlite3
 from typing import List
@@ -9,7 +9,6 @@ class PlantDb:
     def __init__(self, dbPath):
         self.conn = sqlite3.connect(dbPath)
         self.enableForeignKeys()
-        self.createTable()
 
     def __del__(self):
         self.conn.close()
@@ -18,6 +17,13 @@ class PlantDb:
         cursor = self.conn.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
         self.conn.commit()
+
+    def tableCreated(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""
+            SELECT name FROM sqlite_master WHERE type='table' AND name='plants'
+        """)
+        return cursor.fetchone() is not None
 
     def createTable(self):
         cursor = self.conn.cursor()
@@ -34,7 +40,7 @@ class PlantDb:
             )
         """)
         self.conn.commit()
-    
+
     def fillTable(self, imagesPath):
         plantNames = [("Monstera Deliciosa", imagesPath + "/monstera_deliciosa.png"),
                       ("Fiddle Leaf Fig", imagesPath + "/fiddle_leaf_fig.png"),
@@ -46,7 +52,7 @@ class PlantDb:
                       ("Bird of Paradise", imagesPath + "/bird_of_paradise.png"),
                       ("Chinese Money Plant", imagesPath + "/chinese_money_plant.png"),
                       ("Calathea", imagesPath + "/calathea.png")]
-        plantData = getRandomPlantData(len(plantNames))
+        plantData = randomPlantData(len(plantNames))
 
         for name, data in zip(plantNames, plantData):
             plant = Plant(None, name[0], name[1], data)
@@ -85,7 +91,7 @@ class PlantDb:
         """, (plantId,))
         self.conn.commit()
 
-    def getPlantById(self, plantId: int) -> Plant:
+    def fetchPlantById(self, plantId: int) -> Plant:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT * FROM plants WHERE id=?
@@ -98,7 +104,7 @@ class PlantDb:
         plant = Plant(id, name, imagePath, plantCare)
         return plant
     
-    def getRandomPlant(self) -> Plant:
+    def randomPlant(self) -> Plant:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT * FROM plants ORDER BY RANDOM() LIMIT 1
@@ -111,7 +117,7 @@ class PlantDb:
         plant = Plant(id, name, imagePath, plantCare)
         return plant
 
-    def getAllPlants(self) -> List[Plant]:
+    def plants(self) -> List[Plant]:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT * FROM plants
@@ -124,7 +130,7 @@ class PlantDb:
             plants.append(plant)
         return plants
     
-    def getAllPlantsDict(self) -> dict:
+    def plantsDictionary(self) -> dict:
         cursor = self.conn.cursor()
         cursor.execute("""
             SELECT * FROM plants
@@ -137,7 +143,7 @@ class PlantDb:
             plants[plantId] = plant
         return plants
     
-    def getNumPlants(self):
+    def plantsCount(self) -> int:
         cursor = self.conn.cursor()
         cursor.execute("SELECT COUNT(*) FROM plants")
         return cursor.fetchone()[0]
