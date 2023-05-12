@@ -36,6 +36,10 @@ Item {
         CustomTextField {
             id: textFieldUsername
             placeholderText: "Username"
+            onTextChanged: {
+                loginFailed = false
+                updateWarningText()
+            }
         }
 
         CustomTextField {
@@ -43,7 +47,10 @@ Item {
             placeholderText: "Password"
             enabled: userNameText !== ""
             echoMode: TextInput.Password
-            onTextChanged: updateWarningText()
+            onTextChanged: {
+                loginFailed = false
+                updateWarningText()
+            }
         }
 
         CustomText {

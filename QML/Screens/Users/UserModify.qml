@@ -28,6 +28,9 @@ Item {
         else if (passwordText === newPasswordText) {
             warningText.text = "New password must be different from old password."
         }
+        else if (newPasswordText !== "" && !userHandler.checkPasswordStrength(newPasswordText)) {
+            warningText.text = "Password must be at least 8 characters long and contain at least one capital letter, one lowercase letter, one number, and one special character."
+        }
         else if (modifyFailed) {
             warningText.text = "Failed to change password."
         }
@@ -72,6 +75,10 @@ Item {
             placeholderText: "New Password"
             enabled: passwordText !== ""
             echoMode: TextInput.Password
+            onTextChanged: {
+                modifyFailed = false
+                updateWarningText()
+            }
         }
 
         CustomText {
