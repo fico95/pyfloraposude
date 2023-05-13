@@ -16,7 +16,7 @@ Flickable {
         width: parent.width
         height: contentHeight
         interactive: false
-        cellHeight: cellWidth / 2
+        cellHeight: flickable.height / 3
         cellWidth: flickable.width / 3
     }
 

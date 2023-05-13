@@ -10,8 +10,8 @@ Window {
     width: 1280
     height: 960
 
-    minimumWidth: 640
-    minimumHeight: 480
+    minimumWidth: 1100
+    minimumHeight: 800
 
     CustomHeader {
         id: header

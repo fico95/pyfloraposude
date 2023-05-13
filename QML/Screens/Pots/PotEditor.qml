@@ -15,7 +15,9 @@ Item {
             return
         }
         if (plantsHandler.currentPlantValid()) {
-            floraManager.addPlantToCurrentPot(plantsHandler.curentPlantId())
+            if (floraManager.addPlantToCurrentPot(plantsHandler.curentPlantId())) {
+                floraManager.resetCurrentPlant()
+            }
         } 
     }
 
@@ -207,7 +209,7 @@ Item {
                 right: parent.right
             }
             spacing: 10
-            height: parent.height * 0.05
+            height: parent.height * 0.1
             CustomButton {
                 height: parent.height
                 width: parent.width / 3 - spacing / 2
