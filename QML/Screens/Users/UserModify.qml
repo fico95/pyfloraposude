@@ -90,6 +90,7 @@ Item {
         }
 
         CustomButton {
+            id: changePasswordButton
             width: parent.width
             text: "Change Password"
             enabled: userNameText !== "" && passwordText !== "" && newPasswordText !== ""
@@ -99,6 +100,26 @@ Item {
                 if (warningText.text === "") {
                     passwordChangeTriggered()
                 }
+            }
+        }
+    }
+
+    Keys.onEnterPressed: {
+        if (changePasswordButton.enabled) {
+            modifyFailed = false
+            updateWarningText()
+            if (warningText.text === "") {
+                passwordChangeTriggered()
+            }
+        }
+    }
+
+     Keys.onReturnPressed: {
+        if (changePasswordButton.enabled) {
+            modifyFailed = false
+            updateWarningText()
+            if (warningText.text === "") {
+                passwordChangeTriggered()
             }
         }
     }

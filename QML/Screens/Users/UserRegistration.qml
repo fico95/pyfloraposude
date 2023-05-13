@@ -79,12 +79,25 @@ Item {
         }
 
         CustomButton {
+            id: registerButton
             width: parent.width
             text: "Register"
             enabled: userNameText !== "" && passwordText !== "" && confirmPasswordText !== "" && passwordText === confirmPasswordText
             onClicked: {
                 registrationTriggered()
             }
+        }
+    }
+
+    Keys.onEnterPressed: {
+        if (registerButton.enabled) {
+            registrationTriggered()
+        }
+    }
+
+     Keys.onReturnPressed: {
+        if (registerButton.enabled) {
+            registrationTriggered()
         }
     }
 }

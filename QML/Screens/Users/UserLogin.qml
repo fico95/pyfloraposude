@@ -62,6 +62,7 @@ Item {
         }
 
         CustomButton {
+            id: loginButton
             width: parent.width
             text: "Login"
             enabled: textFieldUsername.text !== "" && textFieldPassword.text !== ""
@@ -75,6 +76,18 @@ Item {
             width: parent.width
             text: "Forgotten Password"
             onClicked: forgottenPasswordClicked()
+        }
+    }
+
+    Keys.onEnterPressed: {
+        if (loginButton.enabled) {
+            loginTriggered()
+        }
+    }
+
+     Keys.onReturnPressed: {
+        if (loginButton.enabled) {
+            loginTriggered()
         }
     }
 }
