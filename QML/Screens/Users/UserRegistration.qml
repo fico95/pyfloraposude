@@ -81,7 +81,7 @@ Item {
         CustomButton {
             width: parent.width
             text: "Register"
-            enabled: userNameText !== "" && passwordText !== "" && confirmPasswordText !== ""
+            enabled: userNameText !== "" && passwordText !== "" && confirmPasswordText !== "" && passwordText === confirmPasswordText
             onClicked: {
                 registrationTriggered()
             }

@@ -1,13 +1,6 @@
 {
     "files": [
         "main.py", 
-        "application.py",
-        "main.qml",
-        "QML/main.qml",
-        "QML/Screens/Users/ForgottenPassword.qml",
-        "QML/Screens/Users/Login.qml",
-        "QML/Screens/Users/Registration.qml",
-        "QML/Screens/Main/MainScreen.qml",
-        "QML/Screens/Welcome/Welcome.qml"
+        "main.qml"
     ]
 }

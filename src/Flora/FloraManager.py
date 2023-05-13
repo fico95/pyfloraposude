@@ -229,6 +229,7 @@ class FloraManager(QObject):
             try:
                 plant = self.plantDb.fetchPlantById(plantId)
                 if (plant == None):
+                    self.updateCurrentPot()
                     return False
                 self.potDb.addPlantToPot(self.potsHandler.currentPot, plant)
 

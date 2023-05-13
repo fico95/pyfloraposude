@@ -8,5 +8,5 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
     app = Application(sys.argv)
-    if (app.isInitialized()):
+    if (app.initialized):
         app.exec_()

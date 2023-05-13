@@ -39,7 +39,7 @@ class Application(QApplication):
             return     
 
         self.engine = QQmlApplicationEngine()
-        QQuickStyle.setStyle("Imagine")
+        QQuickStyle.setStyle("Material")
 
         self.stackController = StackController(self)
         self.userHandler = UserHandler(rootPath + "/" + dbPath, self)
@@ -60,6 +60,3 @@ class Application(QApplication):
 
         if self.engine.rootObjects():
             self.initialized = True
-
-    def isInitialized(self):
-        return self.initialized
