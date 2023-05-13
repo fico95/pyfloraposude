@@ -59,4 +59,7 @@ compile_commands.json
 *.db
 
 # Qt rc
-icons_rc.py
+*_rc.py
+
+# Qt project (not used)
+*.project
