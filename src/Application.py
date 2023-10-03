@@ -32,9 +32,9 @@ class Application(QApplication):
             return
 
         imagesPath = "images"
-        qmlMainPath = "QML/main.qml"
+        qmlMainPath = os.path.join("QML", "main.qml")
         dbPath = "database.db"
-        if (not os.path.isfile(rootPath + "/" + qmlMainPath)):
+        if (not os.path.isfile(os.path.join(rootPath, qmlMainPath))):
             print("Invalid root path provided, main QML file not found.")
             return     
 
@@ -42,9 +42,9 @@ class Application(QApplication):
         QQuickStyle.setStyle("Material")
 
         self.stackController = StackController(self)
-        self.userHandler = UserHandler(rootPath + "/" + dbPath, self)
-        self.imageManager = ImageManager(rootPath + "/" + imagesPath, self)
-        self.floraManager = FloraManager(rootPath + "/" + dbPath, rootPath + "/" + imagesPath, self)
+        self.userHandler = UserHandler(os.path.join(rootPath, dbPath), self)
+        self.imageManager = ImageManager(os.path.join(rootPath, imagesPath), self)
+        self.floraManager = FloraManager(os.path.join(rootPath, dbPath), os.path.join(rootPath, imagesPath), self)
 
         self.engine.rootContext().setContextProperty("stackController", self.stackController)
         self.engine.rootContext().setContextProperty("userHandler", self.userHandler)
@@ -56,7 +56,7 @@ class Application(QApplication):
         self.engine.rootContext().setContextProperty("potsHandler", self.floraManager.potsHandler)
         self.engine.rootContext().setContextProperty("potsGraphHandler", self.floraManager.potsHandler.graphHandler)
 
-        self.engine.load(rootPath + "/" + qmlMainPath)
+        self.engine.load(os.path.join(rootPath, qmlMainPath))
 
         if self.engine.rootObjects():
             self.initialized = True

@@ -3,6 +3,7 @@ from Flora.Plants.PlantData import PlantData
 from DataGenerator.PlantDataGenerator import generateRandomPlantData
 
 import sqlite3
+import os
 from typing import List
 
 class PlantDb:
@@ -44,16 +45,16 @@ class PlantDb:
     def fillTable(self, imagesPath):
         if (imagesPath == ""):
             return
-        plantNames = [("Monstera Deliciosa", imagesPath + "/monstera_deliciosa.png"),
-                      ("Fiddle Leaf Fig", imagesPath + "/fiddle_leaf_fig.png"),
-                      ("Snake Plant", imagesPath + "/snake_plant.png"),
-                      ("Peace Lily", imagesPath + "/peace_lily.png"),
-                      ("ZZ Plant", imagesPath + "/zz_plant.png"),
-                      ("Pothos", imagesPath + "/pothos.png"),
-                      ("Rubber Plant", imagesPath + "/rubber_plant.png"),
-                      ("Bird of Paradise", imagesPath + "/bird_of_paradise.png"),
-                      ("Chinese Money Plant", imagesPath + "/chinese_money_plant.png"),
-                      ("Calathea", imagesPath + "/calathea.png")]
+        plantNames = [("Monstera Deliciosa", os.path.join(imagesPath, "monstera_deliciosa.png")),
+                      ("Fiddle Leaf Fig", os.path.join(imagesPath, "fiddle_leaf_fig.png")),
+                      ("Snake Plant", os.path.join(imagesPath, "snake_plant.png")),
+                      ("Peace Lily", os.path.join(imagesPath, "peace_lily.png")),
+                      ("ZZ Plant", os.path.join(imagesPath, "zz_plant.png")),
+                      ("Pothos", os.path.join(imagesPath, "pothos.png")),
+                      ("Rubber Plant", os.path.join(imagesPath, "rubber_plant.png")),
+                      ("Bird of Paradise", os.path.join(imagesPath, "bird_of_paradise.png")),
+                      ("Chinese Money Plant", os.path.join(imagesPath, "chinese_money_plant.png")),
+                      ("Calathea", os.path.join(imagesPath, "calathea.png"))]
         plantData = generateRandomPlantData(len(plantNames))
 
         for name, data in zip(plantNames, plantData):
