@@ -120,28 +120,92 @@ class FloraManager(QObject):
                 self.updateCurrentPlant()
                 return False
         return False
-
-    @Slot(float, float, float, float, float, result = bool)
-    def updateCurrentPlantData(self, soilMoisture, ph, salinity, lightLevel, temperature) -> bool:
+    
+    @Slot(float, result = bool)
+    def updateCurrentPlantSoilMoisture(self, value) -> bool:
         if (self.plantsHandler.currentPlantValid()):
-            self.plantsHandler.currentPlant.plantCare.soilMoisture = soilMoisture
-            self.plantsHandler.currentPlant.plantCare.ph = ph
-            self.plantsHandler.currentPlant.plantCare.salinity = salinity
-            self.plantsHandler.currentPlant.plantCare.lightLevel = lightLevel
-            self.plantsHandler.currentPlant.plantCare.temperature = temperature
+            self.plantsHandler.currentPlant.plantCare.soilMoisture = value
             try:
                 self.plantDb.updatePlant(self.plantsHandler.currentPlant)
 
                 self.updatePlantsAndCurrentPlant()
                 self.updatePotsAndResetCurrentPot()
 
-                return False
+                return True
             except Exception as e:
-                print(f"Error updating plant: {e}")
+                print(f"Error updating plant soil moisture: {e}")
                 self.updateCurrentPlant()
                 return False
         return False
     
+    @Slot(float, result = bool)
+    def updateCurrentPlantPh(self, value) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
+            self.plantsHandler.currentPlant.plantCare.ph = value
+            try:
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
+
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
+
+                return True
+            except Exception as e:
+                print(f"Error updating plant ph: {e}")
+                self.updateCurrentPlant()
+                return False
+        return False
+    
+    @Slot(float, result = bool)
+    def updateCurrentPlantSalinity(self, value) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
+            self.plantsHandler.currentPlant.plantCare.salinity = value
+            try:
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
+
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
+
+                return True
+            except Exception as e:
+                print(f"Error updating plant salinity: {e}")
+                self.updateCurrentPlant()
+                return False
+        return False
+    
+    @Slot(float, result = bool)
+    def updateCurrentPlantLightLevel(self, value) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
+            self.plantsHandler.currentPlant.plantCare.lightLevel = value
+            try:
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
+
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
+
+                return True
+            except Exception as e:
+                print(f"Error updating plant light level: {e}")
+                self.updateCurrentPlant()
+                return False
+        return False
+    
+    @Slot(float, result = bool)
+    def updateCurrentPlantTemperature(self, value) -> bool:
+        if (self.plantsHandler.currentPlantValid()):
+            self.plantsHandler.currentPlant.plantCare.temperature = value
+            try:
+                self.plantDb.updatePlant(self.plantsHandler.currentPlant)
+
+                self.updatePlantsAndCurrentPlant()
+                self.updatePotsAndResetCurrentPot()
+
+                return True
+            except Exception as e:
+                print(f"Error updating plant temperature: {e}")
+                self.updateCurrentPlant()
+                return False
+        return False
+
     @Slot(str, result = bool)
     def updateCurrentPlantImage(self, imagePath):
         if (self.plantsHandler.currentPlantValid()):

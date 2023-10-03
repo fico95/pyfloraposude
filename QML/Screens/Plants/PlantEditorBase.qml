@@ -106,6 +106,7 @@ FloraLoader {
                 horizontalAlignment: Text.AlignLeft
             }
             DoubleSpinBox {
+                property bool initialized: false
                 width: parent.width / 3
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
@@ -114,11 +115,15 @@ FloraLoader {
                 decimals: 1
                 wrap: false
                 onValueChanged: {
+                    if (!initialized) {
+                        return
+                    }
                     model.updateValue(value)
                     value = Qt.binding(function() { return model.currentValue() })
                 }
                 Component.onCompleted: {
                     value = Qt.binding(function() { return model.currentValue() })
+                    initialized = true
                 }
             }
         }

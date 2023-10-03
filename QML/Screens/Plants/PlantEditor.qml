@@ -8,7 +8,7 @@ PlantEditorBase {
         floraManager.updateCurrentPlantData(soilMoistureValue, phValue, salinityValue, lightLevelValue, temperatureValue)
     }
 
-    function updateShownPlantData() {
+    function updateData() {
         nameTextField.text = plantsHandler.currentPlantName()
         iconSource = plantsHandler.currentPlantImagePath() !== "" ? "file://" + plantsHandler.currentPlantImagePath() : ""
         soilMoistureValue = plantsHandler.currentPlantDesiredSoilMoisture()
@@ -31,47 +31,37 @@ PlantEditorBase {
     }
 
     onPlantNameChanged: {
-
         floraManager.updateCurrentPlantName(plantName)
     }
 
     onUpdateSoilMoistureValue: function(value) {
-        soilMoistureValue = value
-        updateCurrentPlantData()
+        floraManager.updateCurrentPlantSoilMoisture(value)
     }
 
     onUpdatePhValue: function(value) {
-        phValue = value
-        updateCurrentPlantData()
+        floraManager.updateCurrentPlantPh(value)
     }
 
     onUpdateTemperatureValue: function(value) {
-        temperatureValue = value
-        updateCurrentPlantData()
+        floraManager.updateCurrentPlantTemperature(value)
     }
 
     onUpdateSalinityValue: function(value) {
-        salinityValue = value
-        updateCurrentPlantData()
+        floraManager.updateCurrentPlantSalinity(value)
     }
 
     onUpdateLightLevelValue: function(value) {
-        lightLevelValue = value
-        updateCurrentPlantData()
+        floraManager.updateCurrentPlantLightLevel(value)
     }
 
     Connections {
         target: plantsHandler
         function onCurrentPlantChanged() {
-            updateShownPlantData()
+            updateData()
         }
     }
 
     Component.onCompleted: {
-        updateShownPlantData()
-    }
-
-    Component.onDestruction: {
-        updateCurrentPlantData()
+        updateData()
     }
 }
