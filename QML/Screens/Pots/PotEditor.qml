@@ -22,7 +22,7 @@ Item {
     }
 
     function updateData() {
-        editor.iconSource = potsHandler.currentPotPlantImagePath() !== "" ? "file://" + potsHandler.currentPotPlantImagePath() : ""
+        editor.iconSource = potsHandler.currentPotPlantImagePath() !== "" ? "file:///" + potsHandler.currentPotPlantImagePath() : ""
         editor.nameTextField.text = potsHandler.currentPotName()
         potAndPlantData.visible = potsHandler.currentPotPlantValid()
 

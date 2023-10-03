@@ -219,7 +219,7 @@ Item {
             }
             onSaveClicked: {
                 let filePath = iconSource.toString()
-                filePath = filePath.replace("file://", "")
+                filePath = filePath.replace("file:///", "")
                 if (filePath !== "") {
                     filePath = imageManager.copyImage(filePath)
                     if (filePath === "") {

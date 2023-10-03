@@ -57,7 +57,7 @@ Item {
         anchors.fill: parent
         anchors.margins: 10
         nameText: name
-        iconSource: plantImagePath !== "" ? "file://" + plantImagePath : ""
+        iconSource: plantImagePath !== "" ? "file:///" + plantImagePath : ""
         mouseArea.onClicked: {
             root.buttonClicked(potId)
         }

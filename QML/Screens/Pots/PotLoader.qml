@@ -7,7 +7,7 @@ PotEditorBase {
     signal saveClicked
 
     function updatePlantData() {
-        iconSource = plantsHandler.currentPlantImagePath() !== "" ? "file://" + plantsHandler.currentPlantImagePath() : ""
+        iconSource = plantsHandler.currentPlantImagePath() !== "" ? "file:///" + plantsHandler.currentPlantImagePath() : ""
     }
 
     onRemoveTriggered: {

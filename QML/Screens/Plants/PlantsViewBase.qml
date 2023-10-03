@@ -28,7 +28,7 @@ Item {
                     anchors.fill: parent
                     anchors.margins: 10
                     nameText: name
-                    iconSource: imagePath !== "" ? "file://" + imagePath : ""
+                    iconSource: imagePath !== "" ? "file:///" + imagePath : ""
                     mouseArea.onClicked: {
                         openPlantEditor(id)
                     }

@@ -27,6 +27,7 @@ class Application(QApplication):
             return
         
         rootPath = sys.argv[1]
+        rootPath = rootPath.replace('\\', '/')
         if (not os.path.exists(rootPath) or not os.path.isdir(rootPath)):
             print("Invalid root path provided.")
             return

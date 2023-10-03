@@ -10,7 +10,7 @@ PlantEditorBase {
 
     function updateData() {
         nameTextField.text = plantsHandler.currentPlantName()
-        iconSource = plantsHandler.currentPlantImagePath() !== "" ? "file://" + plantsHandler.currentPlantImagePath() : ""
+        iconSource = plantsHandler.currentPlantImagePath() !== "" ? "file:///" + plantsHandler.currentPlantImagePath() : ""
         soilMoistureValue = plantsHandler.currentPlantDesiredSoilMoisture()
         phValue = plantsHandler.currentPlantDesiredPh()
         salinityValue = plantsHandler.currentPlantDesiredSalinity()
@@ -19,7 +19,7 @@ PlantEditorBase {
     }
 
     function handleFileDialogClose(filePath) {
-        filePath = filePath.replace("file://", "")
+        filePath = filePath.replace("file:///", "")
         let destinationPath = imageManager.copyImage(filePath)
         if (destinationPath !== "") {
             floraManager.updateCurrentPlantImage(destinationPath)
@@ -27,7 +27,7 @@ PlantEditorBase {
     }
 
     onIconSourceChanged: {
-        floraManager.updateCurrentPlantImage(iconSource.toString().replace("file://", ""))
+        floraManager.updateCurrentPlantImage(iconSource.toString().replace("file:///", ""))
     }
 
     onPlantNameChanged: {

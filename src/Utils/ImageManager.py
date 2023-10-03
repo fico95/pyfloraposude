@@ -18,8 +18,10 @@ class ImageManager(QObject):
                 img.verify()
 
             baseName = os.path.basename(imagePath)
-            destinationPath = os.path.join(self.imagesPath, baseName)
-            shutil.copy2(imagePath, destinationPath)
+            destinationPath = self.imagesPath + "/" + baseName
+
+            if (destinationPath != imagePath):
+                shutil.copy2(imagePath, destinationPath)
 
             return destinationPath
 
